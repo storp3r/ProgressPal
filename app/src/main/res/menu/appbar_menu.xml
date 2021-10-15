@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_home"
+        android:icon="@drawable/ic_baseline_home_24"
+        android:title="@string/action_home"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_help"
+        android:icon="@drawable/ic_baseline_help_outline_24"
+        android:title="@string/action_help"
+        app:showAsAction="ifRoom" />
+
+    <item android:id="@+id/action_terms"
+        android:title="@string/action_terms"
+        app:showAsAction="never"/>
+
+    <item android:id="@+id/action_courses"
+        android:title="@string/action_courses"
+        app:showAsAction="never"/>
+
+    <item android:id="@+id/action_assessments"
+        android:title="@string/action_assessments"
+        app:showAsAction="never"/>
+
+</menu>
