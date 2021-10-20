@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayout3"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+
+    <TextView
+        android:id="@+id/instructorTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:textColor="#000000"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <TextView
+        android:id="@+id/nameLabel"
+        style="@style/horizontal_linear.label"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:text="@string/instructor_name_label"
+        android:textColor="#6B6969"
+        app:layout_constraintStart_toStartOf="@+id/cancelBtn"
+        app:layout_constraintTop_toBottomOf="@+id/instructorTitle" />
+
+    <EditText
+        android:id="@+id/editInstructorName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Name"
+        android:inputType="textPersonName"
+        app:layout_constraintBaseline_toBaselineOf="@+id/nameLabel"
+        app:layout_constraintEnd_toEndOf="@+id/saveInstructorBtn"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/nameLabel" />
+
+
+    <TextView
+        android:id="@+id/phoneLabel"
+        style="@style/horizontal_linear.label"
+        android:layout_height="wrap_content"
+        android:text="@string/instructor_phone_label"
+        app:layout_constraintStart_toStartOf="@+id/nameLabel"
+        app:layout_constraintTop_toBottomOf="@+id/nameLabel" />
+
+    <EditText
+        android:id="@+id/editInstructorPhone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Phone Number"
+        android:inputType="textPersonName"
+        app:layout_constraintBaseline_toBaselineOf="@+id/phoneLabel"
+        app:layout_constraintEnd_toEndOf="@+id/editInstructorName"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/phoneLabel" />
+
+
+    <TextView
+        android:id="@+id/emailLabel"
+        style="@style/horizontal_linear.label"
+        android:layout_height="wrap_content"
+        android:text="@string/instructor_email_label"
+        app:layout_constraintStart_toStartOf="@+id/phoneLabel"
+        app:layout_constraintTop_toBottomOf="@+id/phoneLabel" />
+
+    <EditText
+        android:id="@+id/editInstructorEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Email Address"
+        android:inputType="textEmailAddress"
+        app:layout_constraintBaseline_toBaselineOf="@+id/emailLabel"
+        app:layout_constraintEnd_toEndOf="@+id/editInstructorPhone"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/emailLabel" />
+
+
+    <Button
+        android:id="@+id/cancelBtn"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="20dp"
+        android:backgroundTint="#F44336"
+        android:text="Cancel"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editInstructorEmail"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/saveInstructorBtn"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:text="@string/instructor_save_button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

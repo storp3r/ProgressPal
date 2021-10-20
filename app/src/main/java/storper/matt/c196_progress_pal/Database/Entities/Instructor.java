@@ -22,7 +22,7 @@ public class Instructor {
     private String mName;
 
     @ColumnInfo(name = "phone")
-    private long mPhone;
+    private String mPhone;
 
     @ColumnInfo(name = "email")
     private String mEmail;
@@ -30,10 +30,11 @@ public class Instructor {
     @ColumnInfo(name = "courseId")
     private int mCourseId;
 
-    public Instructor(@NonNull String name, long phone, String email) {
+    public Instructor(@NonNull String name, String phone, String email, int courseId) {
         setName(name);
         setPhone(phone);
         setEmail(email);
+        setCourseId(courseId);
     }
 
     public int getId() {
@@ -53,11 +54,11 @@ public class Instructor {
         this.mName = mName;
     }
 
-    public long getPhone() {
+    public String getPhone() {
         return mPhone;
     }
 
-    public void setPhone(long mPhone) {
+    public void setPhone(String mPhone) {
         this.mPhone = mPhone;
     }
 

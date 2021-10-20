@@ -43,6 +43,14 @@
     <string name="save_course_btn">Save Course</string>
     <string name="select_term_label">Select Term</string>
     <string name="progress_label">Select Progress</string>
+    <string name="add_course_instructor">Add Instructor</string>
+    <string name="course_instructor_label">Course Instructors</string>
+
+    <!--Modify Instructor-->
+    <string name="instructor_name_label">Instructor Name:</string>
+    <string name="instructor_phone_label">Phone Number:</string>
+    <string name="instructor_email_label">Email:</string>
+    <string name="instructor_save_button">Save</string>
 
 
 </resources>

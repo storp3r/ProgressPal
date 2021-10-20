@@ -73,7 +73,4 @@ public class TermRepository {
         return mTermDao.getTermById(termId);
     }
 
-
-
-
 }

@@ -2,6 +2,8 @@ package storper.matt.c196_progress_pal.Activities;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -24,6 +26,7 @@ import java.util.List;
 
 import storper.matt.c196_progress_pal.Database.Entities.Course;
 import storper.matt.c196_progress_pal.Database.Entities.Term;
+import storper.matt.c196_progress_pal.Fragments.InstructorFragment;
 import storper.matt.c196_progress_pal.R;
 import storper.matt.c196_progress_pal.Utilities.DataIntegrity;
 import storper.matt.c196_progress_pal.Utilities.StringWithTag;
@@ -52,6 +55,7 @@ public class ModifyCourseActivity extends AppCompatActivity  {
     private EditText endDate;
     private Spinner progressSelection;
     private Spinner termSelection;
+    private Button addInstructorBtn;
     private Button saveBtn;
     int termId;
     private String tempId;
@@ -87,6 +91,7 @@ public class ModifyCourseActivity extends AppCompatActivity  {
         endDate = findViewById(R.id.editEndDate);
         progressSelection = findViewById(R.id.progressSpinner);
         termSelection = findViewById(R.id.termSpinner);
+        addInstructorBtn = findViewById(R.id.addInstructorBtn);
         saveBtn = findViewById(R.id.saveCourseBtn);
 
         initViewModel();
@@ -94,6 +99,7 @@ public class ModifyCourseActivity extends AppCompatActivity  {
 
     private void initViewModel() {
         nameLabel.setText(R.string.course_label);
+        addInstructorBtn.setOnClickListener(addInstructor);
         saveBtn.setOnClickListener(saveCourse);
         progressList.addAll(progressItems);
 
@@ -144,6 +150,25 @@ public class ModifyCourseActivity extends AppCompatActivity  {
         });
         return super.onCreateOptionsMenu(menu);
     }
+
+    public View.OnClickListener addInstructor = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+           FragmentManager fragmentManager = getSupportFragmentManager();
+            InstructorFragment fragment = new InstructorFragment();
+            fragment.show(fragmentManager, "fragment_add_instructor");
+        }
+    };
+
+    public View.OnClickListener editInstructor = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            //TODO add instructor id
+            InstructorFragment fragment = InstructorFragment.newInstance(null);
+            fragment.show(fragmentManager, "fragment_edit_instructor");
+        }
+    };
 
     public View.OnClickListener saveCourse = new View.OnClickListener() {
         @Override

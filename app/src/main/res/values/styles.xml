@@ -2,5 +2,12 @@
 <resources>
 <style name="horizontal_linear">
     <item name="android:padding">5dp</item>
+    <item name="android:layout_marginTop">15dp</item>
 </style>
+    <style name="horizontal_linear.label">
+        <item name="android:layout_width">80dp</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:fontWeight">600</item>
+        <item name="android:textColor">#FF6B6969</item>
+    </style>
 </resources>
