@@ -27,7 +27,7 @@ import storper.matt.c196_progress_pal.Utilities.MenuHandler;
 import storper.matt.c196_progress_pal.ViewModel.TermViewModel;
 import storper.matt.c196_progress_pal.Utilities.DataIntegrity;
 
-public class ModifyTermActivity extends AppCompatActivity  {
+public class ModifyTermActivity extends AppCompatActivity implements ListFragment.OnListItemListener  {
 
     public TermViewModel mTermViewModel;
     public DataIntegrity mIntegrity = new DataIntegrity();
@@ -44,7 +44,9 @@ public class ModifyTermActivity extends AppCompatActivity  {
     Button addCourseBtn;
 
 
-
+    public interface OnPassDataToFragment {
+        void onPassData(String test);
+    }
 
 
     @Override
@@ -144,4 +146,8 @@ public class ModifyTermActivity extends AppCompatActivity  {
     };
 
 
+    @Override
+    public void onItemSelected() {
+
+    }
 }

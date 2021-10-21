@@ -21,7 +21,7 @@ public interface InstructorDao {
     @Query("SELECT * FROM instructors WHERE instructorId = :instructorId")
     Instructor getInstructorById(int instructorId);
 
-    @Insert(onConflict = OnConflictStrategy.ABORT)
+    @Insert
     public void insertInstructor(Instructor instructor);
 
     @Update

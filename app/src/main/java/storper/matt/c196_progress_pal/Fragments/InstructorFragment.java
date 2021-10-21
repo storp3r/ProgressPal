@@ -31,6 +31,7 @@ public class InstructorFragment extends DialogFragment {
     private EditText editEmail;
     private Button cancelBtn;
     private Button saveBtn;
+    private int courseId;
     DataIntegrity verify = new DataIntegrity();
     InstructorViewModel mInstructorViewModel;
     CourseViewModel mCourseViewModel;
@@ -67,14 +68,15 @@ public class InstructorFragment extends DialogFragment {
         saveBtn = view.findViewById(R.id.saveInstructorBtn);
 
         cancelBtn.setOnClickListener(dismissFragment);
+        saveBtn.setOnClickListener(saveInstructor);
 
         Log.d(TAG, "onViewCreated: " + mCourseViewModel.getLastId());
 
         mCourseViewModel.mCourse.observe(this, new Observer<Course>() {
             @Override
             public void onChanged(Course course) {
-
-                System.out.println("course Name is " + course.getName() + " id is " +course.getId());
+                courseId = course.getId();
+                Log.d(TAG, "onChanged: " + course.getId());
             }
         });
     }
@@ -93,8 +95,8 @@ public class InstructorFragment extends DialogFragment {
             String email = editEmail.getText().toString();
             String phone = editPhone.getText().toString();
 
-            if(verify.noNullStrings(name, email, phone)){
-
+            if(verify.noNullStrings(name, email, phone) && courseId > -1){
+                mInstructorViewModel.saveCurrentInstructor(name, email, phone, courseId);
             }
         }
     };

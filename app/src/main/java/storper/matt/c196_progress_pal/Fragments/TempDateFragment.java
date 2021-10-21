@@ -52,7 +52,11 @@ public class TempDateFragment extends Fragment implements ModifyCourseActivity.O
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        ((ModifyCourseActivity) context).dataPasser = this;
+        if(context instanceof ModifyCourseActivity) {
+            ((ModifyCourseActivity) context).dataPasser = this;
+        }
+//
+
     }
 
     public void initViewCreated(View view) {
@@ -197,7 +201,7 @@ public class TempDateFragment extends Fragment implements ModifyCourseActivity.O
         }
     }
 
-    //Get term date constraints when term selected
+//    Get term date constraints when term selected
     @Override
     public void onPassData(String data, String data2) {
         Log.d(TAG, "onPassData: started");

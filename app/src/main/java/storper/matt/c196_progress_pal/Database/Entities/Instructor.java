@@ -27,6 +27,7 @@ public class Instructor {
     @ColumnInfo(name = "email")
     private String mEmail;
 
+    @NonNull
     @ColumnInfo(name = "courseId")
     private int mCourseId;
 
