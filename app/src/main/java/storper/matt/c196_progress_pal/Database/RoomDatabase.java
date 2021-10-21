@@ -22,7 +22,7 @@ import storper.matt.c196_progress_pal.Database.Entities.Note;
 import storper.matt.c196_progress_pal.Database.Entities.Term;
 
 
-@androidx.room.Database(entities = {Term.class, Course.class, Assessment.class, Instructor.class, Note.class}, version = 4)
+@androidx.room.Database(entities = {Term.class, Course.class, Assessment.class, Instructor.class, Note.class}, version = 5)
 public abstract class RoomDatabase extends androidx.room.RoomDatabase {
 
 
@@ -77,6 +77,7 @@ public abstract class RoomDatabase extends androidx.room.RoomDatabase {
         private final TermDao mTermDao;
         private final CourseDao mCourseDao;
         private final AssessmentDao mAssessmentDao;
+        private final InstructorDao mInstructorDao;
 
 
         private PopulateDbAsyncTask(RoomDatabase db) {
@@ -84,6 +85,7 @@ public abstract class RoomDatabase extends androidx.room.RoomDatabase {
             mTermDao = db.termDao();
             mCourseDao = db.courseDao();
             mAssessmentDao = db.assessmentDao();
+            mInstructorDao = db.instructorDao();
 
         }
 
@@ -96,6 +98,7 @@ public abstract class RoomDatabase extends androidx.room.RoomDatabase {
             mTermDao.insertTerm(new Term("Term2","2021-11-06", "2022-10-06"));
             mCourseDao.insertCourse(new Course("Course 1", "2021-10-06", "2021-10-08", "in-progess", 1));
             mAssessmentDao.insertAssessment(new Assessment("Assessment 1", "objective", "2021-10-18", 1));
+            mInstructorDao.insertInstructor(new Instructor("john", "4984984", "dfssdf", 1));
 
 
             return null;

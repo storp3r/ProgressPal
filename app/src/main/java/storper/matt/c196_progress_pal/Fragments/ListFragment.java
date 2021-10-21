@@ -13,16 +13,19 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import storper.matt.c196_progress_pal.Adapters.CourseListAdapter;
+import storper.matt.c196_progress_pal.Adapters.InstructorListAdapter;
 import storper.matt.c196_progress_pal.Adapters.TermListAdapter;
 import storper.matt.c196_progress_pal.Database.Entities.Course;
 import storper.matt.c196_progress_pal.Database.Entities.Term;
 import storper.matt.c196_progress_pal.R;
 import storper.matt.c196_progress_pal.ViewModel.CourseViewModel;
+import storper.matt.c196_progress_pal.ViewModel.InstructorViewModel;
 import storper.matt.c196_progress_pal.ViewModel.TermViewModel;
 
 
@@ -31,15 +34,17 @@ public class ListFragment extends Fragment {
 
     private TermViewModel mTermViewModel;
     private CourseViewModel mCourseViewModel;
+    private InstructorViewModel mInstructorViewModel;
 
     private static final String termTypeString = "TermListActivity";
     private static final String courseTypeString = "CourseListActivity";
     private static final String assessmentTypeString = "AssessmentListActivity";
     private static final String modifyTermTypeString = "ModifyTermActivity";
     private static final String modifyCourseTypeString = "ModifyCourseActivity";
+    private static final String modifyCourseInstructor = "ModifyCourseInstructor";
     private static final String TAG = "ListFragment: ";
     public static String parentActivity;
-    public static String termId;
+    public static String parentId;
     //Reference to the activity
     public OnListItemListener mListener;
     public boolean isTerm;
@@ -47,6 +52,7 @@ public class ListFragment extends Fragment {
     public boolean isAssessment;
     public boolean isModifyTerm;
     public boolean isModifyCourse;
+    public boolean isInstructor;
 
     public RecyclerView recyclerView;
 
@@ -71,20 +77,18 @@ public class ListFragment extends Fragment {
 //        System.out.println("TermId: " + termId);
         if (getArguments() != null) {
             parentActivity = getArguments().getString("parentActivity");
-            termId = getArguments().getString("parentId");
+            parentId = getArguments().getString("parentId");
             isTerm = parentActivity.equals(termTypeString);
             isCourse = parentActivity.equals(courseTypeString);
             isModifyTerm = parentActivity.equals(modifyTermTypeString);
             isAssessment = parentActivity.equals(assessmentTypeString);
-
-
+            isInstructor = parentActivity.equals(modifyCourseInstructor);
         }
 
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstance) {
-
         View view = inflater.inflate(R.layout.fragment_list, container, false);
         setCurrentAdapter(view);
 
@@ -124,12 +128,20 @@ public class ListFragment extends Fragment {
             mCourseViewModel.getAllCourses().observe(getViewLifecycleOwner(), adapter::submitList);
         } else if(isAssessment) {
             //TODO
-        } else if(isModifyTerm && termId != null) {
+        } else if(isModifyTerm && parentId != null) {
             adapter = new CourseListAdapter(new CourseListAdapter.CourseDiff());
-            int currentId = Integer.parseInt(termId);
+            int currentId = Integer.parseInt(parentId);
             mCourseViewModel = new ViewModelProvider(this).get(CourseViewModel.class);
             mCourseViewModel.getCoursesByTermId(currentId).observe(getViewLifecycleOwner(), adapter::submitList);
+        } else if(isInstructor && parentId != null){
+            Log.d(TAG, "setCurrentAdapter: Instructor started");
+            adapter = new InstructorListAdapter(new InstructorListAdapter.InstructorDiff());
+            int currentId = Integer.parseInt(parentId);
+            Log.d(TAG, "setCurrentAdapter: parentId is " + parentId);
+            mInstructorViewModel = new ViewModelProvider(this).get(InstructorViewModel.class);
 
+            mInstructorViewModel.getAllInstructors().observe(getViewLifecycleOwner(), adapter::submitList);
+            Log.d(TAG, "setCurrentAdapter: count" + adapter.getItemCount());
         }
 
         recyclerView.setAdapter(adapter);

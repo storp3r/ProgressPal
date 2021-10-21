@@ -27,13 +27,14 @@ import java.util.List;
 import storper.matt.c196_progress_pal.Database.Entities.Course;
 import storper.matt.c196_progress_pal.Database.Entities.Term;
 import storper.matt.c196_progress_pal.Fragments.InstructorFragment;
+import storper.matt.c196_progress_pal.Fragments.ListFragment;
 import storper.matt.c196_progress_pal.R;
 import storper.matt.c196_progress_pal.Utilities.DataIntegrity;
 import storper.matt.c196_progress_pal.Utilities.StringWithTag;
 import storper.matt.c196_progress_pal.ViewModel.CourseViewModel;
 import storper.matt.c196_progress_pal.ViewModel.TermViewModel;
 
-public class ModifyCourseActivity extends AppCompatActivity  {
+public class ModifyCourseActivity extends AppCompatActivity implements ListFragment.OnListItemListener {
     private static final String TAG = "ModifyCourse";
     private static final String modifyTermActivity = "ModifyTermActivity";
     private final ArrayList<StringWithTag> termList = new ArrayList<>();
@@ -57,8 +58,14 @@ public class ModifyCourseActivity extends AppCompatActivity  {
     private Spinner termSelection;
     private Button addInstructorBtn;
     private Button saveBtn;
+    private int courseId;
     int termId;
     private String tempId;
+
+    @Override
+    public void onItemSelected() {
+
+    }
 
     public interface OnPassDataToFragment {
         void onPassData(String data, String data2);
@@ -99,7 +106,7 @@ public class ModifyCourseActivity extends AppCompatActivity  {
 
     private void initViewModel() {
         nameLabel.setText(R.string.course_label);
-        addInstructorBtn.setOnClickListener(addInstructor);
+
         saveBtn.setOnClickListener(saveCourse);
         progressList.addAll(progressItems);
 
@@ -117,8 +124,23 @@ public class ModifyCourseActivity extends AppCompatActivity  {
                     tag = course.getTermId();
                     status = course.getStatus();
                     setProgressSpinner(status);
+                    courseId = course.getId();
+                    addInstructorBtn.setOnClickListener(editInstructor);
+
+
                 } else {
                     tag = tempId;
+                    addInstructorBtn.setOnClickListener(addInstructor);
+                }
+
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                Fragment fragment = fragmentManager.findFragmentById(R.id.list_term_fragment_container);
+                Log.d(TAG, "initViewModel: courseID is " + courseId);
+                if(fragment == null) {
+                    fragment = ListFragment.newInstance("ModifyCourseInstructor", String.valueOf(courseId));
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.instructorListFragment, fragment)
+                            .commit();
                 }
             }
         };
@@ -126,6 +148,8 @@ public class ModifyCourseActivity extends AppCompatActivity  {
 
         setTermSpinner();
         setProgressSpinner(status);
+
+
     }
 
     @Override
@@ -165,7 +189,7 @@ public class ModifyCourseActivity extends AppCompatActivity  {
         public void onClick(View view) {
             FragmentManager fragmentManager = getSupportFragmentManager();
             //TODO add instructor id
-            InstructorFragment fragment = InstructorFragment.newInstance(null);
+            InstructorFragment fragment = InstructorFragment.newInstance(courseId);
             fragment.show(fragmentManager, "fragment_edit_instructor");
         }
     };
@@ -215,7 +239,6 @@ public class ModifyCourseActivity extends AppCompatActivity  {
                         String endDate = (String) child.mEndDate;
 
                         sendParentDates(startDate, endDate);
-
                     }
                 }
                 adapter.notifyDataSetChanged();

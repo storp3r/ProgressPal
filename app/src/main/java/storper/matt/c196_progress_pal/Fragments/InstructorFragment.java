@@ -31,7 +31,8 @@ public class InstructorFragment extends DialogFragment {
     private EditText editEmail;
     private Button cancelBtn;
     private Button saveBtn;
-    private int courseId;
+    private Course currentCourse;
+    private static int courseId;
     DataIntegrity verify = new DataIntegrity();
     InstructorViewModel mInstructorViewModel;
     CourseViewModel mCourseViewModel;
@@ -41,11 +42,12 @@ public class InstructorFragment extends DialogFragment {
 
     }
 
-    public static InstructorFragment newInstance(String id) {
+    public static InstructorFragment newInstance(int id) {
         InstructorFragment fragment = new InstructorFragment();
         Bundle args = new Bundle();
-        args.putString("instructorId", id);
+        args.putInt("instructorId", id);
         fragment.setArguments(args);
+        courseId = args.getInt("instructorId");
         return fragment;
     }
 
@@ -70,15 +72,7 @@ public class InstructorFragment extends DialogFragment {
         cancelBtn.setOnClickListener(dismissFragment);
         saveBtn.setOnClickListener(saveInstructor);
 
-        Log.d(TAG, "onViewCreated: " + mCourseViewModel.getLastId());
-
-        mCourseViewModel.mCourse.observe(this, new Observer<Course>() {
-            @Override
-            public void onChanged(Course course) {
-                courseId = course.getId();
-                Log.d(TAG, "onChanged: " + course.getId());
-            }
-        });
+        Log.d(TAG, "onViewCreated: courseId " + courseId);
     }
 
     public View.OnClickListener dismissFragment = new View.OnClickListener() {
@@ -94,9 +88,11 @@ public class InstructorFragment extends DialogFragment {
             String name = editName.getText().toString();
             String email = editEmail.getText().toString();
             String phone = editPhone.getText().toString();
-
+            Log.d(TAG, "onChanged: " + courseId);
             if(verify.noNullStrings(name, email, phone) && courseId > -1){
+                Log.d(TAG, "onClick: running save");
                 mInstructorViewModel.saveCurrentInstructor(name, email, phone, courseId);
+                dismiss();
             }
         }
     };

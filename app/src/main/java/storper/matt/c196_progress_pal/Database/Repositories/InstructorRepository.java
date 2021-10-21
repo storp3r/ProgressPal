@@ -1,6 +1,7 @@
 package storper.matt.c196_progress_pal.Database.Repositories;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 
@@ -12,7 +13,9 @@ import storper.matt.c196_progress_pal.Database.RoomDatabase;
 import storper.matt.c196_progress_pal.Utilities.Transaction;
 
 public class InstructorRepository {
+    private static final String TAG = "Instructor Repo";
     private InstructorDao mInstructorDao;
+    private LiveData<List<Instructor>> mAllInstructors;
     private LiveData<List<Instructor>> mCourseInstructors;
     public Transaction.Status mTransactionStatus;
 
@@ -20,11 +23,14 @@ public class InstructorRepository {
     public InstructorRepository(Application application) {
         RoomDatabase db = RoomDatabase.getDatabase(application);
         mInstructorDao = db.instructorDao();
+        mAllInstructors = mInstructorDao.getAllInstructors();
 
     }
 
     public void insertInstructor(Instructor instructor) {
+        
         RoomDatabase.databaseWriteExecutor.execute(() ->{
+            Log.d(TAG, "insertInstructor: started");
             mInstructorDao.insertInstructor(instructor);
         });
     }
@@ -42,6 +48,10 @@ public class InstructorRepository {
             e.printStackTrace();
         }
         return mCourseInstructors;
+    }
+
+    public LiveData<List<Instructor>> getAllInstructors() {
+        return mAllInstructors;
     }
 
     public Instructor getInstructorById(int instructorId) {

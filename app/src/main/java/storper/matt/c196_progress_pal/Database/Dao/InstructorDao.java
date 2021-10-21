@@ -15,13 +15,16 @@ import storper.matt.c196_progress_pal.Database.Entities.Instructor;
 @Dao
 public interface InstructorDao {
 
+    @Query("SELECT *  FROM instructors")
+    LiveData<List<Instructor>> getAllInstructors();
+
     @Query("SELECT * FROM instructors WHERE courseId = :courseId")
     LiveData<List<Instructor>> getInstructorsByCourseId(int courseId);
 
     @Query("SELECT * FROM instructors WHERE instructorId = :instructorId")
     Instructor getInstructorById(int instructorId);
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.ABORT)
     public void insertInstructor(Instructor instructor);
 
     @Update

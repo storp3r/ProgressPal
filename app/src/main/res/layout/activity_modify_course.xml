@@ -77,11 +77,24 @@
     </LinearLayout>
 
 
+    <Button
+        android:id="@+id/saveCourseBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/save_course_btn" />
+
     <TextView
         android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/course_instructor_label" />
+
+    <fragment
+        android:id="@+id/instructorListFragment"
+        android:name="storper.matt.c196_progress_pal.Fragments.ListFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+    />
 
     <Button
         android:id="@+id/addInstructorBtn"
@@ -89,10 +102,10 @@
         android:layout_height="wrap_content"
         android:text="@string/add_course_instructor" />
 
-    <Button
-        android:id="@+id/saveCourseBtn"
+    <fragment
+        android:id="@+id/assessmentListFragment"
+        android:name="storper.matt.c196_progress_pal.Fragments.ListFragment"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/save_course_btn" />
+        android:layout_height="wrap_content"/>
 
 </LinearLayout>
