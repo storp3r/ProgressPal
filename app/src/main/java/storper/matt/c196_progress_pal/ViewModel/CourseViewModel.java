@@ -19,6 +19,7 @@ public class CourseViewModel extends AndroidViewModel {
     private final LiveData<List<Course>> mAllCourses;
     private LiveData<List<Course>> mCoursesByTerm;
     public MutableLiveData<Course> mCourse = new MutableLiveData<>();
+    public int mLastId;
     private CourseRepository mRepository;
     Executor e = Executors.newSingleThreadExecutor();
 
@@ -26,7 +27,6 @@ public class CourseViewModel extends AndroidViewModel {
         super(application);
         mRepository = new CourseRepository(application);
         mAllCourses = mRepository.getAllCourses();
-
     }
 
     public LiveData<List<Course>> getAllCourses(){
@@ -46,6 +46,16 @@ public class CourseViewModel extends AndroidViewModel {
     public LiveData<List<Course>> getCoursesByTermId(int termId) {
         mCoursesByTerm = mRepository.getCoursesByTermId(termId);
        return mCoursesByTerm;
+    }
+
+    public int getLastId() {
+        e.execute(new Runnable() {
+            @Override
+            public void run() {
+                mLastId = mRepository.getLastCourseId();
+            }
+        });
+        return mLastId;
     }
 
     public void deleteCurrentCourse(Course course) {

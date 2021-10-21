@@ -14,7 +14,8 @@ import java.util.concurrent.Executors;
 import storper.matt.c196_progress_pal.Database.Entities.Instructor;
 import storper.matt.c196_progress_pal.Database.Repositories.InstructorRepository;
 
-public class InstructorViewModel extends AndroidViewModel {
+public class InstructorViewModel extends AndroidViewModel
+{
     private LiveData<List<Instructor>> mInstructorsByCourse;
     public MutableLiveData<Instructor> mInstructor = new MutableLiveData<>();
     private InstructorRepository mRepository;
@@ -49,6 +50,13 @@ public class InstructorViewModel extends AndroidViewModel {
 
         if(currentInstructor == null) {
             currentInstructor = new Instructor(name, phone, email, courseId);
+            mRepository.insertInstructor(currentInstructor);
+        } else {
+            currentInstructor.setName(name);
+            currentInstructor.setPhone(phone);
+            currentInstructor.setEmail(email);
+            currentInstructor.setCourseId(courseId);
+            mRepository.updateInstructor(currentInstructor);
         }
     }
 }

@@ -24,6 +24,9 @@ public interface CourseDao {
     @Query("SELECT * FROM courses WHERE courseId = :courseId")
     Course getCourseById(int courseId);
 
+    @Query("SELECT seq from sqlite_sequence WHERE name = 'courses'")
+    int getLastCourseId();
+
     @Insert(onConflict = OnConflictStrategy.ABORT)
     public void insertCourse(Course course);
 

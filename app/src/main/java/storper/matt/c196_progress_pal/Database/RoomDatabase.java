@@ -22,7 +22,7 @@ import storper.matt.c196_progress_pal.Database.Entities.Note;
 import storper.matt.c196_progress_pal.Database.Entities.Term;
 
 
-@androidx.room.Database(entities = {Term.class, Course.class, Assessment.class, Instructor.class, Note.class}, version = 3)
+@androidx.room.Database(entities = {Term.class, Course.class, Assessment.class, Instructor.class, Note.class}, version = 4)
 public abstract class RoomDatabase extends androidx.room.RoomDatabase {
 
 

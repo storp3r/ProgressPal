@@ -29,6 +29,12 @@ public class InstructorRepository {
         });
     }
 
+    public void updateInstructor(Instructor instructor) {
+        RoomDatabase.databaseWriteExecutor.execute(()->{
+            mInstructorDao.updateInstructor(instructor);
+        });
+    }
+
     public LiveData<List<Instructor>> getCourseInstructors(int courseId) {
         try {
             mCourseInstructors = mInstructorDao.getInstructorsByCourseId(courseId);

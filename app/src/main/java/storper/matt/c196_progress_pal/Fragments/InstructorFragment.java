@@ -1,6 +1,7 @@
 package storper.matt.c196_progress_pal.Fragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,12 +12,19 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
+import storper.matt.c196_progress_pal.Database.Dao.CourseDao;
+import storper.matt.c196_progress_pal.Database.Entities.Course;
 import storper.matt.c196_progress_pal.R;
 import storper.matt.c196_progress_pal.Utilities.DataIntegrity;
+import storper.matt.c196_progress_pal.ViewModel.CourseViewModel;
+import storper.matt.c196_progress_pal.ViewModel.InstructorViewModel;
+import storper.matt.c196_progress_pal.ViewModel.TermViewModel;
 
 public class InstructorFragment extends DialogFragment {
-
+    private static final String TAG = "Instructor fragment";
     private TextView title;
     private EditText editName;
     private EditText editPhone;
@@ -24,6 +32,8 @@ public class InstructorFragment extends DialogFragment {
     private Button cancelBtn;
     private Button saveBtn;
     DataIntegrity verify = new DataIntegrity();
+    InstructorViewModel mInstructorViewModel;
+    CourseViewModel mCourseViewModel;
 
 
     public InstructorFragment() {
@@ -46,6 +56,9 @@ public class InstructorFragment extends DialogFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        mInstructorViewModel = new ViewModelProvider(this).get(InstructorViewModel.class);
+        mCourseViewModel = new ViewModelProvider(this).get(CourseViewModel.class);
+
         title = view.findViewById(R.id.instructorTitle);
         editName = view.findViewById(R.id.editInstructorName);
         editPhone = view.findViewById(R.id.editInstructorPhone);
@@ -54,6 +67,16 @@ public class InstructorFragment extends DialogFragment {
         saveBtn = view.findViewById(R.id.saveInstructorBtn);
 
         cancelBtn.setOnClickListener(dismissFragment);
+
+        Log.d(TAG, "onViewCreated: " + mCourseViewModel.getLastId());
+
+        mCourseViewModel.mCourse.observe(this, new Observer<Course>() {
+            @Override
+            public void onChanged(Course course) {
+
+                System.out.println("course Name is " + course.getName() + " id is " +course.getId());
+            }
+        });
     }
 
     public View.OnClickListener dismissFragment = new View.OnClickListener() {

@@ -6,6 +6,7 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+import androidx.room.Update;
 
 import java.util.List;
 
@@ -22,6 +23,9 @@ public interface InstructorDao {
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
     public void insertInstructor(Instructor instructor);
+
+    @Update
+    public void updateInstructor(Instructor instructor);
 
     @Delete
     public void deleteInstructor(Instructor instructor);

@@ -19,6 +19,7 @@ public class CourseRepository {
     private CourseDao mCourseDao;
     private LiveData<List<Course>> mAllCourses;
     private LiveData<List<Course>> mCoursesByTerm;
+
     public Transaction.Status transactionStatus;
 
 
@@ -74,6 +75,10 @@ public class CourseRepository {
 
     public Course getCourseById(int courseId) {
         return mCourseDao.getCourseById(courseId);
+    }
+
+    public int getLastCourseId() {
+        return mCourseDao.getLastCourseId();
     }
 
 }
