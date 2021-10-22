@@ -21,10 +21,10 @@ public class InstructorViewModel extends AndroidViewModel
     private final LiveData<List<Instructor>> mAllInstructors;
     private LiveData<List<Instructor>> mInstructorsByCourse;
     public MutableLiveData<Instructor> mInstructor = new MutableLiveData<>();
-    private InstructorRepository mRepository;
+    private final InstructorRepository mRepository;
     Executor e = Executors.newSingleThreadExecutor();
 
-    public InstructorViewModel(@NonNull Application application) {
+    public InstructorViewModel(Application application) {
         super(application);
         mRepository = new InstructorRepository(application);
         mAllInstructors = mRepository.getAllInstructors();

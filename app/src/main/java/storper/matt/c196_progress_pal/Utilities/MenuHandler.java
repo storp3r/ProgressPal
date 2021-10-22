@@ -2,6 +2,8 @@ package storper.matt.c196_progress_pal.Utilities;
 
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -72,5 +74,25 @@ public class MenuHandler extends AppCompatActivity {
         classString = stringArray[stringArray.length - 1];
 
         return classString;
+    }
+
+    public void setVisibility(int id ,View...views) {
+//        ImageView upArrow = findViewById(R.id.upArrrow);
+//        ImageView downArrow = findViewById(R.id.downArrow);
+
+        if(id > -1){
+            for(View view : views) {
+                if(view.isShown()) {
+                    view.setVisibility(View.GONE);
+                } else {
+                    view.setVisibility(View.VISIBLE);
+                }
+            }
+        } else {
+            //TODO add alert
+        }
+
+
+
     }
 }

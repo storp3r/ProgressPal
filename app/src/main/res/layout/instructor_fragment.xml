@@ -23,7 +23,7 @@
 
     <TextView
         android:id="@+id/nameLabel"
-        style="@style/horizontal_linear.label"
+        style="@style/label"
         android:layout_height="wrap_content"
         android:ems="10"
         android:text="@string/instructor_name_label"
@@ -46,7 +46,7 @@
 
     <TextView
         android:id="@+id/phoneLabel"
-        style="@style/horizontal_linear.label"
+        style="@style/label"
         android:layout_height="wrap_content"
         android:text="@string/instructor_phone_label"
         app:layout_constraintStart_toStartOf="@+id/nameLabel"
@@ -67,7 +67,7 @@
 
     <TextView
         android:id="@+id/emailLabel"
-        style="@style/horizontal_linear.label"
+        style="@style/label"
         android:layout_height="wrap_content"
         android:text="@string/instructor_email_label"
         app:layout_constraintStart_toStartOf="@+id/phoneLabel"

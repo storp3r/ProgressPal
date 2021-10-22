@@ -3,6 +3,7 @@ package storper.matt.c196_progress_pal.Activities;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -17,6 +18,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -30,6 +33,7 @@ import storper.matt.c196_progress_pal.Fragments.InstructorFragment;
 import storper.matt.c196_progress_pal.Fragments.ListFragment;
 import storper.matt.c196_progress_pal.R;
 import storper.matt.c196_progress_pal.Utilities.DataIntegrity;
+import storper.matt.c196_progress_pal.Utilities.MenuHandler;
 import storper.matt.c196_progress_pal.Utilities.StringWithTag;
 import storper.matt.c196_progress_pal.ViewModel.CourseViewModel;
 import storper.matt.c196_progress_pal.ViewModel.TermViewModel;
@@ -40,27 +44,35 @@ public class ModifyCourseActivity extends AppCompatActivity implements ListFragm
     private final ArrayList<StringWithTag> termList = new ArrayList<>();
     private final List<String> progressItems = Arrays.asList("Not Started", "In-Progress", "Completed");
     private final ArrayList<String> progressList = new ArrayList<>();
+
     public CourseViewModel mCourseViewModel;
+    public MenuHandler mMenuHandler = new MenuHandler();
     public DataIntegrity mIntegrity = new DataIntegrity();
     private String launchingActivity;
     private String parentStartDate;
     private String parentEndDate;
-
-    int id;
-    private Object tag;
-    public String status;
-    public String currentCourse = null;
-    private EditText editName;
-    private TextView nameLabel;
-    private EditText startDate;
-    private EditText endDate;
-    private Spinner progressSelection;
-    private Spinner termSelection;
-    private Button addInstructorBtn;
-    private Button saveBtn;
+    private int id = -1;
     private int courseId;
-    int termId;
+    private int termId;
+    private Object tag;
     private String tempId;
+    public String status;
+
+    Button addInstructorBtn;
+    Button saveBtn;
+    EditText editName;
+    EditText startDate;
+    EditText endDate;
+    FragmentContainerView instructorFrag;
+    Spinner progressSelection;
+    Spinner termSelection;
+    TextView nameLabel;
+    TextView instructorFragTitle;
+    LinearLayout detailsButton;
+    ImageView upArrow;
+    ImageView downArrow;
+
+    View[] mDynamicViews;
 
     @Override
     public void onItemSelected() {
@@ -71,7 +83,7 @@ public class ModifyCourseActivity extends AppCompatActivity implements ListFragm
         void onPassData(String data, String data2);
     }
 
-   public OnPassDataToFragment dataPasser;
+    public OnPassDataToFragment dataPasser;
 
 
     @Override
@@ -87,8 +99,6 @@ public class ModifyCourseActivity extends AppCompatActivity implements ListFragm
             id = extras.getInt("id");
             launchingActivity = extras.getString("launchActivity");
             tempId = extras.getString("termId");
-//            parentStartDate = extras.getString("parentStartDate");
-//            parentEndDate = extras.getString("parentEndDate");
             mCourseViewModel.setCurrentCourse(id);
         }
 
@@ -100,16 +110,24 @@ public class ModifyCourseActivity extends AppCompatActivity implements ListFragm
         termSelection = findViewById(R.id.termSpinner);
         addInstructorBtn = findViewById(R.id.addInstructorBtn);
         saveBtn = findViewById(R.id.saveCourseBtn);
+        detailsButton = findViewById(R.id.detailsButton);
+        upArrow = findViewById(R.id.upArrrow);
+        downArrow = findViewById(R.id.downArrow);
+        instructorFragTitle = findViewById(R.id.instructorFragTitle);
+        instructorFrag = findViewById(R.id.instructorListFragment);
+
+        mDynamicViews = new View[]{
+            upArrow, downArrow, instructorFragTitle, instructorFrag, addInstructorBtn
+        };
 
         initViewModel();
     }
 
     private void initViewModel() {
         nameLabel.setText(R.string.course_label);
-
-        saveBtn.setOnClickListener(saveCourse);
         progressList.addAll(progressItems);
-
+        saveBtn.setOnClickListener(saveCourse);
+        detailsButton.setOnClickListener(showHideDetails);
         progressSelection.setOnItemSelectedListener(progressListener);
         termSelection.setOnItemSelectedListener(termListener);
 
@@ -117,7 +135,7 @@ public class ModifyCourseActivity extends AppCompatActivity implements ListFragm
             @Override
             public void onChanged(@Nullable final Course course) {
 
-                if(course != null) {
+                if (course != null) {
                     editName.setText(course.getName());
                     startDate.setText(course.getStartDate());
                     endDate.setText(course.getEndDate());
@@ -127,29 +145,24 @@ public class ModifyCourseActivity extends AppCompatActivity implements ListFragm
                     courseId = course.getId();
                     addInstructorBtn.setOnClickListener(editInstructor);
 
-
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+                    Fragment fragment = fragmentManager.findFragmentById(R.id.list_term_fragment_container);
+                    Log.d(TAG, "initViewModel: courseID is " + courseId);
+                    if (fragment == null) {
+                        fragment = ListFragment.newInstance("ModifyCourseInstructor", String.valueOf(courseId));
+                        fragmentManager.beginTransaction()
+                                .add(R.id.instructorListFragment, fragment)
+                                .commit();
+                    }
                 } else {
                     tag = tempId;
                     addInstructorBtn.setOnClickListener(addInstructor);
                 }
-
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                Fragment fragment = fragmentManager.findFragmentById(R.id.list_term_fragment_container);
-                Log.d(TAG, "initViewModel: courseID is " + courseId);
-                if(fragment == null) {
-                    fragment = ListFragment.newInstance("ModifyCourseInstructor", String.valueOf(courseId));
-                    fragmentManager.beginTransaction()
-                            .replace(R.id.instructorListFragment, fragment)
-                            .commit();
-                }
             }
         };
         mCourseViewModel.mCourse.observe(this, courseObserver);
-
         setTermSpinner();
         setProgressSpinner(status);
-
-
     }
 
     @Override
@@ -160,14 +173,13 @@ public class ModifyCourseActivity extends AppCompatActivity implements ListFragm
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
                 Intent intent;
-                if(launchingActivity.equals(modifyTermActivity)) {
+                if (launchingActivity.equals(modifyTermActivity)) {
                     intent = new Intent(getApplicationContext(), ModifyTermActivity.class);
                     termId = (int) tag;
                     intent.putExtra("id", termId);
                 } else {
                     intent = new Intent(ModifyCourseActivity.this, CourseListActivity.class);
                 }
-
                 startActivity(intent);
                 return true;
             }
@@ -178,7 +190,7 @@ public class ModifyCourseActivity extends AppCompatActivity implements ListFragm
     public View.OnClickListener addInstructor = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-           FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentManager fragmentManager = getSupportFragmentManager();
             InstructorFragment fragment = new InstructorFragment();
             fragment.show(fragmentManager, "fragment_add_instructor");
         }
@@ -197,15 +209,16 @@ public class ModifyCourseActivity extends AppCompatActivity implements ListFragm
     public View.OnClickListener saveCourse = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            String name  = editName.getText().toString().trim();
+            String name = editName.getText().toString().trim();
             String sDate = startDate.getText().toString().trim();
-            String eDate = endDate.getText().toString().trim();            ;
+            String eDate = endDate.getText().toString().trim();
+            ;
             termId = (int) tag;
 
-            if(mIntegrity.noNullStrings(name, sDate, eDate, status) && termId > -1) {
+            if (mIntegrity.noNullStrings(name, sDate, eDate, status) && termId > -1) {
                 mCourseViewModel.saveCurrentCourse(name, sDate, eDate, status, termId);
                 Intent intent;
-                if(launchingActivity.equals(modifyTermActivity)) {
+                if (launchingActivity.equals(modifyTermActivity)) {
                     intent = new Intent(getApplicationContext(), ModifyTermActivity.class);
                     intent.putExtra("id", termId);
                 } else {
@@ -214,6 +227,13 @@ public class ModifyCourseActivity extends AppCompatActivity implements ListFragm
                 startActivity(intent);
             }
 
+        }
+    };
+
+    public View.OnClickListener showHideDetails = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            mMenuHandler.setVisibility(id, mDynamicViews);
         }
     };
 
@@ -227,17 +247,16 @@ public class ModifyCourseActivity extends AppCompatActivity implements ListFragm
         mTermViewModel.getAllTerms().observe(this, new Observer<List<Term>>() {
             @Override
             public void onChanged(List<Term> terms) {
-                for(Term term : terms) {
+                for (Term term : terms) {
                     termList.add(new StringWithTag(term.getName(), term.getId(), term.getStartDate(), term.getEndDate()));
                 }
 
-                for(int i = 0; termList.size() > i; i++) {
+                for (int i = 0; termList.size() > i; i++) {
                     StringWithTag child = (StringWithTag) termSelection.getItemAtPosition(i);
-                    if(child.mTag == tag) {
+                    if (child.mTag == tag) {
                         termSelection.setSelection(i);
                         String startDate = (String) child.mStartDate;
                         String endDate = (String) child.mEndDate;
-
                         sendParentDates(startDate, endDate);
                     }
                 }
@@ -252,8 +271,8 @@ public class ModifyCourseActivity extends AppCompatActivity implements ListFragm
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
         progressSelection.setAdapter(adapter);
 
-        for(int i = 0; progressSelection.getCount() > i; i++) {
-            if(progressSelection.getItemAtPosition(i).toString().trim().equals(current)) {
+        for (int i = 0; progressSelection.getCount() > i; i++) {
+            if (progressSelection.getItemAtPosition(i).toString().trim().equals(current)) {
                 progressSelection.setSelection(i);
 
             }
@@ -290,11 +309,10 @@ public class ModifyCourseActivity extends AppCompatActivity implements ListFragm
     };
 
     public void sendParentDates(String startDate, String endDate) {
-        if(dataPasser != null) {
+        if (dataPasser != null) {
             dataPasser.onPassData(startDate, endDate);
         }
     }
-
 
 
 }

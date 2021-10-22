@@ -31,7 +31,8 @@ public class TermListAdapter extends ListAdapter<Term, EntityViewHolder> {
     @Override
     public void onBindViewHolder(EntityViewHolder holder, int position) {
         Term current = getItem(position);
-        holder.bind(current.getName(), current.getId());
+        holder.bind(EntityViewHolder.Type.TERM, current.getId(),"Term: " + current.getName(), "Starts: " + current.getStartDate()
+                , "Ends: " + current.getEndDate());
         termList.add(current);
         System.out.println("List size: " + termList.size());
     }

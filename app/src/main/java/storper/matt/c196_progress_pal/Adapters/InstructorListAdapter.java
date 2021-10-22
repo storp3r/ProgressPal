@@ -1,5 +1,6 @@
 package storper.matt.c196_progress_pal.Adapters;
 
+import android.util.Log;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -10,6 +11,7 @@ import storper.matt.c196_progress_pal.Database.Entities.Instructor;
 import storper.matt.c196_progress_pal.ViewHolders.EntityViewHolder;
 
 public class InstructorListAdapter extends ListAdapter<Instructor, EntityViewHolder> {
+    private static final String TAG = "InAdapter";
 
     public InstructorListAdapter(@NonNull DiffUtil.ItemCallback<Instructor> diffCallBack) {
         super(diffCallBack);
@@ -22,8 +24,11 @@ public class InstructorListAdapter extends ListAdapter<Instructor, EntityViewHol
 
     @Override
     public void onBindViewHolder(@NonNull EntityViewHolder holder, int position) {
+        Log.d(TAG, "onBindViewHolder: ");
         Instructor current = getItem(position);
-        holder.bind(current.getName(), current.getId());
+        holder.bind(EntityViewHolder.Type.NULL, current.getId(), "Name: " + current.getName()
+                , "Phone: " + current.getPhone(), "Email: " + current.getEmail());
+        Log.d(TAG, "onBindViewHolder: " + current.getName());
     }
 
     public static class InstructorDiff extends DiffUtil.ItemCallback<Instructor> {

@@ -46,7 +46,6 @@ public class Instructor {
         this.mId = mId;
     }
 
-    @NonNull
     public String getName() {
         return mName;
     }

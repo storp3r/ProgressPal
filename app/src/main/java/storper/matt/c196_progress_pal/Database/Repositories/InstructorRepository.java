@@ -21,6 +21,7 @@ public class InstructorRepository {
 
 
     public InstructorRepository(Application application) {
+        Log.d(TAG, "InstructorRepository: started");
         RoomDatabase db = RoomDatabase.getDatabase(application);
         mInstructorDao = db.instructorDao();
         mAllInstructors = mInstructorDao.getAllInstructors();

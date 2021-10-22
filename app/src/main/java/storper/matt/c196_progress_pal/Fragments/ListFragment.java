@@ -22,6 +22,7 @@ import storper.matt.c196_progress_pal.Adapters.CourseListAdapter;
 import storper.matt.c196_progress_pal.Adapters.InstructorListAdapter;
 import storper.matt.c196_progress_pal.Adapters.TermListAdapter;
 import storper.matt.c196_progress_pal.Database.Entities.Course;
+import storper.matt.c196_progress_pal.Database.Entities.Instructor;
 import storper.matt.c196_progress_pal.Database.Entities.Term;
 import storper.matt.c196_progress_pal.R;
 import storper.matt.c196_progress_pal.ViewModel.CourseViewModel;
@@ -119,6 +120,7 @@ public class ListFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mTermViewModel = new ViewModelProvider(this).get(TermViewModel.class);
         mCourseViewModel = new ViewModelProvider(this).get(CourseViewModel.class);
+        mInstructorViewModel = new ViewModelProvider(this).get(InstructorViewModel.class);
 
         if (isTerm) {
             adapter = new TermListAdapter(new TermListAdapter.TermDiff());
@@ -135,13 +137,9 @@ public class ListFragment extends Fragment {
             mCourseViewModel.getCoursesByTermId(currentId).observe(getViewLifecycleOwner(), adapter::submitList);
         } else if(isInstructor && parentId != null){
             Log.d(TAG, "setCurrentAdapter: Instructor started");
-            adapter = new InstructorListAdapter(new InstructorListAdapter.InstructorDiff());
             int currentId = Integer.parseInt(parentId);
-            Log.d(TAG, "setCurrentAdapter: parentId is " + parentId);
-            mInstructorViewModel = new ViewModelProvider(this).get(InstructorViewModel.class);
-
-            mInstructorViewModel.getAllInstructors().observe(getViewLifecycleOwner(), adapter::submitList);
-            Log.d(TAG, "setCurrentAdapter: count" + adapter.getItemCount());
+            adapter = new InstructorListAdapter(new InstructorListAdapter.InstructorDiff());
+            mInstructorViewModel.getInstructorByCourse(currentId).observe(getViewLifecycleOwner(), adapter::submitList);
         }
 
         recyclerView.setAdapter(adapter);
@@ -171,6 +169,8 @@ public class ListFragment extends Fragment {
                 handleTermSwipe(swipedItem.getId());
             } else if (isCourse || isModifyTerm) {
                 handleCourseSwipe(swipedItem.getId());
+            } else if(isInstructor) {
+                handleInstructorSwipe(swipedItem.getId());
             }
         }
     };
@@ -198,6 +198,16 @@ public class ListFragment extends Fragment {
 
     public void handleAssessmentSwipe(int id) {
 
+    }
+
+    public void handleInstructorSwipe(int id) {
+        mInstructorViewModel.setCurrentInstructor(id);
+        mInstructorViewModel.mInstructor.observe(getViewLifecycleOwner(), new Observer<Instructor>() {
+            @Override
+            public void onChanged(Instructor instructor) {
+                mInstructorViewModel.deleteCurrentInstructor(instructor);
+            }
+        });
     }
 
 

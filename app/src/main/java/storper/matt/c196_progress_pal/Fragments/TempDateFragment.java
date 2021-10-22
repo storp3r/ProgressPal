@@ -93,7 +93,7 @@ public class TempDateFragment extends Fragment implements ModifyCourseActivity.O
                     isStartDateButton = true;
                     break;
                 case R.id.endDateButton:
-                    datePicker(startDate, maxDate).show();
+                    datePicker(startDate, parentEndDate).show();
                     isStartDateButton = false;
                     break;
             }
@@ -167,11 +167,11 @@ public class TempDateFragment extends Fragment implements ModifyCourseActivity.O
             if (parentStartDate.compareTo(startDate) > 0 || parentEndDate.compareTo(startDate) < 0) {
                 editStartDate.setText(convertDateToString(parentStartDate));
             }
-            if(endDate != null) {
-                if(endDate.compareTo(minDate) < 0) {
-                    editEndDate.setText("");
-                }
-            }
+//            if(endDate != null) {
+//                if(endDate.compareTo(minDate) < 0) {
+//                    editEndDate.setText("");
+//                }
+//            }
         } else if(startDate == null) {
             editStartDate.setText(convertDateToString(parentStartDate));
         }
@@ -188,17 +188,17 @@ public class TempDateFragment extends Fragment implements ModifyCourseActivity.O
             if(date != null) {
                 if(maxDate == null) {
                     maxDate = date;
-                } else if(maxDate.compareTo(date) < 0){
+                } else if(maxDate.compareTo(date) > 0){
                     maxDate = date;
                 }
             }
         }
 
-        if(startDate != null && endDate != null) {
-            if(endDate.compareTo(startDate) < 0) {
-                editEndDate.setText("");
-            }
-        }
+//        if(startDate != null && endDate != null) {
+//            if(endDate.compareTo(startDate) < 0) {
+//                editEndDate.setText("");
+//            }
+//        }
     }
 
 //    Get term date constraints when term selected

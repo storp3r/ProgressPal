@@ -1,111 +1,177 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayout4"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activities.ModifyCourseActivity"
-    android:orientation="vertical">
+    tools:context=".Activities.ModifyCourseActivity">
 
-    <LinearLayout
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_height="match_parent">
 
         <TextView
             android:id="@+id/entityNameLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="2.5"
-            android:text="TextView" />
+            style="@style/label"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="15dp"
+            android:gravity="center"
+            android:text="TextView"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
             android:id="@+id/editEntityName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:ems="10"
+            style="@style/inputObject"
+            android:layout_marginStart="8dp"
+            android:gravity="bottom"
             android:inputType="textPersonName"
-            android:text="" />
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:text=""
+            app:layout_constraintBaseline_toBaselineOf="@+id/entityNameLabel"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/guideline3" />
 
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        style="@style/horizontal_linear">
 
         <TextView
             android:id="@+id/termLabel"
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/select_term_label" />
+            style="@style/label"
+            android:layout_height="50dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/select_term_label"
+            app:layout_constraintStart_toStartOf="@+id/entityNameLabel"
+            app:layout_constraintTop_toBottomOf="@+id/entityNameLabel" />
 
         <Spinner
             android:id="@+id/termSpinner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="2" />
+            style="@style/inputObject"
+            app:layout_constraintBottom_toBottomOf="@+id/termLabel"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/guideline3"
+            app:layout_constraintTop_toTopOf="@+id/termLabel"
+            app:layout_constraintVertical_bias="1.0" />
 
-    </LinearLayout>
-
-    <fragment
-        android:name="storper.matt.c196_progress_pal.Fragments.TempDateFragment"
-        android:id="@+id/dateFragment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        style="@style/horizontal_linear">
 
         <TextView
             android:id="@+id/progressLabel"
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/progress_label" />
+            style="@style/label"
+            android:layout_marginTop="8dp"
+            android:text="@string/progress_label"
+            app:layout_constraintStart_toStartOf="@+id/termLabel"
+            app:layout_constraintTop_toBottomOf="@+id/termLabel" />
 
         <Spinner
             android:id="@+id/progressSpinner"
+            style="@style/inputObject"
+            app:layout_constraintBottom_toBottomOf="@+id/progressLabel"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/guideline3"
+            app:layout_constraintTop_toTopOf="@+id/progressLabel"
+            app:layout_constraintVertical_bias="1.0" />
+
+
+        <fragment
+            android:id="@+id/dateFragment"
+            android:name="storper.matt.c196_progress_pal.Fragments.TempDateFragment"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="@+id/termSpinner"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/progressLabel" />
+
+        <Button
+            android:id="@+id/saveCourseBtn"
+            style="@style/modifyButton"
+            android:text="@string/save_course_btn"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/dateFragment" />
+
+        <LinearLayout
+            android:id="@+id/detailsButton"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="8dp"
+            android:background="@android:color/darker_gray"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/saveCourseBtn">
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingRight="5dp"
+                android:text="TextView"
+                android:textAlignment="viewEnd"
+                tools:text="ADD/EDIT DETAILS" />
+
+            <ImageView
+                android:id="@+id/downArrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                app:srcCompat="@android:drawable/arrow_down_float" />
+
+            <ImageView
+                android:id="@+id/upArrrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:srcCompat="@android:drawable/arrow_up_float" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/instructorFragTitle"
+            style="@style/label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="2" />
-    </LinearLayout>
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:text="@string/course_instructor_label"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/detailsButton" />
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/instructorListFragment"
+            android:name="storper.matt.c196_progress_pal.Fragments.ListFragment"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/instructorFragTitle" />
+
+        <Button
+            android:id="@+id/addInstructorBtn"
+            style="@style/modifyButton"
+            android:text="@string/add_course_instructor"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/instructorListFragment" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="202dp" />
 
 
-    <Button
-        android:id="@+id/saveCourseBtn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/save_course_btn" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/course_instructor_label" />
 
-    <fragment
-        android:id="@+id/instructorListFragment"
-        android:name="storper.matt.c196_progress_pal.Fragments.ListFragment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-    />
 
-    <Button
-        android:id="@+id/addInstructorBtn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/add_course_instructor" />
+    <!--    <fragment-->
+    <!--        android:id="@+id/assessmentListFragment"-->
+    <!--        android:name="storper.matt.c196_progress_pal.Fragments.ListFragment"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"/>-->
 
-    <fragment
-        android:id="@+id/assessmentListFragment"
-        android:name="storper.matt.c196_progress_pal.Fragments.ListFragment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
-</LinearLayout>
+</ScrollView>

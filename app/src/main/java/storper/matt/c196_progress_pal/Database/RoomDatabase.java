@@ -100,6 +100,10 @@ public abstract class RoomDatabase extends androidx.room.RoomDatabase {
             mAssessmentDao.insertAssessment(new Assessment("Assessment 1", "objective", "2021-10-18", 1));
             mInstructorDao.insertInstructor(new Instructor("john", "4984984", "dfssdf", 1));
 
+            Log.d(TAG, "doInBackground: instructors"
+            + mInstructorDao.getInstructorCount());
+
+            Log.d(TAG, "doInBackground: courses " + mCourseDao.getCourseCount());
 
             return null;
         }

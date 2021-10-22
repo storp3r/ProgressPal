@@ -18,6 +18,9 @@ public interface InstructorDao {
     @Query("SELECT *  FROM instructors")
     LiveData<List<Instructor>> getAllInstructors();
 
+    @Query("SELECT COUNT(*) FROM instructors")
+    int getInstructorCount();
+
     @Query("SELECT * FROM instructors WHERE courseId = :courseId")
     LiveData<List<Instructor>> getInstructorsByCourseId(int courseId);
 

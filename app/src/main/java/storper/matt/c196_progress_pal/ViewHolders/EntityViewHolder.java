@@ -6,51 +6,62 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
+
+import org.w3c.dom.Text;
 
 import storper.matt.c196_progress_pal.Activities.ModifyCourseActivity;
 import storper.matt.c196_progress_pal.Fragments.ListFragment;
 import storper.matt.c196_progress_pal.Activities.ModifyTermActivity;
 import storper.matt.c196_progress_pal.R;
-import storper.matt.c196_progress_pal.Utilities.MenuHandler;
 
 public class EntityViewHolder extends RecyclerView.ViewHolder implements ListFragment.OnListItemListener {
 
 
-    enum Type {TERM, COURSE, ASSESSMENT}
+    public enum Type {TERM, COURSE, ASSESSMENT, NULL}
 
-    public ListFragment.OnListItemListener mListener;
-    public final TextView mEntityItemView;
+    public Type currentType = Type.NULL;
+
+    public  TextView mEntityName;
+    public  TextView mExtraDetails1;
+    public TextView mExtraDetails2;
+
+
     private static final String TAG = "EntityViewHolder";
-    public Context currentContext;
-    private MenuHandler menuHandler;
+
 
 
     private EntityViewHolder(View itemView) {
         super(itemView);
-        mEntityItemView = itemView.findViewById(R.id.entityName);
+        mEntityName = itemView.findViewById(R.id.entityName);
+        mExtraDetails1 = itemView.findViewById(R.id.itemDetails1);
+        mExtraDetails2 = itemView.findViewById(R.id.itemDetails2);
     }
 
-    public void bind(String text, int id) {
+    public void bind(Type type, int id, String name, String details1 , String details2 ) {
         Log.d(TAG, "bind: started");
-        mEntityItemView.setText(text);
-        mEntityItemView.setTag(id);
-        mEntityItemView.setId(id);
+        currentType = type;
+
+        itemView.setTag(id);
+        itemView.setId(id);
+        mEntityName.setText(name);
+        mExtraDetails1.setText(details1);
+        mExtraDetails2.setText(details2);
+
         Object current;
 
-        Type type = determineType(getBindingAdapter().toString());
-        if (type == type.TERM) {
+        if (type == Type.TERM) {
             current = ModifyTermActivity.class;
         } else {
             current = ModifyCourseActivity.class;
         }
-        System.out.println("startedThis " + determineType(getBindingAdapter().toString()));
+
         Object finalCurrent = current;
-        Context rootView = mEntityItemView.getRootView().getContext();
+        Context rootView = itemView.getRootView().getContext();
 
         String launchingActivity;
         launchingActivity = rootView.toString();
@@ -58,7 +69,7 @@ public class EntityViewHolder extends RecyclerView.ViewHolder implements ListFra
         launchingActivity = stringArray[stringArray.length - 2];
 
         String finalLaunchingActivity = launchingActivity;
-        mEntityItemView.setOnClickListener(new View.OnClickListener() {
+        itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(rootView, (Class<?>) current);
@@ -70,20 +81,31 @@ public class EntityViewHolder extends RecyclerView.ViewHolder implements ListFra
 
     }
 
+
+
     @Override
     public void onItemSelected() {
-        System.out.println("TAGGED: " + mEntityItemView.getTag());
+        System.out.println("TAGGED: " + mEntityName.getTag());
     }
 
 
     public static EntityViewHolder create(ViewGroup parent) {
         Log.d(TAG, "create: started");
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.list_item_entity, parent, false);
-
+                    .inflate(R.layout.list_item_entity, parent, false);
         return new EntityViewHolder(view);
 
     }
+
+//    public int targetLayout() {
+//        int layout;
+//        if(currentType != Type.NULL) {
+//            layout = R.layout.list_item_entity;
+//        } else {
+//            layout = R.layout.new_item_entity;
+//        }
+//        return layout;
+//    }
 
     @NonNull
     public Type determineType(String adapterType) {

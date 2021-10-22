@@ -1,71 +1,130 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayout6"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_alignParentStart="false"
     android:layout_centerHorizontal="false"
     android:layout_gravity="center_horizontal"
-    android:orientation="vertical"
     tools:context=".Activities.ModifyTermActivity">
 
-   <LinearLayout
-       android:layout_width="match_parent"
+
+   <TextView
+       android:id="@+id/entityNameLabel"
+       style="@style/label"
        android:layout_height="wrap_content"
-       android:orientation="horizontal">
+       android:layout_marginStart="16dp"
+       android:layout_marginTop="16dp"
+       android:text="TextView"
+       app:layout_constraintStart_toStartOf="parent"
+       app:layout_constraintTop_toTopOf="parent" />
 
-      <TextView
-          android:id="@+id/entityNameLabel"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_weight="2.5"
-          android:text="TextView" />
 
-      <EditText
-          android:id="@+id/editEntityName"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_weight="1"
-          android:ems="10"
-          android:inputType="textPersonName"
-          android:text="" />
-
-   </LinearLayout>
+   <EditText
+       android:id="@+id/editEntityName"
+       style="@style/inputObject"
+       android:layout_height="wrap_content"
+       android:inputType="textPersonName"
+       android:text=""
+       app:layout_constraintBaseline_toBaselineOf="@+id/entityNameLabel"
+       app:layout_constraintEnd_toEndOf="parent"
+       app:layout_constraintStart_toStartOf="@+id/guideline6" />
 
    <fragment
        android:id="@+id/dateFragment"
        android:name="storper.matt.c196_progress_pal.Fragments.TempDateFragment"
-       android:layout_width="match_parent"
-       android:layout_height="wrap_content" />
+       android:layout_width="0dp"
+       android:layout_height="wrap_content"
+       app:layout_constraintEnd_toEndOf="parent"
+       app:layout_constraintStart_toStartOf="parent"
+       app:layout_constraintTop_toBottomOf="@+id/entityNameLabel" />
 
    <Button
        android:id="@+id/saveTermBtn"
-       android:layout_width="250dp"
-       android:layout_height="60dp"
+       style="@style/modifyButton"
+       android:layout_marginTop="8dp"
        android:text="@string/save_term_btn"
-       android:layout_gravity="center_horizontal"/>
+       app:layout_constraintEnd_toEndOf="parent"
+       app:layout_constraintStart_toStartOf="parent"
+       app:layout_constraintTop_toBottomOf="@+id/dateFragment" />
 
    <TextView
-       android:id="@+id/editTextTextPersonName"
-       android:layout_width="match_parent"
-       android:layout_height="wrap_content"
-       android:ems="10"
-       android:text="@string/term_course_label" />
+       android:id="@+id/courseFragTitle"
+       style="@style/inputObject"
+       android:layout_width="wrap_content"
+       android:text="@string/term_course_label"
+       android:visibility="gone"
+       app:layout_constraintEnd_toEndOf="parent"
+       app:layout_constraintHorizontal_bias="0.498"
+       app:layout_constraintStart_toStartOf="parent"
+       app:layout_constraintTop_toBottomOf="@+id/detailsButton" />
 
    <androidx.fragment.app.FragmentContainerView
-       android:id="@+id/fragmentContainerView"
+       android:id="@+id/courseFragmentView"
        android:name="storper.matt.c196_progress_pal.Fragments.ListFragment"
-       android:layout_width="match_parent"
-       android:layout_height="wrap_content" />
+       android:layout_width="0dp"
+       android:layout_height="wrap_content"
+       android:visibility="gone"
+       app:layout_constraintEnd_toEndOf="parent"
+       app:layout_constraintStart_toStartOf="parent"
+       app:layout_constraintTop_toBottomOf="@+id/courseFragTitle" />
 
    <Button
        android:id="@+id/add_course_btn"
-       android:layout_width="250dp"
+       android:layout_width="wrap_content"
        android:layout_height="60dp"
+       android:layout_marginTop="8dp"
        android:text="@string/add_course"
-       android:layout_gravity="center_horizontal"
-      />
+       android:visibility="gone"
+       app:layout_constraintEnd_toEndOf="parent"
+       app:layout_constraintHorizontal_bias="0.497"
+       app:layout_constraintStart_toStartOf="parent"
+       app:layout_constraintTop_toBottomOf="@+id/courseFragmentView" />
+
+   <androidx.constraintlayout.widget.Guideline
+       android:id="@+id/guideline6"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:orientation="vertical"
+       app:layout_constraintGuide_begin="205dp" />
+
+   <LinearLayout
+       android:id="@+id/detailsButton"
+       android:layout_width="0dp"
+       android:layout_height="30dp"
+       android:layout_marginTop="24dp"
+       android:background="@android:color/darker_gray"
+       android:gravity="center"
+       android:orientation="horizontal"
+       app:layout_constraintEnd_toEndOf="parent"
+       app:layout_constraintStart_toStartOf="parent"
+       app:layout_constraintTop_toBottomOf="@+id/saveTermBtn">
+
+      <TextView
+          android:id="@+id/textView3"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:paddingRight="5dp"
+          android:text="TextView"
+          android:textAlignment="viewEnd"
+          tools:text="ADD/EDIT DETAILS" />
+
+      <ImageView
+          android:id="@+id/downArrow"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:visibility="visible"
+          app:srcCompat="@android:drawable/arrow_down_float" />
+
+      <ImageView
+          android:id="@+id/upArrrow"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:visibility="gone"
+          app:srcCompat="@android:drawable/arrow_up_float" />
+   </LinearLayout>
 
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -3,45 +3,53 @@ package storper.matt.c196_progress_pal.Activities;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import java.util.Date;
 
 import storper.matt.c196_progress_pal.Database.Entities.Term;
 import storper.matt.c196_progress_pal.Fragments.ListFragment;
-import storper.matt.c196_progress_pal.Fragments.TempDateFragment;
 import storper.matt.c196_progress_pal.R;
 import storper.matt.c196_progress_pal.Utilities.MenuHandler;
 import storper.matt.c196_progress_pal.ViewModel.TermViewModel;
 import storper.matt.c196_progress_pal.Utilities.DataIntegrity;
 
-public class ModifyTermActivity extends AppCompatActivity implements ListFragment.OnListItemListener  {
+public class ModifyTermActivity<dynamicViews> extends AppCompatActivity implements ListFragment.OnListItemListener  {
 
     public TermViewModel mTermViewModel;
     public DataIntegrity mIntegrity = new DataIntegrity();
     public MenuHandler mMenuHandler;
     private static final String TAG = "ModifyTerm";
-    int id;
+    int id = -1;
     String termId;
 
-    EditText editName;
+    TextView courseFragTitle;
     TextView nameLabel;
+    EditText editName;
     EditText startDate;
     EditText endDate;
     Button saveBtn;
     Button addCourseBtn;
+    LinearLayout detailsBtn;
+    ImageView upArrow;
+    ImageView downArrow;
+    FragmentContainerView courseFragment;
+    View[] mDynamicViews;
+
+
+
 
 
     public interface OnPassDataToFragment {
@@ -69,6 +77,19 @@ public class ModifyTermActivity extends AppCompatActivity implements ListFragmen
         endDate = findViewById(R.id.editEndDate);
         saveBtn = findViewById(R.id.saveTermBtn);
         addCourseBtn = findViewById(R.id.add_course_btn);
+        detailsBtn = findViewById(R.id.detailsButton);
+        downArrow = findViewById(R.id.downArrow);
+        upArrow = findViewById(R.id.upArrrow);
+        courseFragTitle = findViewById(R.id.courseFragTitle);
+        courseFragment = findViewById(R.id.courseFragmentView);
+
+        mDynamicViews = new View[]{
+                addCourseBtn,
+                courseFragment,
+                courseFragTitle,
+                downArrow,
+                upArrow
+        };
 
        initViewModel();
     }
@@ -77,6 +98,7 @@ public class ModifyTermActivity extends AppCompatActivity implements ListFragmen
         nameLabel.setText(R.string.term_label);
         saveBtn.setOnClickListener(saveTerm);
         addCourseBtn.setOnClickListener(addCourse);
+        detailsBtn.setOnClickListener(showHideDetails);
 
         final Observer<Term> termObserver = new Observer<Term>() {
             @Override
@@ -99,7 +121,7 @@ public class ModifyTermActivity extends AppCompatActivity implements ListFragmen
             String currentClass = mMenuHandler.getCurrentClass(ModifyTermActivity.class);
             fragment = ListFragment.newInstance(currentClass, termId);
             fragmentManager.beginTransaction()
-                    .add(R.id.fragmentContainerView, fragment)
+                    .add(R.id.courseFragmentView, fragment)
                     .commit();
         }
     }
@@ -142,6 +164,13 @@ public class ModifyTermActivity extends AppCompatActivity implements ListFragmen
             intent.putExtra("termId", termId);
             intent.putExtra("launchActivity", "ModifyTermActivity");
             startActivity(intent);
+        }
+    };
+
+    public View.OnClickListener showHideDetails = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            mMenuHandler.setVisibility(id ,mDynamicViews);
         }
     };
 

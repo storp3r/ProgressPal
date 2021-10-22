@@ -20,7 +20,7 @@ public class CourseViewModel extends AndroidViewModel {
     private LiveData<List<Course>> mCoursesByTerm;
     public MutableLiveData<Course> mCourse = new MutableLiveData<>();
     public int mLastId;
-    private CourseRepository mRepository;
+    private final CourseRepository mRepository;
     Executor e = Executors.newSingleThreadExecutor();
 
     public CourseViewModel(Application application) {

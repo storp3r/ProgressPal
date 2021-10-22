@@ -1,13 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
+    android:id="@+id/item"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:id="@+id/entityName"
-    android:padding="20dp"
-    android:textSize="@dimen/list_item_title"
-    tools:text="Placeholder Text">
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/entityName"
+        style="@style/list_item.name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        app:layout_constraintEnd_toStartOf="@+id/guideline4"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_editor_absoluteY="1dp" />
 
 
-</TextView>
+    <TextView
+        android:id="@+id/itemDetails1"
+        style="@style/list_item.detail"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="TextView"
+        app:layout_constraintEnd_toStartOf="@+id/itemDetails2"
+        app:layout_constraintStart_toStartOf="@+id/entityName"
+        app:layout_constraintTop_toBottomOf="@+id/entityName" />
+
+    <TextView
+        android:id="@+id/itemDetails2"
+        style="@style/list_item.detail"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        app:layout_constraintBaseline_toBaselineOf="@+id/itemDetails1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline4" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="205dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

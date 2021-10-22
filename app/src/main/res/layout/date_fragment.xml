@@ -1,71 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayout5"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".Activities.ModifyTermActivity"
-    >
+    tools:context=".Activities.ModifyTermActivity">
 
 
+    <TextView
+        android:id="@+id/startDateLabel"
+        style="@style/label"
+        android:layout_width="100dp"
+        android:layout_marginStart="16dp"
+        android:text="@string/start_date"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <ImageButton
+        android:id="@+id/startDateButton"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        app:layout_constraintBottom_toBottomOf="@+id/startDateLabel"
+        app:layout_constraintEnd_toStartOf="@+id/guideline5"
+        app:layout_constraintStart_toEndOf="@+id/startDateLabel"
+        app:layout_constraintTop_toTopOf="@+id/startDateLabel"
+        app:srcCompat="@drawable/ic__date_range_24" />
 
-        <TextView
-            android:id="@+id/startDateLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight=".75"
-            android:text="@string/start_date" />
 
-        <ImageButton
-            android:id="@+id/startDateButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight=".5"
-            app:srcCompat="@drawable/ic__date_range_24" />
-
-        <EditText
-            android:id="@+id/editStartDate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:ems="10"
-            android:enabled="false" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
+    <EditText
+        android:id="@+id/editStartDate"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="16dp"
+        android:ems="10"
+        android:enabled="false"
+        app:layout_constraintBaseline_toBaselineOf="@+id/startDateLabel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/startDateButton" />
 
-        <TextView
-            android:id="@+id/endDateLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/end_date" />
+    <TextView
+        android:id="@+id/endDateLabel"
+        style="@style/label"
+        android:layout_width="100dp"
+        android:layout_marginStart="16dp"
+        android:text="@string/end_date"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/startDateLabel" />
 
-        <ImageButton
-            android:id="@+id/endDateButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight=".5"
-            app:srcCompat="@drawable/ic__date_range_24" />
+    <ImageButton
+        android:id="@+id/endDateButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/endDateLabel"
+        app:layout_constraintEnd_toEndOf="@+id/startDateButton"
+        app:layout_constraintStart_toEndOf="@+id/endDateLabel"
+        app:layout_constraintTop_toTopOf="@+id/endDateLabel"
+        app:srcCompat="@drawable/ic__date_range_24" />
 
-        <EditText
-            android:id="@+id/editEndDate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:ems="10"
-            android:enabled="false" />
-    </LinearLayout>
+    <EditText
+        android:id="@+id/editEndDate"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="16dp"
+        android:ems="10"
+        android:enabled="false"
+        app:layout_constraintBaseline_toBaselineOf="@+id/endDateLabel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline5" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="205dp" />
 
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
