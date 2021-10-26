@@ -45,6 +45,10 @@
     <string name="progress_label">Select Progress</string>
     <string name="add_course_instructor">Add Instructor</string>
     <string name="course_instructor_label">Course Instructors</string>
+    <string name="course_assessment_label">Course Assessments</string>
+    <string name="add_assessment">Add Assessment</string>
+    <string name="course_note_label">Course Notes</string>
+    <string name="add_note">Add Note</string>
 
     <!--Modify Instructor-->
     <string name="instructor_name_label">Instructor Name:</string>

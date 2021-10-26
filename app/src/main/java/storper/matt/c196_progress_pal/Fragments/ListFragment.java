@@ -18,13 +18,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import storper.matt.c196_progress_pal.Adapters.AssessmentListAdapter;
 import storper.matt.c196_progress_pal.Adapters.CourseListAdapter;
 import storper.matt.c196_progress_pal.Adapters.InstructorListAdapter;
 import storper.matt.c196_progress_pal.Adapters.TermListAdapter;
+import storper.matt.c196_progress_pal.Database.Entities.Assessment;
 import storper.matt.c196_progress_pal.Database.Entities.Course;
 import storper.matt.c196_progress_pal.Database.Entities.Instructor;
 import storper.matt.c196_progress_pal.Database.Entities.Term;
 import storper.matt.c196_progress_pal.R;
+import storper.matt.c196_progress_pal.ViewModel.AssessmentViewModel;
 import storper.matt.c196_progress_pal.ViewModel.CourseViewModel;
 import storper.matt.c196_progress_pal.ViewModel.InstructorViewModel;
 import storper.matt.c196_progress_pal.ViewModel.TermViewModel;
@@ -35,16 +38,14 @@ public class ListFragment extends Fragment {
 
     private TermViewModel mTermViewModel;
     private CourseViewModel mCourseViewModel;
+    private AssessmentViewModel mAssessmentViewModel;
     private InstructorViewModel mInstructorViewModel;
 
-    private static final String termTypeString = "TermListActivity";
-    private static final String courseTypeString = "CourseListActivity";
-    private static final String assessmentTypeString = "AssessmentListActivity";
-    private static final String modifyTermTypeString = "ModifyTermActivity";
-    private static final String modifyCourseTypeString = "ModifyCourseActivity";
-    private static final String modifyCourseInstructor = "ModifyCourseInstructor";
+    public enum ENTITY {TERM, COURSE, ASSESSMENT, INSTRUCTOR, NOTE, NULL}
+
+
     private static final String TAG = "ListFragment: ";
-    public static String parentActivity;
+    private ENTITY entityType;
     public static String parentId;
     //Reference to the activity
     public OnListItemListener mListener;
@@ -54,6 +55,7 @@ public class ListFragment extends Fragment {
     public boolean isModifyTerm;
     public boolean isModifyCourse;
     public boolean isInstructor;
+    int i = 0;
 
     public RecyclerView recyclerView;
 
@@ -62,10 +64,10 @@ public class ListFragment extends Fragment {
         void onItemSelected();
     }
 
-    public static ListFragment newInstance(String parentActivity, String parentEntityId) {
+    public static ListFragment newInstance(final ENTITY type, String parentEntityId) {
         ListFragment fragment = new ListFragment();
         Bundle args = new Bundle();
-        args.putString("parentActivity", parentActivity);
+        args.putSerializable("entityType", type);
         args.putString("parentId", parentEntityId);
         fragment.setArguments(args);
         return fragment;
@@ -74,24 +76,21 @@ public class ListFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedBundleInstance) {
         super.onCreate(savedBundleInstance);
-
-//        System.out.println("TermId: " + termId);
+        entityType = ENTITY.NULL;
         if (getArguments() != null) {
-            parentActivity = getArguments().getString("parentActivity");
+            Log.d(TAG, "onCreate: " + getContext());
             parentId = getArguments().getString("parentId");
-            isTerm = parentActivity.equals(termTypeString);
-            isCourse = parentActivity.equals(courseTypeString);
-            isModifyTerm = parentActivity.equals(modifyTermTypeString);
-            isAssessment = parentActivity.equals(assessmentTypeString);
-            isInstructor = parentActivity.equals(modifyCourseInstructor);
+            entityType = (ENTITY) getArguments().get("entityType");
         }
-
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstance) {
         View view = inflater.inflate(R.layout.fragment_list, container, false);
-        setCurrentAdapter(view);
+        Log.d(TAG, "onCreateView: " + getContext());
+        if(entityType != ENTITY.NULL) {
+            setCurrentAdapter(view);
+        }
 
         return view;
     }
@@ -114,34 +113,53 @@ public class ListFragment extends Fragment {
     }
 
     public void setCurrentAdapter(View view) {
-
         recyclerView = view.findViewById(R.id.entity_recycler_view);
-        ListAdapter adapter = null;
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mTermViewModel = new ViewModelProvider(this).get(TermViewModel.class);
-        mCourseViewModel = new ViewModelProvider(this).get(CourseViewModel.class);
-        mInstructorViewModel = new ViewModelProvider(this).get(InstructorViewModel.class);
 
-        if (isTerm) {
-            adapter = new TermListAdapter(new TermListAdapter.TermDiff());
-            mTermViewModel.getAllTerms().observe(getViewLifecycleOwner(), adapter::submitList);
-        } else if (isCourse) {
-            adapter = new CourseListAdapter(new CourseListAdapter.CourseDiff());
-            mCourseViewModel.getAllCourses().observe(getViewLifecycleOwner(), adapter::submitList);
-        } else if(isAssessment) {
-            //TODO
-        } else if(isModifyTerm && parentId != null) {
-            adapter = new CourseListAdapter(new CourseListAdapter.CourseDiff());
-            int currentId = Integer.parseInt(parentId);
-            mCourseViewModel = new ViewModelProvider(this).get(CourseViewModel.class);
-            mCourseViewModel.getCoursesByTermId(currentId).observe(getViewLifecycleOwner(), adapter::submitList);
-        } else if(isInstructor && parentId != null){
-            Log.d(TAG, "setCurrentAdapter: Instructor started");
-            int currentId = Integer.parseInt(parentId);
-            adapter = new InstructorListAdapter(new InstructorListAdapter.InstructorDiff());
-            mInstructorViewModel.getInstructorByCourse(currentId).observe(getViewLifecycleOwner(), adapter::submitList);
+        ListAdapter adapter = null;
+        int currentParentId = -1;
+
+        if(parentId != null) {
+            currentParentId = Integer.parseInt(parentId);
         }
 
+        switch (entityType) {
+            case TERM:
+                mTermViewModel = new ViewModelProvider(this).get(TermViewModel.class);
+                adapter = new TermListAdapter(new TermListAdapter.TermDiff());
+                mTermViewModel.getAllTerms().observe(getViewLifecycleOwner(), adapter::submitList);
+                break;
+            case COURSE:
+                Log.d(TAG, "setCurrentAdapter: setCourse");
+                mCourseViewModel = new ViewModelProvider(this).get(CourseViewModel.class);
+                adapter = new CourseListAdapter(new CourseListAdapter.CourseDiff());
+                if(currentParentId == -1) {
+                    mCourseViewModel.getAllCourses().observe(getViewLifecycleOwner(), adapter::submitList);
+                } else {
+                    mCourseViewModel.getCoursesByTermId(currentParentId).observe(getViewLifecycleOwner(), adapter::submitList);
+                }
+                break;
+            case ASSESSMENT:
+                mAssessmentViewModel = new ViewModelProvider(this).get(AssessmentViewModel.class);
+                adapter = new AssessmentListAdapter(new AssessmentListAdapter.AssessmentDiff());
+                if(currentParentId == -1) {
+                    mAssessmentViewModel.getAllAssessments().observe(getViewLifecycleOwner(), adapter::submitList);
+                } else {
+                    mAssessmentViewModel.getAssessmentsByCourse(currentParentId).observe(getViewLifecycleOwner(), adapter::submitList);
+                }
+                break;
+            case INSTRUCTOR:
+                Log.d(TAG, "setCurrentAdapter: ranInstructor");
+                if(currentParentId != -1) {
+                    mInstructorViewModel = new ViewModelProvider(this).get(InstructorViewModel.class);
+                    adapter = new InstructorListAdapter(new InstructorListAdapter.InstructorDiff());
+                    mInstructorViewModel.getInstructorByCourse(currentParentId).observe(getViewLifecycleOwner(), adapter::submitList);
+                }
+                break;
+            default:
+                Log.d(TAG, "setCurrentAdapter: adapter not supported");
+                break;
+        }
         recyclerView.setAdapter(adapter);
 
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
@@ -169,7 +187,10 @@ public class ListFragment extends Fragment {
                 handleTermSwipe(swipedItem.getId());
             } else if (isCourse || isModifyTerm) {
                 handleCourseSwipe(swipedItem.getId());
-            } else if(isInstructor) {
+            } else if(isAssessment || isModifyCourse) {
+                handleAssessmentSwipe(swipedItem.getId());
+            }
+            else if(isInstructor) {
                 handleInstructorSwipe(swipedItem.getId());
             }
         }
@@ -197,7 +218,13 @@ public class ListFragment extends Fragment {
     }
 
     public void handleAssessmentSwipe(int id) {
-
+    mAssessmentViewModel.setCurrentAssessment(id);
+    mAssessmentViewModel.mAssessment.observe(getViewLifecycleOwner(), new Observer<Assessment>() {
+        @Override
+        public void onChanged(Assessment assessment) {
+            mAssessmentViewModel.deleteCurrentAssessment(assessment);
+        }
+    });
     }
 
     public void handleInstructorSwipe(int id) {

@@ -119,9 +119,9 @@ public class ModifyTermActivity<dynamicViews> extends AppCompatActivity implemen
 //Pass information to fragment and start fragment
         if(fragment == null) {
             String currentClass = mMenuHandler.getCurrentClass(ModifyTermActivity.class);
-            fragment = ListFragment.newInstance(currentClass, termId);
+            fragment = ListFragment.newInstance(ListFragment.ENTITY.COURSE, termId);
             fragmentManager.beginTransaction()
-                    .add(R.id.courseFragmentView, fragment)
+                    .replace(R.id.courseFragmentView, fragment)
                     .commit();
         }
     }

@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentManager;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -18,7 +19,7 @@ import storper.matt.c196_progress_pal.R;
 import storper.matt.c196_progress_pal.Utilities.MenuHandler;
 
 public class CourseListActivity extends AppCompatActivity implements ListFragment.OnListItemListener {
-
+    private static final String TAG = "CouseList";
     private MenuHandler mMenuHandler;
 
     @Override
@@ -38,10 +39,11 @@ public class CourseListActivity extends AppCompatActivity implements ListFragmen
 
 
         if(fragment == null) {
+            Log.d(TAG, "onCreate: courseList");
             fragment = new ListFragment();
             Bundle args = new Bundle();
-            String currentClass = mMenuHandler.getCurrentClass(CourseListActivity.class);
-            args.putString("parentActivity", currentClass);
+//            String currentClass = mMenuHandler.getCurrentClass(CourseListActivity.class);
+            args.putSerializable("entityType", ListFragment.ENTITY.COURSE);
             fragment.setArguments(args);
             fragmentManager.beginTransaction()
                     .add(R.id.list_term_fragment_container, fragment)

@@ -43,8 +43,10 @@ public class InstructorFragment extends DialogFragment {
     }
 
     public static InstructorFragment newInstance(int id) {
+        Log.d(TAG, "newInstance: ran");
         InstructorFragment fragment = new InstructorFragment();
         Bundle args = new Bundle();
+        args.putSerializable("entityType", ListFragment.ENTITY.INSTRUCTOR);
         args.putInt("instructorId", id);
         fragment.setArguments(args);
         courseId = args.getInt("instructorId");

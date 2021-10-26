@@ -77,8 +77,6 @@ public class MenuHandler extends AppCompatActivity {
     }
 
     public void setVisibility(int id ,View...views) {
-//        ImageView upArrow = findViewById(R.id.upArrrow);
-//        ImageView downArrow = findViewById(R.id.downArrow);
 
         if(id > -1){
             for(View view : views) {

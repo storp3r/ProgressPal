@@ -107,22 +107,22 @@ public class EntityViewHolder extends RecyclerView.ViewHolder implements ListFra
 //        return layout;
 //    }
 
-    @NonNull
-    public Type determineType(String adapterType) {
-        String[] stringArray = adapterType.split("\\.|@");
-        adapterType = stringArray[stringArray.length - 2];
-        Type type = Type.TERM;
-        System.out.println("startedThis " + adapterType);
-
-        if (adapterType.equals("TermListAdapter")) {
-            type = type.TERM;
-        } else if (adapterType.equals("CourseListAdapter")) {
-            type = type.COURSE;
-        } else {
-            type = type.ASSESSMENT;
-        }
-        return type;
-    }
+//    @NonNull
+//    public Type determineType(String adapterType) {
+//        String[] stringArray = adapterType.split("\\.|@");
+//        adapterType = stringArray[stringArray.length - 2];
+//        Type type = Type.TERM;
+//        System.out.println("startedThis " + adapterType);
+//
+//        if (adapterType.equals("TermListAdapter")) {
+//            type = type.TERM;
+//        } else if (adapterType.equals("CourseListAdapter")) {
+//            type = type.COURSE;
+//        } else {
+//            type = type.ASSESSMENT;
+//        }
+//        return type;
+//    }
 
 
 }

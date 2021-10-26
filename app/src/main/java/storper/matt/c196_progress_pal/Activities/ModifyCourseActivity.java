@@ -60,6 +60,7 @@ public class ModifyCourseActivity extends AppCompatActivity implements ListFragm
 
     Button addInstructorBtn;
     Button saveBtn;
+    Button addAssessmentBtn;
     EditText editName;
     EditText startDate;
     EditText endDate;
@@ -110,6 +111,7 @@ public class ModifyCourseActivity extends AppCompatActivity implements ListFragm
         termSelection = findViewById(R.id.termSpinner);
         addInstructorBtn = findViewById(R.id.addInstructorBtn);
         saveBtn = findViewById(R.id.saveCourseBtn);
+        addAssessmentBtn = findViewById(R.id.add_assessment_btn) ;
         detailsButton = findViewById(R.id.detailsButton);
         upArrow = findViewById(R.id.upArrrow);
         downArrow = findViewById(R.id.downArrow);
@@ -124,9 +126,11 @@ public class ModifyCourseActivity extends AppCompatActivity implements ListFragm
     }
 
     private void initViewModel() {
+        Log.d(TAG, "initViewModel: started" );
         nameLabel.setText(R.string.course_label);
         progressList.addAll(progressItems);
         saveBtn.setOnClickListener(saveCourse);
+        addAssessmentBtn.setOnClickListener(addAssessment);
         detailsButton.setOnClickListener(showHideDetails);
         progressSelection.setOnItemSelectedListener(progressListener);
         termSelection.setOnItemSelectedListener(termListener);
@@ -146,14 +150,24 @@ public class ModifyCourseActivity extends AppCompatActivity implements ListFragm
                     addInstructorBtn.setOnClickListener(editInstructor);
 
                     FragmentManager fragmentManager = getSupportFragmentManager();
-                    Fragment fragment = fragmentManager.findFragmentById(R.id.list_term_fragment_container);
+                    Fragment instructorFragment = fragmentManager.findFragmentById(R.id.list_term_fragment_container);
                     Log.d(TAG, "initViewModel: courseID is " + courseId);
-                    if (fragment == null) {
-                        fragment = ListFragment.newInstance("ModifyCourseInstructor", String.valueOf(courseId));
+                    if (instructorFragment == null) {
+                        instructorFragment = ListFragment.newInstance(ListFragment.ENTITY.INSTRUCTOR, String.valueOf(courseId));
                         fragmentManager.beginTransaction()
-                                .add(R.id.instructorListFragment, fragment)
+                                .add(R.id.instructorListFragment, instructorFragment)
                                 .commit();
                     }
+
+                    FragmentManager fragmentManager2 = getSupportFragmentManager();
+                    Fragment assessmentFragement = fragmentManager2.findFragmentById(R.id.list_term_fragment_container);
+                    if(assessmentFragement == null) {
+                        assessmentFragement = ListFragment.newInstance(ListFragment.ENTITY.ASSESSMENT, String.valueOf(courseId));
+                        fragmentManager2.beginTransaction()
+                                .add(R.id.assessmentListFragment, assessmentFragement)
+                                .commit();
+                    }
+
                 } else {
                     tag = tempId;
                     addInstructorBtn.setOnClickListener(addInstructor);
@@ -163,6 +177,7 @@ public class ModifyCourseActivity extends AppCompatActivity implements ListFragm
         mCourseViewModel.mCourse.observe(this, courseObserver);
         setTermSpinner();
         setProgressSpinner(status);
+        Log.d(TAG, "initViewModel: done");
     }
 
     @Override
@@ -203,6 +218,15 @@ public class ModifyCourseActivity extends AppCompatActivity implements ListFragm
             //TODO add instructor id
             InstructorFragment fragment = InstructorFragment.newInstance(courseId);
             fragment.show(fragmentManager, "fragment_edit_instructor");
+        }
+    };
+
+    public View.OnClickListener addAssessment = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            Intent intent = new Intent(getApplicationContext(), ModifyAssessmentActivity.class);
+            intent.putExtra("id", courseId);
+            startActivity(intent);
         }
     };
 

@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.C196_Progress_Pal">
         <activity
+            android:name=".Activities.ModifyAssessmentActivity"
+            android:exported="true" />
+        <activity
             android:name=".Activities.ModifyCourseActivity"
             android:exported="true" />
         <activity

@@ -35,8 +35,8 @@ public class TermListActivity extends AppCompatActivity implements ListFragment.
         if(fragment == null) {
             fragment = new ListFragment();
             Bundle args = new Bundle();
-            String currentClass = mMenuHandler.getCurrentClass(TermListActivity.class);
-            args.putString("parentActivity", currentClass);
+//            String currentClass = mMenuHandler.getCurrentClass(TermListActivity.class);
+            args.putSerializable("entityType", ListFragment.ENTITY.TERM);
             fragment.setArguments(args);
 
             fragmentManager.beginTransaction()

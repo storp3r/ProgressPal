@@ -23,7 +23,9 @@ public class AssessmentListAdapter extends ListAdapter<Assessment, EntityViewHol
 
     @Override
     public void onBindViewHolder(@NonNull EntityViewHolder holder, int position) {
-
+        Assessment current = getItem(position);
+        holder.bind(EntityViewHolder.Type.ASSESSMENT, current.getId(), current.getName(), "Due: " + current.getDueDate()
+                , "Type: " + current.getType());
     }
 
     public static class AssessmentDiff extends DiffUtil.ItemCallback<Assessment> {

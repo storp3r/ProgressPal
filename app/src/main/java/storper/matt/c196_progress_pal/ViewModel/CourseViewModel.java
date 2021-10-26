@@ -33,6 +33,11 @@ public class CourseViewModel extends AndroidViewModel {
         return mAllCourses;
     };
 
+    public LiveData<List<Course>> getCoursesByTermId(int termId) {
+        mCoursesByTerm = mRepository.getCoursesByTermId(termId);
+        return mCoursesByTerm;
+    }
+
     public void setCurrentCourse(final int id) {
         e.execute(new Runnable() {
             @Override
@@ -41,11 +46,6 @@ public class CourseViewModel extends AndroidViewModel {
                 mCourse.postValue(currentCourse);
             }
         });
-    }
-
-    public LiveData<List<Course>> getCoursesByTermId(int termId) {
-        mCoursesByTerm = mRepository.getCoursesByTermId(termId);
-       return mCoursesByTerm;
     }
 
     public int getLastId() {
@@ -60,7 +60,6 @@ public class CourseViewModel extends AndroidViewModel {
 
     public void deleteCurrentCourse(Course course) {
         mRepository.deleteCourse(course);
-
     }
 
     public void saveCurrentCourse(String name, String startDate, String endDate, String status, int termId) {

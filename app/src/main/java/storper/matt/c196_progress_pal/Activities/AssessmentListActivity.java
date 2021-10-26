@@ -18,6 +18,7 @@ public class AssessmentListActivity extends AppCompatActivity implements ListFra
 
     private MenuHandler mMenuHandler;
 
+
     @Override
     public void onItemSelected() {
 
@@ -38,9 +39,8 @@ public class AssessmentListActivity extends AppCompatActivity implements ListFra
             fragment = new ListFragment();
             Bundle args = new Bundle();
             String currentClass = mMenuHandler.getCurrentClass(AssessmentListActivity.class);
-            args.putString("parentActivity", currentClass);
+            args.putSerializable("entityType", ListFragment.ENTITY.ASSESSMENT);
             fragment.setArguments(args);
-
             fragmentManager.beginTransaction()
                     .add(R.id.list_term_fragment_container, fragment)
                     .commit();
