@@ -19,7 +19,7 @@ public class AssessmentViewModel extends AndroidViewModel {
     private final AssessmentRepository mRepository;
     private final LiveData<List<Assessment>> mAllAssessments;
     private LiveData<List<Assessment>> mAssessmentsByCourse;
-    public MutableLiveData<Assessment> mAssessment;
+    public MutableLiveData<Assessment> mAssessment = new MutableLiveData<>();
     Executor e = Executors.newSingleThreadExecutor();
 
 

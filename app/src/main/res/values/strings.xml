@@ -50,6 +50,12 @@
     <string name="course_note_label">Course Notes</string>
     <string name="add_note">Add Note</string>
 
+    <!--Modify Assessment-->
+    <string name="assessment_name">Assessment Name</string>
+    <string name="assessment_course_label">Select Course: </string>
+    <string name="assessment_type_label">Select Type: </string>
+    <string name="save_assessment_btn">Save Assessment</string>
+
     <!--Modify Instructor-->
     <string name="instructor_name_label">Instructor Name:</string>
     <string name="instructor_phone_label">Phone Number:</string>

@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import org.w3c.dom.Text;
 
+import storper.matt.c196_progress_pal.Activities.ModifyAssessmentActivity;
 import storper.matt.c196_progress_pal.Activities.ModifyCourseActivity;
 import storper.matt.c196_progress_pal.Fragments.ListFragment;
 import storper.matt.c196_progress_pal.Activities.ModifyTermActivity;
@@ -21,19 +22,13 @@ import storper.matt.c196_progress_pal.R;
 
 public class EntityViewHolder extends RecyclerView.ViewHolder implements ListFragment.OnListItemListener {
 
-
+    private static final String TAG = "EntityViewHolder";
     public enum Type {TERM, COURSE, ASSESSMENT, NULL}
 
     public Type currentType = Type.NULL;
-
     public  TextView mEntityName;
     public  TextView mExtraDetails1;
     public TextView mExtraDetails2;
-
-
-    private static final String TAG = "EntityViewHolder";
-
-
 
     private EntityViewHolder(View itemView) {
         super(itemView);
@@ -43,9 +38,8 @@ public class EntityViewHolder extends RecyclerView.ViewHolder implements ListFra
     }
 
     public void bind(Type type, int id, String name, String details1 , String details2 ) {
-        Log.d(TAG, "bind: started");
-        currentType = type;
 
+        currentType = type;
         itemView.setTag(id);
         itemView.setId(id);
         mEntityName.setText(name);
@@ -56,11 +50,12 @@ public class EntityViewHolder extends RecyclerView.ViewHolder implements ListFra
 
         if (type == Type.TERM) {
             current = ModifyTermActivity.class;
-        } else {
+        } else if(type == Type.COURSE){
             current = ModifyCourseActivity.class;
+        } else {
+            current = ModifyAssessmentActivity.class;
         }
 
-        Object finalCurrent = current;
         Context rootView = itemView.getRootView().getContext();
 
         String launchingActivity;
@@ -78,23 +73,18 @@ public class EntityViewHolder extends RecyclerView.ViewHolder implements ListFra
                 rootView.startActivity(intent);
             }
         });
-
     }
-
-
 
     @Override
     public void onItemSelected() {
         System.out.println("TAGGED: " + mEntityName.getTag());
     }
 
-
     public static EntityViewHolder create(ViewGroup parent) {
         Log.d(TAG, "create: started");
         View view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.list_item_entity, parent, false);
         return new EntityViewHolder(view);
-
     }
 
 //    public int targetLayout() {

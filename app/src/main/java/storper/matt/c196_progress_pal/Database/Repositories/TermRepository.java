@@ -50,9 +50,9 @@ public class TermRepository {
         });
     }
 
-    public void deleteTerm(Term term) {
+    public Transaction.Status deleteTerm(Term term) {
+        Log.d(TAG, "deleteTerm: REPO ran");
             RoomDatabase.databaseWriteExecutor.execute(() -> {
-
                try {
                    mTermDao.deleteTerm(term);
                     mTransactionStatus = Status.SUCCESS;
@@ -60,7 +60,7 @@ public class TermRepository {
                     mTransactionStatus = Status.FAILED;
                }
             });
-
+        return mTransactionStatus;
     }
 
 

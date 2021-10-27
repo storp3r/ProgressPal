@@ -47,10 +47,8 @@ public class ModifyCourseActivity extends AppCompatActivity implements ListFragm
 
     public CourseViewModel mCourseViewModel;
     public MenuHandler mMenuHandler = new MenuHandler();
-    public DataIntegrity mIntegrity = new DataIntegrity();
+    public DataIntegrity verify = new DataIntegrity();
     private String launchingActivity;
-    private String parentStartDate;
-    private String parentEndDate;
     private int id = -1;
     private int courseId;
     private int termId;
@@ -81,10 +79,10 @@ public class ModifyCourseActivity extends AppCompatActivity implements ListFragm
     }
 
     public interface OnPassDataToFragment {
-        void onPassData(String data, String data2);
+        void onPassData(boolean isAssessment, String data, String data2);
     }
 
-    public OnPassDataToFragment dataPasser;
+    public OnPassDataToFragment courseDataPasser;
 
 
     @Override
@@ -158,7 +156,6 @@ public class ModifyCourseActivity extends AppCompatActivity implements ListFragm
                                 .add(R.id.instructorListFragment, instructorFragment)
                                 .commit();
                     }
-
                     FragmentManager fragmentManager2 = getSupportFragmentManager();
                     Fragment assessmentFragement = fragmentManager2.findFragmentById(R.id.list_term_fragment_container);
                     if(assessmentFragement == null) {
@@ -167,7 +164,6 @@ public class ModifyCourseActivity extends AppCompatActivity implements ListFragm
                                 .add(R.id.assessmentListFragment, assessmentFragement)
                                 .commit();
                     }
-
                 } else {
                     tag = tempId;
                     addInstructorBtn.setOnClickListener(addInstructor);
@@ -225,7 +221,8 @@ public class ModifyCourseActivity extends AppCompatActivity implements ListFragm
         @Override
         public void onClick(View view) {
             Intent intent = new Intent(getApplicationContext(), ModifyAssessmentActivity.class);
-            intent.putExtra("id", courseId);
+            intent.putExtra("courseId", courseId);
+            intent.putExtra("id", 0);
             startActivity(intent);
         }
     };
@@ -236,10 +233,9 @@ public class ModifyCourseActivity extends AppCompatActivity implements ListFragm
             String name = editName.getText().toString().trim();
             String sDate = startDate.getText().toString().trim();
             String eDate = endDate.getText().toString().trim();
-            ;
             termId = (int) tag;
 
-            if (mIntegrity.noNullStrings(name, sDate, eDate, status) && termId > -1) {
+            if (verify.noNullStrings(name, sDate, eDate, status) && termId > -1) {
                 mCourseViewModel.saveCurrentCourse(name, sDate, eDate, status, termId);
                 Intent intent;
                 if (launchingActivity.equals(modifyTermActivity)) {
@@ -250,7 +246,6 @@ public class ModifyCourseActivity extends AppCompatActivity implements ListFragm
                 }
                 startActivity(intent);
             }
-
         }
     };
 
@@ -309,8 +304,8 @@ public class ModifyCourseActivity extends AppCompatActivity implements ListFragm
         public void onItemSelected(AdapterView<?> parent, View view, int position, long l) {
             StringWithTag currentSelection = (StringWithTag) parent.getItemAtPosition(position);
             tag = (int) currentSelection.mTag;
-            parentStartDate = (String) currentSelection.mStartDate;
-            parentEndDate = (String) currentSelection.mEndDate;
+            String parentStartDate = (String) currentSelection.mStartDate;
+            String parentEndDate = (String) currentSelection.mEndDate;
             sendParentDates(parentStartDate, parentEndDate);
         }
 
@@ -333,8 +328,8 @@ public class ModifyCourseActivity extends AppCompatActivity implements ListFragm
     };
 
     public void sendParentDates(String startDate, String endDate) {
-        if (dataPasser != null) {
-            dataPasser.onPassData(startDate, endDate);
+        if (courseDataPasser != null) {
+            courseDataPasser.onPassData(false,startDate, endDate);
         }
     }
 

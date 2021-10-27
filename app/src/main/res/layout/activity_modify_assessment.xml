@@ -6,4 +6,89 @@
     android:layout_height="match_parent"
     tools:context=".Activities.ModifyAssessmentActivity">
 
+    <TextView
+        android:id="@+id/assessmentTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text=""
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/assessmentNameLabel"
+        style="@style/label"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="15dp"
+        android:gravity="center"
+        android:text="@string/assessment_name"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/assessmentTitle" />
+
+    <EditText
+        android:id="@+id/editAssessmentName"
+        style="@style/inputObject"
+        android:layout_marginStart="16dp"
+        android:gravity="bottom"
+        android:inputType="textPersonName"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:text=""
+        app:layout_constraintBottom_toBottomOf="@+id/assessmentNameLabel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/assessmentNameLabel"
+        app:layout_constraintTop_toTopOf="@+id/assessmentNameLabel" />
+
+    <fragment
+        android:id="@+id/dateFragment"
+        android:name="storper.matt.c196_progress_pal.Fragments.TempDateFragment"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/assessmentNameLabel" />
+
+    <TextView
+        android:id="@+id/courseLabel"
+        style="@style/label"
+        android:layout_height="50dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/assessment_course_label"
+        app:layout_constraintStart_toStartOf="@+id/assessmentNameLabel"
+        app:layout_constraintTop_toBottomOf="@+id/dateFragment" />
+
+    <Spinner
+        android:id="@+id/courseSpinner"
+        style="@style/inputObject"
+        app:layout_constraintBottom_toBottomOf="@+id/courseLabel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/courseLabel"
+        app:layout_constraintTop_toTopOf="@+id/courseLabel" />
+
+    <TextView
+        android:id="@+id/assessmentTypeLabel"
+        style="@style/label"
+        android:layout_marginStart="16dp"
+        android:text="@string/assessment_type_label"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/courseSpinner" />
+
+    <Spinner
+        android:id="@+id/typeSpinner"
+        style="@style/inputObject"
+        app:layout_constraintBottom_toBottomOf="@+id/assessmentTypeLabel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/assessmentTypeLabel"
+        app:layout_constraintTop_toTopOf="@+id/assessmentTypeLabel" />
+
+    <Button
+        android:id="@+id/saveAssessmentBtn"
+        style="@style/modifyButton"
+        android:text="@string/save_assessment_btn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/typeSpinner" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

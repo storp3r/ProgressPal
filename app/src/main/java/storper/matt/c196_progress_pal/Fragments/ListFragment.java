@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import storper.matt.c196_progress_pal.Activities.ModifyTermActivity;
 import storper.matt.c196_progress_pal.Adapters.AssessmentListAdapter;
 import storper.matt.c196_progress_pal.Adapters.CourseListAdapter;
 import storper.matt.c196_progress_pal.Adapters.InstructorListAdapter;
@@ -27,6 +28,8 @@ import storper.matt.c196_progress_pal.Database.Entities.Course;
 import storper.matt.c196_progress_pal.Database.Entities.Instructor;
 import storper.matt.c196_progress_pal.Database.Entities.Term;
 import storper.matt.c196_progress_pal.R;
+import storper.matt.c196_progress_pal.Utilities.Alert;
+import storper.matt.c196_progress_pal.Utilities.Transaction;
 import storper.matt.c196_progress_pal.ViewModel.AssessmentViewModel;
 import storper.matt.c196_progress_pal.ViewModel.CourseViewModel;
 import storper.matt.c196_progress_pal.ViewModel.InstructorViewModel;
@@ -35,13 +38,15 @@ import storper.matt.c196_progress_pal.ViewModel.TermViewModel;
 
 public class ListFragment extends Fragment {
 
+    public enum ENTITY {TERM, COURSE, ASSESSMENT, INSTRUCTOR, NOTE, NULL}
 
     private TermViewModel mTermViewModel;
     private CourseViewModel mCourseViewModel;
     private AssessmentViewModel mAssessmentViewModel;
     private InstructorViewModel mInstructorViewModel;
+    private Alert alert = new Alert();
+    private ListAdapter adapter = null;
 
-    public enum ENTITY {TERM, COURSE, ASSESSMENT, INSTRUCTOR, NOTE, NULL}
 
 
     private static final String TAG = "ListFragment: ";
@@ -87,7 +92,6 @@ public class ListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstance) {
         View view = inflater.inflate(R.layout.fragment_list, container, false);
-        Log.d(TAG, "onCreateView: " + getContext());
         if(entityType != ENTITY.NULL) {
             setCurrentAdapter(view);
         }
@@ -116,7 +120,6 @@ public class ListFragment extends Fragment {
         recyclerView = view.findViewById(R.id.entity_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        ListAdapter adapter = null;
         int currentParentId = -1;
 
         if(parentId != null) {
@@ -162,6 +165,7 @@ public class ListFragment extends Fragment {
         }
         recyclerView.setAdapter(adapter);
 
+
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
                 DividerItemDecoration.VERTICAL);
         recyclerView.addItemDecoration(dividerItemDecoration);
@@ -170,11 +174,11 @@ public class ListFragment extends Fragment {
 
     }
 
-    ItemTouchHelper.SimpleCallback touchHelperCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT | ItemTouchHelper.LEFT) {
+    ItemTouchHelper.SimpleCallback touchHelperCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT ) {
 
         @Override
         public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-            return false;
+            return true;
         }
 
         @Override
@@ -183,16 +187,22 @@ public class ListFragment extends Fragment {
             RecyclerView.ViewHolder swipedViewHolder = recyclerView.findViewHolderForLayoutPosition(position);
             View swipedItem = swipedViewHolder.itemView;
 
-            if (isTerm) {
-                handleTermSwipe(swipedItem.getId());
-            } else if (isCourse || isModifyTerm) {
-                handleCourseSwipe(swipedItem.getId());
-            } else if(isAssessment || isModifyCourse) {
-                handleAssessmentSwipe(swipedItem.getId());
+
+
+            if(direction > 0) {
+                if (entityType == ENTITY.TERM) {
+                    handleTermSwipe(swipedItem.getId());
+                } else if (entityType == ENTITY.COURSE) {
+                    handleCourseSwipe(swipedItem.getId());
+                } else if(entityType == ENTITY.ASSESSMENT) {
+                    handleAssessmentSwipe(swipedItem.getId());
+                }
+                else if(entityType == ENTITY.INSTRUCTOR) {
+                    handleInstructorSwipe(swipedItem.getId());
+                }
+                adapter.notifyDataSetChanged();
             }
-            else if(isInstructor) {
-                handleInstructorSwipe(swipedItem.getId());
-            }
+
         }
     };
 
@@ -202,7 +212,15 @@ public class ListFragment extends Fragment {
         mTermViewModel.mTerm.observe(getViewLifecycleOwner(), new Observer<Term>() {
             @Override
             public void onChanged(Term term) {
-                mTermViewModel.deleteCurrentTerm(term);
+                int i = 0;
+                if(mTermViewModel.deleteCurrentTerm(term) == Transaction.Status.FAILED) {
+                    i++;
+//                    alert.deleteError(getContext());
+
+
+                    Log.d(TAG, "onChanged: HAS RAN " + i + " times!");
+                    //TODO fix so does not run multiple time when updating fragment
+                }
             }
         });
     }

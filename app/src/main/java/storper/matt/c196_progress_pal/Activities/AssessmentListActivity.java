@@ -5,10 +5,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import storper.matt.c196_progress_pal.Fragments.ListFragment;
 import storper.matt.c196_progress_pal.R;
@@ -45,6 +48,13 @@ public class AssessmentListActivity extends AppCompatActivity implements ListFra
                     .add(R.id.list_term_fragment_container, fragment)
                     .commit();
         }
+
+        FloatingActionButton addButton = findViewById(R.id.addButton);
+
+        addButton.setOnClickListener(v -> {
+            Intent intent = new Intent(AssessmentListActivity.this, ModifyAssessmentActivity.class);
+            startActivity(intent);
+        });
 
 
     }

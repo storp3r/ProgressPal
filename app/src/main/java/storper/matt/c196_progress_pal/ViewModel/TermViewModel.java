@@ -1,6 +1,7 @@
 package storper.matt.c196_progress_pal.ViewModel;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
@@ -10,12 +11,15 @@ import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+import storper.matt.c196_progress_pal.Activities.TermListActivity;
 import storper.matt.c196_progress_pal.Database.Entities.Term;
 import storper.matt.c196_progress_pal.Database.Repositories.TermRepository;
+import storper.matt.c196_progress_pal.Fragments.ListFragment;
+import storper.matt.c196_progress_pal.Utilities.Alert;
 import storper.matt.c196_progress_pal.Utilities.Transaction;
 
 public class TermViewModel extends AndroidViewModel {
-
+    private static final String TAG = "TermVM";
     private final LiveData<List<Term>> mAllTerms;
     public MutableLiveData<Term> mTerm = new MutableLiveData<>();
     public Transaction.Status mTransactionStatus;
@@ -44,9 +48,9 @@ public class TermViewModel extends AndroidViewModel {
         });
     }
 
-    public void deleteCurrentTerm(Term term) {
-        mRepository.deleteTerm(term);
-        mTransactionStatus = mRepository.mTransactionStatus;
+    public Transaction.Status deleteCurrentTerm(Term term) {
+        Log.d(TAG, "deleteCurrentTerm: VM ran");
+        return mRepository.deleteTerm(term);
     }
 
 //    public LiveData<Transaction.Status> getNetworkStatus() {
