@@ -13,6 +13,7 @@ import java.util.concurrent.Executors;
 
 import storper.matt.c196_progress_pal.Database.Entities.Course;
 import storper.matt.c196_progress_pal.Database.Repositories.CourseRepository;
+import storper.matt.c196_progress_pal.Utilities.Transaction;
 
 public class CourseViewModel extends AndroidViewModel {
     private static final String TAG = "CourseViewModel";
@@ -58,8 +59,8 @@ public class CourseViewModel extends AndroidViewModel {
         return mLastId;
     }
 
-    public void deleteCurrentCourse(Course course) {
-        mRepository.deleteCourse(course);
+    public Transaction.Status deleteCurrentCourse(Course course) {
+        return mRepository.deleteCourse(course);
     }
 
     public void saveCurrentCourse(String name, String startDate, String endDate, String status, int termId) {

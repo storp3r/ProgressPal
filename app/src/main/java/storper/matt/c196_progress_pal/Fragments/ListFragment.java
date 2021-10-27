@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import storper.matt.c196_progress_pal.Activities.ModifyTermActivity;
 import storper.matt.c196_progress_pal.Adapters.AssessmentListAdapter;
@@ -48,19 +49,12 @@ public class ListFragment extends Fragment {
     private ListAdapter adapter = null;
 
 
-
     private static final String TAG = "ListFragment: ";
     private ENTITY entityType;
     public static String parentId;
     //Reference to the activity
     public OnListItemListener mListener;
-    public boolean isTerm;
-    public boolean isCourse;
-    public boolean isAssessment;
-    public boolean isModifyTerm;
-    public boolean isModifyCourse;
-    public boolean isInstructor;
-    int i = 0;
+
 
     public RecyclerView recyclerView;
 
@@ -92,7 +86,7 @@ public class ListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstance) {
         View view = inflater.inflate(R.layout.fragment_list, container, false);
-        if(entityType != ENTITY.NULL) {
+        if (entityType != ENTITY.NULL) {
             setCurrentAdapter(view);
         }
 
@@ -122,7 +116,7 @@ public class ListFragment extends Fragment {
 
         int currentParentId = -1;
 
-        if(parentId != null) {
+        if (parentId != null) {
             currentParentId = Integer.parseInt(parentId);
         }
 
@@ -136,7 +130,7 @@ public class ListFragment extends Fragment {
                 Log.d(TAG, "setCurrentAdapter: setCourse");
                 mCourseViewModel = new ViewModelProvider(this).get(CourseViewModel.class);
                 adapter = new CourseListAdapter(new CourseListAdapter.CourseDiff());
-                if(currentParentId == -1) {
+                if (currentParentId == -1) {
                     mCourseViewModel.getAllCourses().observe(getViewLifecycleOwner(), adapter::submitList);
                 } else {
                     mCourseViewModel.getCoursesByTermId(currentParentId).observe(getViewLifecycleOwner(), adapter::submitList);
@@ -145,7 +139,7 @@ public class ListFragment extends Fragment {
             case ASSESSMENT:
                 mAssessmentViewModel = new ViewModelProvider(this).get(AssessmentViewModel.class);
                 adapter = new AssessmentListAdapter(new AssessmentListAdapter.AssessmentDiff());
-                if(currentParentId == -1) {
+                if (currentParentId == -1) {
                     mAssessmentViewModel.getAllAssessments().observe(getViewLifecycleOwner(), adapter::submitList);
                 } else {
                     mAssessmentViewModel.getAssessmentsByCourse(currentParentId).observe(getViewLifecycleOwner(), adapter::submitList);
@@ -153,7 +147,7 @@ public class ListFragment extends Fragment {
                 break;
             case INSTRUCTOR:
                 Log.d(TAG, "setCurrentAdapter: ranInstructor");
-                if(currentParentId != -1) {
+                if (currentParentId != -1) {
                     mInstructorViewModel = new ViewModelProvider(this).get(InstructorViewModel.class);
                     adapter = new InstructorListAdapter(new InstructorListAdapter.InstructorDiff());
                     mInstructorViewModel.getInstructorByCourse(currentParentId).observe(getViewLifecycleOwner(), adapter::submitList);
@@ -174,7 +168,7 @@ public class ListFragment extends Fragment {
 
     }
 
-    ItemTouchHelper.SimpleCallback touchHelperCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT ) {
+    ItemTouchHelper.SimpleCallback touchHelperCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
 
         @Override
         public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
@@ -188,61 +182,63 @@ public class ListFragment extends Fragment {
             View swipedItem = swipedViewHolder.itemView;
 
 
-
-            if(direction > 0) {
+            if (direction > 0) {
                 if (entityType == ENTITY.TERM) {
                     handleTermSwipe(swipedItem.getId());
                 } else if (entityType == ENTITY.COURSE) {
                     handleCourseSwipe(swipedItem.getId());
-                } else if(entityType == ENTITY.ASSESSMENT) {
+                } else if (entityType == ENTITY.ASSESSMENT) {
                     handleAssessmentSwipe(swipedItem.getId());
-                }
-                else if(entityType == ENTITY.INSTRUCTOR) {
+                } else if (entityType == ENTITY.INSTRUCTOR) {
                     handleInstructorSwipe(swipedItem.getId());
                 }
-                adapter.notifyDataSetChanged();
+                adapter.notifyItemChanged(position);
             }
 
         }
     };
 
+    final Observer<Term> termObserver = new Observer<Term>() {
+        @Override
+        public void onChanged(Term term) {
+            Log.d(TAG, "onChanged: RAN NEW INNER");
+            if (mTermViewModel.deleteCurrentTerm(term) == Transaction.Status.FAILED) {
+                alert.deleteError(getContext());
+            } else {
+                Toast.makeText(getContext(), "Term successfully deleted", Toast.LENGTH_LONG).show();
+            }
+        }
+    };
+
+    final Observer<Course> courseObserver = new Observer<Course>() {
+        @Override
+        public void onChanged(Course course) {
+            if (mCourseViewModel.deleteCurrentCourse(course) == Transaction.Status.FAILED) {
+                alert.deleteError(getContext());
+            } else {
+                Toast.makeText(getContext(), "Course successuflly deleted", Toast.LENGTH_LONG).show();
+            }
+        }
+    };
+
     public void handleTermSwipe(int id) {
         mTermViewModel.setCurrentTerm(id);
-
-        mTermViewModel.mTerm.observe(getViewLifecycleOwner(), new Observer<Term>() {
-            @Override
-            public void onChanged(Term term) {
-                int i = 0;
-                if(mTermViewModel.deleteCurrentTerm(term) == Transaction.Status.FAILED) {
-                    i++;
-//                    alert.deleteError(getContext());
-
-
-                    Log.d(TAG, "onChanged: HAS RAN " + i + " times!");
-                    //TODO fix so does not run multiple time when updating fragment
-                }
-            }
-        });
+        mTermViewModel.mTerm.observe(this, termObserver);
     }
 
-    public void handleCourseSwipe(int id){
+    public void handleCourseSwipe(int id) {
         mCourseViewModel.setCurrentCourse(id);
-        mCourseViewModel.mCourse.observe(getViewLifecycleOwner(), new Observer<Course>() {
-            @Override
-            public void onChanged(Course course) {
-                mCourseViewModel.deleteCurrentCourse(course);
-            }
-        });
+        mCourseViewModel.mCourse.observe(this, courseObserver);
     }
 
     public void handleAssessmentSwipe(int id) {
-    mAssessmentViewModel.setCurrentAssessment(id);
-    mAssessmentViewModel.mAssessment.observe(getViewLifecycleOwner(), new Observer<Assessment>() {
-        @Override
-        public void onChanged(Assessment assessment) {
-            mAssessmentViewModel.deleteCurrentAssessment(assessment);
-        }
-    });
+        mAssessmentViewModel.setCurrentAssessment(id);
+        mAssessmentViewModel.mAssessment.observe(getViewLifecycleOwner(), new Observer<Assessment>() {
+            @Override
+            public void onChanged(Assessment assessment) {
+                mAssessmentViewModel.deleteCurrentAssessment(assessment);
+            }
+        });
     }
 
     public void handleInstructorSwipe(int id) {

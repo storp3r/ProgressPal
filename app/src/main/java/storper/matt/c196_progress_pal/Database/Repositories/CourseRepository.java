@@ -44,7 +44,7 @@ public class CourseRepository {
         });
     }
 
-    public void deleteCourse(Course course) {
+    public Transaction.Status deleteCourse(Course course) {
         RoomDatabase.databaseWriteExecutor.execute(() -> {
             try{
                 mCourseDao.deleteCourse(course);
@@ -52,8 +52,8 @@ public class CourseRepository {
             } catch(android.database.sqlite.SQLiteConstraintException e) {
                 transactionStatus = Transaction.Status.FAILED;
             }
-
         });
+        return transactionStatus;
     }
 
     public LiveData<List<Course>> getAllCourses() {
