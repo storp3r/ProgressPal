@@ -10,6 +10,7 @@ import androidx.lifecycle.MutableLiveData;
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import storper.matt.c196_progress_pal.Database.Entities.Course;
 import storper.matt.c196_progress_pal.Database.Repositories.CourseRepository;
@@ -59,7 +60,7 @@ public class CourseViewModel extends AndroidViewModel {
         return mLastId;
     }
 
-    public Transaction.Status deleteCurrentCourse(Course course) {
+    public Future<Transaction.Status> deleteCurrentCourse(Course course) {
         return mRepository.deleteCourse(course);
     }
 

@@ -6,6 +6,8 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
 
 import storper.matt.c196_progress_pal.Database.Dao.CourseDao;
 import storper.matt.c196_progress_pal.Database.Entities.Course;
@@ -44,17 +46,22 @@ public class CourseRepository {
         });
     }
 
-    public Transaction.Status deleteCourse(Course course) {
-        RoomDatabase.databaseWriteExecutor.execute(() -> {
-            try{
-                mCourseDao.deleteCourse(course);
-                transactionStatus = Transaction.Status.SUCCESS;
-            } catch(android.database.sqlite.SQLiteConstraintException e) {
-                transactionStatus = Transaction.Status.FAILED;
+    public Future<Transaction.Status> deleteCourse(Course course) {
+        Future<Transaction.Status> statusFuture = RoomDatabase.databaseWriteExecutor.submit(new Callable<Transaction.Status>() {
+            @Override
+            public Transaction.Status call() throws Exception {
+                try {
+                    mCourseDao.deleteCourse(course);
+                } catch(android.database.sqlite.SQLiteConstraintException e) {
+                    return Transaction.Status.FAILED;
+                }
+                return Transaction.Status.SUCCESS;
             }
         });
-        return transactionStatus;
+        return statusFuture;
     }
+
+
 
     public LiveData<List<Course>> getAllCourses() {
         return mAllCourses;

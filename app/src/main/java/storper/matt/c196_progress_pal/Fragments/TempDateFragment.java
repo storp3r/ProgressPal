@@ -89,8 +89,11 @@ public class TempDateFragment extends Fragment implements ModifyCourseActivity.O
     public View.OnClickListener selectDateListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            startDate = convertStringToDate(editStartDate.getText().toString());
-            endDate = convertStringToDate(editEndDate.getText().toString());
+            if(editStartDate != null && editEndDate != null) {
+                startDate = convertStringToDate(editStartDate.getText().toString());
+                endDate = convertStringToDate(editEndDate.getText().toString());
+            }
+
             setMinDate();
             setMaxDate();
 
@@ -161,9 +164,10 @@ public class TempDateFragment extends Fragment implements ModifyCourseActivity.O
     //set minimum date range
     public void setMinDate() {
         List<Date> minDateList = new ArrayList<>();
-        if (datesOkay()) {
-            minDateList.add(now);
-        }
+//        if (datesOkay()) {
+//            minDateList.add(now);
+//        }
+        minDateList.add(now);
         minDateList.add(startDate);
         minDateList.add(parentStartDate);
         minDate = null;
@@ -181,7 +185,7 @@ public class TempDateFragment extends Fragment implements ModifyCourseActivity.O
             if (parentStartDate.compareTo(startDate) > 0 || parentEndDate.compareTo(startDate) < 0) {
                 editStartDate.setText(convertDateToString(parentStartDate));
             }
-        } else if (startDate == null) {
+        } else if (startDate == null && parentStartDate != null) {
             editStartDate.setText(convertDateToString(parentStartDate));
         }
     }
@@ -189,6 +193,7 @@ public class TempDateFragment extends Fragment implements ModifyCourseActivity.O
     //Set calendars maxDate range
     public void setMaxDate() {
         List<Date> maxDateList = new ArrayList<>();
+
         maxDateList.add(endDate);
         maxDateList.add(parentEndDate);
         maxDate = null;

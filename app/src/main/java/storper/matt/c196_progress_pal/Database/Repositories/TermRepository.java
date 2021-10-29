@@ -6,6 +6,9 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicReference;
 
 import storper.matt.c196_progress_pal.Database.Dao.TermDao;
 import storper.matt.c196_progress_pal.Database.Entities.Term;
@@ -24,7 +27,7 @@ public class TermRepository {
 
     private TermDao mTermDao;
     private LiveData<List<Term>> mAllTerms;
-    public Transaction.Status mTransactionStatus;
+
 
 
 
@@ -34,7 +37,6 @@ public class TermRepository {
         RoomDatabase db = RoomDatabase.getDatabase(application);
         mTermDao = db.termDao();
         mAllTerms = mTermDao.getTerms();
-        mTransactionStatus = Status.FAILED;
     }
 
     public void insertTerm(Term term) {
@@ -50,17 +52,19 @@ public class TermRepository {
         });
     }
 
-    public Transaction.Status deleteTerm(Term term) {
-        Log.d(TAG, "deleteTerm: REPO ran");
-            RoomDatabase.databaseWriteExecutor.execute(() -> {
-               try {
-                   mTermDao.deleteTerm(term);
-                    mTransactionStatus = Status.SUCCESS;
-               } catch(android.database.sqlite.SQLiteConstraintException e) {
-                    mTransactionStatus = Status.FAILED;
-               }
-            });
-        return mTransactionStatus;
+    public Future<Transaction.Status> deleteTerm(Term term) {
+        Future<Transaction.Status> statusFuture = RoomDatabase.databaseWriteExecutor.submit(new Callable<Status>() {
+            @Override
+            public Status call() throws Exception {
+                try {
+                    mTermDao.deleteTerm(term);
+                } catch(android.database.sqlite.SQLiteConstraintException e) {
+                    return Status.FAILED;
+                }
+                return Status.SUCCESS;
+            }
+        });
+        return statusFuture;
     }
 
 

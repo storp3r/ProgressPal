@@ -26,8 +26,8 @@ public class InstructorListAdapter extends ListAdapter<Instructor, EntityViewHol
     public void onBindViewHolder(@NonNull EntityViewHolder holder, int position) {
         Log.d(TAG, "onBindViewHolder: ");
         Instructor current = getItem(position);
-        holder.bind(EntityViewHolder.Type.NULL, current.getId(), "Name: " + current.getName()
-                , "Phone: " + current.getPhone(), "Email: " + current.getEmail());
+        holder.bind(EntityViewHolder.Type.INSTRUCTOR, current.getId(), "Name: " + current.getName()
+                , "Phone: \n" + current.getPhone(), "Email: \n"  + current.getEmail());
         Log.d(TAG, "onBindViewHolder: " + current.getName());
     }
 

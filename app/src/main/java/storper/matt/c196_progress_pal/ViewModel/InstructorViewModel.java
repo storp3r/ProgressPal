@@ -46,7 +46,6 @@ public class InstructorViewModel extends AndroidViewModel
 
     public LiveData<List<Instructor>> getInstructorByCourse(int courseId) {
         mInstructorsByCourse = mRepository.getCourseInstructors(courseId);
-
         return mInstructorsByCourse;
     }
 

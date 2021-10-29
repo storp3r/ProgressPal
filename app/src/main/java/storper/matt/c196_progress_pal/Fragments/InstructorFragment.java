@@ -17,6 +17,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import storper.matt.c196_progress_pal.Database.Dao.CourseDao;
 import storper.matt.c196_progress_pal.Database.Entities.Course;
+import storper.matt.c196_progress_pal.Database.Entities.Instructor;
 import storper.matt.c196_progress_pal.R;
 import storper.matt.c196_progress_pal.Utilities.DataIntegrity;
 import storper.matt.c196_progress_pal.ViewModel.CourseViewModel;
@@ -33,6 +34,7 @@ public class InstructorFragment extends DialogFragment {
     private Button saveBtn;
     private Course currentCourse;
     private static int courseId;
+    private static int instructorId;
     DataIntegrity verify = new DataIntegrity();
     InstructorViewModel mInstructorViewModel;
     CourseViewModel mCourseViewModel;
@@ -42,14 +44,16 @@ public class InstructorFragment extends DialogFragment {
 
     }
 
-    public static InstructorFragment newInstance(int id) {
+    public static InstructorFragment newInstance(int currentCourseId, int currentInstructorId) {
         Log.d(TAG, "newInstance: ran");
         InstructorFragment fragment = new InstructorFragment();
         Bundle args = new Bundle();
-        args.putSerializable("entityType", ListFragment.ENTITY.INSTRUCTOR);
-        args.putInt("instructorId", id);
+//        args.putSerializable("entityType", ListFragment.ENTITY.INSTRUCTOR);
+        args.putInt("courseId", currentCourseId);
+        args.putInt("instructorId", currentInstructorId);
         fragment.setArguments(args);
-        courseId = args.getInt("instructorId");
+        courseId = args.getInt("courseId");
+        instructorId = args.getInt("instructorId");
         return fragment;
     }
 
@@ -61,6 +65,10 @@ public class InstructorFragment extends DialogFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        initViewModel(view);
+    }
+
+    public void initViewModel(View view) {
         mInstructorViewModel = new ViewModelProvider(this).get(InstructorViewModel.class);
         mCourseViewModel = new ViewModelProvider(this).get(CourseViewModel.class);
 
@@ -74,7 +82,19 @@ public class InstructorFragment extends DialogFragment {
         cancelBtn.setOnClickListener(dismissFragment);
         saveBtn.setOnClickListener(saveInstructor);
 
-        Log.d(TAG, "onViewCreated: courseId " + courseId);
+        if (instructorId != 0) {
+            mInstructorViewModel.setCurrentInstructor(instructorId);
+            mInstructorViewModel.mInstructor.observe(getViewLifecycleOwner(), new Observer<Instructor>() {
+                @Override
+                public void onChanged(Instructor instructor) {
+                    title.setText("EDIT INSTRUCTOR");
+                    editName.setText(instructor.getName());
+                    editPhone.setText(instructor.getPhone());
+                    editEmail.setText(instructor.getEmail());
+                    courseId = instructor.getCourseId();
+                }
+            });
+        }
     }
 
     public View.OnClickListener dismissFragment = new View.OnClickListener() {
@@ -91,9 +111,9 @@ public class InstructorFragment extends DialogFragment {
             String email = editEmail.getText().toString();
             String phone = editPhone.getText().toString();
             Log.d(TAG, "onChanged: " + courseId);
-            if(verify.noNullStrings(name, email, phone) && courseId > -1){
+            if (verify.noNullStrings(name, email, phone) && courseId > -1) {
                 Log.d(TAG, "onClick: running save");
-                mInstructorViewModel.saveCurrentInstructor(name, email, phone, courseId);
+                mInstructorViewModel.saveCurrentInstructor(name, phone, email, courseId);
                 dismiss();
             }
         }

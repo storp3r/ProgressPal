@@ -31,6 +31,7 @@ import storper.matt.c196_progress_pal.Database.Entities.Course;
 import storper.matt.c196_progress_pal.Database.Entities.Term;
 import storper.matt.c196_progress_pal.Fragments.InstructorFragment;
 import storper.matt.c196_progress_pal.Fragments.ListFragment;
+import storper.matt.c196_progress_pal.Fragments.NoteFragment;
 import storper.matt.c196_progress_pal.R;
 import storper.matt.c196_progress_pal.Utilities.DataIntegrity;
 import storper.matt.c196_progress_pal.Utilities.MenuHandler;
@@ -59,6 +60,7 @@ public class ModifyCourseActivity extends AppCompatActivity implements ListFragm
     Button addInstructorBtn;
     Button saveBtn;
     Button addAssessmentBtn;
+    Button addNoteBtn;
     EditText editName;
     EditText startDate;
     EditText endDate;
@@ -110,6 +112,7 @@ public class ModifyCourseActivity extends AppCompatActivity implements ListFragm
         addInstructorBtn = findViewById(R.id.addInstructorBtn);
         saveBtn = findViewById(R.id.saveCourseBtn);
         addAssessmentBtn = findViewById(R.id.add_assessment_btn) ;
+        addNoteBtn = findViewById(R.id.add_note_btn);
         detailsButton = findViewById(R.id.detailsButton);
         upArrow = findViewById(R.id.upArrrow);
         downArrow = findViewById(R.id.downArrow);
@@ -146,6 +149,7 @@ public class ModifyCourseActivity extends AppCompatActivity implements ListFragm
                     setProgressSpinner(status);
                     courseId = course.getId();
                     addInstructorBtn.setOnClickListener(editInstructor);
+                    addNoteBtn.setOnClickListener(editNote);
 
                     FragmentManager fragmentManager = getSupportFragmentManager();
                     Fragment instructorFragment = fragmentManager.findFragmentById(R.id.list_term_fragment_container);
@@ -162,6 +166,14 @@ public class ModifyCourseActivity extends AppCompatActivity implements ListFragm
                         assessmentFragement = ListFragment.newInstance(ListFragment.ENTITY.ASSESSMENT, String.valueOf(courseId));
                         fragmentManager2.beginTransaction()
                                 .add(R.id.assessmentListFragment, assessmentFragement)
+                                .commit();
+                    }
+                    FragmentManager fragmentManager3 = getSupportFragmentManager();
+                    Fragment noteFragment = fragmentManager3.findFragmentById(R.id.list_term_fragment_container);
+                    if(noteFragment == null) {
+                        noteFragment = ListFragment.newInstance(ListFragment.ENTITY.NOTE, String.valueOf(courseId));
+                        fragmentManager3.beginTransaction()
+                                .add(R.id.noteListFragment, noteFragment)
                                 .commit();
                     }
                 } else {
@@ -212,8 +224,17 @@ public class ModifyCourseActivity extends AppCompatActivity implements ListFragm
         public void onClick(View view) {
             FragmentManager fragmentManager = getSupportFragmentManager();
             //TODO add instructor id
-            InstructorFragment fragment = InstructorFragment.newInstance(courseId);
+            InstructorFragment fragment = InstructorFragment.newInstance(courseId, 0);
             fragment.show(fragmentManager, "fragment_edit_instructor");
+        }
+    };
+
+    public View.OnClickListener editNote = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            NoteFragment fragment = NoteFragment.newInstance(courseId, 0);
+            fragment.show(fragmentManager, "fragment_edit_note");
         }
     };
 

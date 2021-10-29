@@ -4,31 +4,51 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="20dp">
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <TextView
+        android:id="@+id/noteTitle"
+        style="@style/label"
+        android:layout_width="wrap_content"
+        android:text="TextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/noteNameLabel"
+        style="@style/label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="24dp"
-        style="@style/label"
-        android:text="TextView"
+        android:layout_marginTop="16dp"
+        android:text="@string/note_name"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/noteTitle" />
 
     <EditText
         android:id="@+id/editNoteName"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        style="@style/inputObject"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="Name"
+        android:text=""
         app:layout_constraintBaseline_toBaselineOf="@+id/noteNameLabel"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/noteNameLabel" />
+
+    <TextView
+        android:id="@+id/noteContentLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        style="@style/label"
+        android:text="@string/note_label"
+        app:layout_constraintStart_toStartOf="@+id/noteNameLabel"
+        app:layout_constraintTop_toBottomOf="@+id/noteNameLabel" />
 
     <EditText
         android:id="@+id/editNoteContents"
@@ -37,9 +57,11 @@
         android:ems="10"
         android:gravity="start|top"
         android:inputType="textMultiLine"
+        android:maxLines="5"
+        android:scrollbars="vertical"
         app:layout_constraintEnd_toEndOf="@+id/editNoteName"
         app:layout_constraintStart_toStartOf="@+id/noteNameLabel"
-        app:layout_constraintTop_toBottomOf="@+id/textView5" />
+        app:layout_constraintTop_toBottomOf="@+id/noteContentLabel" />
 
     <Button
         android:id="@+id/cancelNoteBtn"
@@ -58,21 +80,4 @@
         app:layout_constraintBaseline_toBaselineOf="@+id/cancelNoteBtn"
         app:layout_constraintEnd_toEndOf="@+id/editNoteContents" />
 
-    <TextView
-        android:id="@+id/noteTitle"
-        style="@style/label"
-        android:layout_width="wrap_content"
-        android:text="TextView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/textView5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="TextView"
-        app:layout_constraintStart_toStartOf="@+id/noteNameLabel"
-        app:layout_constraintTop_toBottomOf="@+id/noteNameLabel" />
 </androidx.constraintlayout.widget.ConstraintLayout>

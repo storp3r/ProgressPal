@@ -17,8 +17,6 @@ public class InstructorRepository {
     private InstructorDao mInstructorDao;
     private LiveData<List<Instructor>> mAllInstructors;
     private LiveData<List<Instructor>> mCourseInstructors;
-    public Transaction.Status mTransactionStatus;
-
 
     public InstructorRepository(Application application) {
         Log.d(TAG, "InstructorRepository: started");

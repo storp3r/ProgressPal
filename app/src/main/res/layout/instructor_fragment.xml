@@ -24,30 +24,32 @@
     <TextView
         android:id="@+id/nameLabel"
         style="@style/label"
+        android:layout_width="120dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:ems="10"
         android:text="@string/instructor_name_label"
         android:textColor="#6B6969"
-        app:layout_constraintStart_toStartOf="@+id/cancelBtn"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/instructorTitle" />
 
     <EditText
         android:id="@+id/editInstructorName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ems="10"
         android:hint="Name"
         android:inputType="textPersonName"
-        app:layout_constraintBaseline_toBaselineOf="@+id/nameLabel"
-        app:layout_constraintEnd_toEndOf="@+id/saveInstructorBtn"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/nameLabel" />
+        app:layout_constraintBottom_toBottomOf="@+id/nameLabel"
+        app:layout_constraintStart_toEndOf="@+id/nameLabel"
+        app:layout_constraintTop_toTopOf="@+id/nameLabel" />
 
 
     <TextView
         android:id="@+id/phoneLabel"
         style="@style/label"
+        android:layout_width="120dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:text="@string/instructor_phone_label"
         app:layout_constraintStart_toStartOf="@+id/nameLabel"
         app:layout_constraintTop_toBottomOf="@+id/nameLabel" />
@@ -58,20 +60,22 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="Phone Number"
-        android:inputType="textPersonName"
-        app:layout_constraintBaseline_toBaselineOf="@+id/phoneLabel"
-        app:layout_constraintEnd_toEndOf="@+id/editInstructorName"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/phoneLabel" />
+        android:inputType="phone"
+        app:layout_constraintBottom_toBottomOf="@+id/phoneLabel"
+        app:layout_constraintStart_toEndOf="@+id/phoneLabel"
+        app:layout_constraintTop_toTopOf="@+id/phoneLabel" />
 
 
     <TextView
         android:id="@+id/emailLabel"
         style="@style/label"
+        android:layout_width="120dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:text="@string/instructor_email_label"
         app:layout_constraintStart_toStartOf="@+id/phoneLabel"
         app:layout_constraintTop_toBottomOf="@+id/phoneLabel" />
+
 
     <EditText
         android:id="@+id/editInstructorEmail"
@@ -80,22 +84,20 @@
         android:ems="10"
         android:hint="Email Address"
         android:inputType="textEmailAddress"
-        app:layout_constraintBaseline_toBaselineOf="@+id/emailLabel"
-        app:layout_constraintEnd_toEndOf="@+id/editInstructorPhone"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/emailLabel" />
+        app:layout_constraintBottom_toBottomOf="@+id/emailLabel"
+        app:layout_constraintStart_toEndOf="@+id/emailLabel"
+        app:layout_constraintTop_toTopOf="@+id/emailLabel" />
 
 
     <Button
         android:id="@+id/cancelBtn"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
         android:layout_marginTop="20dp"
         android:backgroundTint="#F44336"
         android:text="Cancel"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/emailLabel"
         app:layout_constraintTop_toBottomOf="@+id/editInstructorEmail"
         app:layout_constraintVertical_bias="0.0" />
 
@@ -103,10 +105,9 @@
         android:id="@+id/saveInstructorBtn"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
         android:text="@string/instructor_save_button"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="@+id/editInstructorEmail" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -19,14 +19,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+
 import storper.matt.c196_progress_pal.Activities.ModifyTermActivity;
 import storper.matt.c196_progress_pal.Adapters.AssessmentListAdapter;
 import storper.matt.c196_progress_pal.Adapters.CourseListAdapter;
 import storper.matt.c196_progress_pal.Adapters.InstructorListAdapter;
+import storper.matt.c196_progress_pal.Adapters.NoteListAdapter;
 import storper.matt.c196_progress_pal.Adapters.TermListAdapter;
 import storper.matt.c196_progress_pal.Database.Entities.Assessment;
 import storper.matt.c196_progress_pal.Database.Entities.Course;
 import storper.matt.c196_progress_pal.Database.Entities.Instructor;
+import storper.matt.c196_progress_pal.Database.Entities.Note;
 import storper.matt.c196_progress_pal.Database.Entities.Term;
 import storper.matt.c196_progress_pal.R;
 import storper.matt.c196_progress_pal.Utilities.Alert;
@@ -34,6 +39,7 @@ import storper.matt.c196_progress_pal.Utilities.Transaction;
 import storper.matt.c196_progress_pal.ViewModel.AssessmentViewModel;
 import storper.matt.c196_progress_pal.ViewModel.CourseViewModel;
 import storper.matt.c196_progress_pal.ViewModel.InstructorViewModel;
+import storper.matt.c196_progress_pal.ViewModel.NoteViewModel;
 import storper.matt.c196_progress_pal.ViewModel.TermViewModel;
 
 
@@ -45,6 +51,7 @@ public class ListFragment extends Fragment {
     private CourseViewModel mCourseViewModel;
     private AssessmentViewModel mAssessmentViewModel;
     private InstructorViewModel mInstructorViewModel;
+    private NoteViewModel mNoteViewModel;
     private Alert alert = new Alert();
     private ListAdapter adapter = null;
 
@@ -153,6 +160,12 @@ public class ListFragment extends Fragment {
                     mInstructorViewModel.getInstructorByCourse(currentParentId).observe(getViewLifecycleOwner(), adapter::submitList);
                 }
                 break;
+            case NOTE:
+                if(currentParentId != -1) {
+                    mNoteViewModel = new ViewModelProvider(this).get(NoteViewModel.class);
+                    adapter = new NoteListAdapter((new NoteListAdapter.NoteDiff()));
+                    mNoteViewModel.getNotesByCourse(currentParentId).observe(getViewLifecycleOwner(), adapter::submitList);
+                }
             default:
                 Log.d(TAG, "setCurrentAdapter: adapter not supported");
                 break;
@@ -191,6 +204,8 @@ public class ListFragment extends Fragment {
                     handleAssessmentSwipe(swipedItem.getId());
                 } else if (entityType == ENTITY.INSTRUCTOR) {
                     handleInstructorSwipe(swipedItem.getId());
+                } else if(entityType == ENTITY.NOTE) {
+                    handleNoteSwipe(swipedItem.getId());
                 }
                 adapter.notifyItemChanged(position);
             }
@@ -201,11 +216,17 @@ public class ListFragment extends Fragment {
     final Observer<Term> termObserver = new Observer<Term>() {
         @Override
         public void onChanged(Term term) {
-            Log.d(TAG, "onChanged: RAN NEW INNER");
-            if (mTermViewModel.deleteCurrentTerm(term) == Transaction.Status.FAILED) {
-                alert.deleteError(getContext());
-            } else {
-                Toast.makeText(getContext(), "Term successfully deleted", Toast.LENGTH_LONG).show();
+           Future<Transaction.Status> status = mTermViewModel.deleteCurrentTerm(term);
+            try {
+                if (status.get() == Transaction.Status.FAILED) {
+                    alert.deleteError(getContext());
+                } else {
+                    Toast.makeText(getContext(), "Term successfully deleted", Toast.LENGTH_LONG).show();
+                }
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
     };
@@ -213,10 +234,17 @@ public class ListFragment extends Fragment {
     final Observer<Course> courseObserver = new Observer<Course>() {
         @Override
         public void onChanged(Course course) {
-            if (mCourseViewModel.deleteCurrentCourse(course) == Transaction.Status.FAILED) {
-                alert.deleteError(getContext());
-            } else {
-                Toast.makeText(getContext(), "Course successuflly deleted", Toast.LENGTH_LONG).show();
+            Future<Transaction.Status> status = mCourseViewModel.deleteCurrentCourse(course);
+            try {
+                if (status.get() == Transaction.Status.FAILED) {
+                    alert.deleteError(getContext());
+                } else {
+                    Toast.makeText(getContext(), "Term successfully deleted", Toast.LENGTH_LONG).show();
+                }
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
     };
@@ -247,6 +275,16 @@ public class ListFragment extends Fragment {
             @Override
             public void onChanged(Instructor instructor) {
                 mInstructorViewModel.deleteCurrentInstructor(instructor);
+            }
+        });
+    }
+
+    public void handleNoteSwipe(int id) {
+        mNoteViewModel.setCurrentNote(id);
+        mNoteViewModel.mNote.observe(getViewLifecycleOwner(), new Observer<Note>() {
+            @Override
+            public void onChanged(Note note) {
+                mNoteViewModel.deleteCurrentNote(note);
             }
         });
     }

@@ -7,16 +7,23 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.fragment.app.DialogFragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 
+import storper.matt.c196_progress_pal.Database.Entities.Note;
 import storper.matt.c196_progress_pal.R;
 import storper.matt.c196_progress_pal.Utilities.DataIntegrity;
+import storper.matt.c196_progress_pal.ViewModel.InstructorViewModel;
+import storper.matt.c196_progress_pal.ViewModel.NoteViewModel;
 
 public class NoteFragment extends DialogFragment {
 
     private static final String TAG = "NoteFrag";
+    private NoteViewModel mNoteViewModel;
     private TextView title;
     private TextView nameLabel;
     private TextView noteContentsLabel;
@@ -24,7 +31,8 @@ public class NoteFragment extends DialogFragment {
     private EditText editNoteContents;
     private Button cancelBtn;
     private Button saveBtn;
-    public static int courseId = -1;
+    public static int courseId;
+    public static int noteId;
     DataIntegrity verify = new DataIntegrity();
 
 
@@ -32,12 +40,14 @@ public class NoteFragment extends DialogFragment {
 
     }
 
-    public static NoteFragment newInstance(int id) {
+    public static NoteFragment newInstance(int currentCourseId, int currentNoteId) {
         NoteFragment fragment = new NoteFragment();
         Bundle args = new Bundle();
-        args.putInt("courseid", id);
+        args.putInt("courseId", currentCourseId);
+        args.putInt("noteId", currentNoteId);
         fragment.setArguments(args);
         courseId = args.getInt("courseId");
+        noteId = args.getInt("noteId");
         return fragment;
     }
 
@@ -50,6 +60,12 @@ public class NoteFragment extends DialogFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        initViewModel(view);
+    }
+
+    public void initViewModel(View view){
+        mNoteViewModel = new ViewModelProvider(this).get(NoteViewModel.class);
+
         title = view.findViewById(R.id.noteTitle);
         nameLabel = view.findViewById(R.id.noteNameLabel);
         noteContentsLabel = view.findViewById(R.id.noteLabel);
@@ -57,6 +73,24 @@ public class NoteFragment extends DialogFragment {
         editNoteContents = view.findViewById(R.id.editNoteContents);
         cancelBtn = view.findViewById(R.id.cancelNoteBtn);
         saveBtn = view.findViewById(R.id.saveNoteBtn);
+
+        cancelBtn.setOnClickListener(dismissFragment);
+        saveBtn.setOnClickListener(saveNote);
+
+        if(noteId != 0){
+            mNoteViewModel.setCurrentNote(noteId);
+            mNoteViewModel.mNote.observe(getViewLifecycleOwner(), new Observer<Note>() {
+                @Override
+                public void onChanged(Note note) {
+                    title.setText("Edit Note");
+                    editName.setText(note.getName());
+                    editNoteContents.setText(note.getDetails());
+                    editNoteContents.setSelection(editNoteContents.getText().length());
+                    courseId = note.getCourseId();
+                }
+            });
+        }
+
     }
 
     public View.OnClickListener dismissFragment = new View.OnClickListener() {
@@ -69,10 +103,13 @@ public class NoteFragment extends DialogFragment {
     public View.OnClickListener saveNote = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            String name = editName.getText().toString();
-            String contents = editNoteContents.getText().toString();
+            String name = editName.getText().toString().trim();
+            String contents = editNoteContents.getText().toString().trim();
             if(verify.noNullStrings(name, contents) && courseId != -1) {
-
+                System.out.println(courseId);
+                mNoteViewModel.saveCurrentNote(name, contents, courseId);
+                Toast.makeText(getContext(), "Note Saved Successfully!", Toast.LENGTH_LONG).show();
+                dismiss();
             }
         }
     };

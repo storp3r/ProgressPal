@@ -10,6 +10,7 @@ import androidx.lifecycle.MutableLiveData;
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import storper.matt.c196_progress_pal.Activities.TermListActivity;
 import storper.matt.c196_progress_pal.Database.Entities.Term;
@@ -30,7 +31,6 @@ public class TermViewModel extends AndroidViewModel {
     public TermViewModel(Application application) {
         super(application);
         mRepository = new TermRepository(application);
-
         mAllTerms = mRepository.getAllTerms();
     }
 
@@ -48,8 +48,7 @@ public class TermViewModel extends AndroidViewModel {
         });
     }
 
-    public Transaction.Status deleteCurrentTerm(Term term) {
-        Log.d(TAG, "deleteCurrentTerm: VM ran");
+    public Future<Transaction.Status> deleteCurrentTerm(Term term) {
         return mRepository.deleteTerm(term);
     }
 

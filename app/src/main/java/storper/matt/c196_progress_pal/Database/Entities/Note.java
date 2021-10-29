@@ -27,17 +27,13 @@ public class Note {
     @ColumnInfo(name = "details")
     private String mDetails;
 
-    @ColumnInfo(name = "createdOn")
-    private String mCreatedOn;
-
     @NonNull
     @ColumnInfo(name = "courseId")
     private int mCourseId;
 
-    public Note(@NonNull String name, String details, String createdOn, int courseId) {
+    public Note(@NonNull String name, String details, int courseId) {
         setName(name);
         setDetails(details);
-        setCreatedOn(createdOn);
         setCourseId(courseId);
     }
 
@@ -66,14 +62,6 @@ public class Note {
 
     public void setDetails(@NonNull String details) {
         this.mDetails = details;
-    }
-
-    public String getCreatedOn() {
-        return mCreatedOn;
-    }
-
-    public void setCreatedOn(String mCreatedOn) {
-        this.mCreatedOn = mCreatedOn;
     }
 
     public int getCourseId() {

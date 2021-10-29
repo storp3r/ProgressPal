@@ -57,10 +57,20 @@
     <string name="save_assessment_btn">Save Assessment</string>
 
     <!--Modify Instructor-->
-    <string name="instructor_name_label">Instructor Name:</string>
-    <string name="instructor_phone_label">Phone Number:</string>
+    <string name="instructor_name_label">Instructor \nName:</string>
+    <string name="instructor_phone_label">Phone \nNumber:</string>
     <string name="instructor_email_label">Email:</string>
     <string name="instructor_save_button">Save</string>
+
+    <!--Note Fragment-->
+    <string name="note_name">Title: </string>
+    <string name="note_label">Note Contents</string>
+
+    <!--SMS Fragment-->
+    <string name="sms_title">Share Note</string>
+    <string name="sms_phone_label">Phone Number: </string>
+    <string name="sms_message_label">Note</string>
+    <string name="sms_share_btn">Share Note</string>
 
 
 </resources>
