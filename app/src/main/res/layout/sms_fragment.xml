@@ -68,4 +68,13 @@
         app:layout_constraintEnd_toEndOf="@+id/editSmsMessage"
         app:layout_constraintTop_toBottomOf="@+id/editSmsMessage" />
 
+    <Button
+        android:id="@+id/cancelSmsBtn"
+        style="@style/modifyButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/cancel_btn"
+        app:layout_constraintBaseline_toBaselineOf="@+id/sendSmsBtn"
+        app:layout_constraintStart_toStartOf="@+id/editSmsMessage" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -54,19 +54,20 @@
        android:id="@+id/courseFragTitle"
        style="@style/inputObject"
        android:layout_width="wrap_content"
+       android:layout_marginTop="16dp"
        android:text="@string/term_course_label"
-       android:visibility="gone"
+       android:visibility="visible"
        app:layout_constraintEnd_toEndOf="parent"
        app:layout_constraintHorizontal_bias="0.498"
        app:layout_constraintStart_toStartOf="parent"
-       app:layout_constraintTop_toBottomOf="@+id/detailsButton" />
+       app:layout_constraintTop_toBottomOf="@+id/termReminderSwitch" />
 
    <androidx.fragment.app.FragmentContainerView
        android:id="@+id/courseFragmentView"
        android:name="storper.matt.c196_progress_pal.Fragments.ListFragment"
        android:layout_width="0dp"
        android:layout_height="wrap_content"
-       android:visibility="gone"
+       android:visibility="visible"
        app:layout_constraintEnd_toEndOf="parent"
        app:layout_constraintStart_toStartOf="parent"
        app:layout_constraintTop_toBottomOf="@+id/courseFragTitle" />
@@ -77,7 +78,7 @@
        android:layout_height="60dp"
        android:layout_marginTop="8dp"
        android:text="@string/add_course"
-       android:visibility="gone"
+       android:visibility="visible"
        app:layout_constraintEnd_toEndOf="parent"
        app:layout_constraintHorizontal_bias="0.497"
        app:layout_constraintStart_toStartOf="parent"
@@ -125,6 +126,16 @@
           android:visibility="gone"
           app:srcCompat="@android:drawable/arrow_up_float" />
    </LinearLayout>
+
+   <Switch
+       android:id="@+id/termReminderSwitch"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_marginStart="16dp"
+       android:layout_marginTop="24dp"
+       android:text="Set Term Reminder "
+       app:layout_constraintStart_toStartOf="parent"
+       app:layout_constraintTop_toBottomOf="@+id/detailsButton" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

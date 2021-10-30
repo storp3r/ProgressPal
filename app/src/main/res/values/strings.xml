@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">Progress Pal</string>
 
+    <!--Generic Strings-->
+    <string name="cancel_btn">Cancel</string>
+
+
     <!--Appbar Menu-->
     <string name="action_home">Home</string>
     <string name="action_help">Help</string>

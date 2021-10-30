@@ -8,7 +8,13 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.app.AlarmManager;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,12 +23,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import storper.matt.c196_progress_pal.Database.Entities.Term;
 import storper.matt.c196_progress_pal.Fragments.ListFragment;
 import storper.matt.c196_progress_pal.R;
 import storper.matt.c196_progress_pal.Utilities.MenuHandler;
+import storper.matt.c196_progress_pal.Utilities.NotificationService;
 import storper.matt.c196_progress_pal.ViewModel.TermViewModel;
 import storper.matt.c196_progress_pal.Utilities.DataIntegrity;
 
@@ -32,6 +41,8 @@ public class ModifyTermActivity<dynamicViews> extends AppCompatActivity implemen
     public DataIntegrity mIntegrity = new DataIntegrity();
     public MenuHandler mMenuHandler;
     private static final String TAG = "ModifyTerm";
+    private static final String NOTIFICATION_CHANNEL_ID = "Term";
+    private int NOTIFICATION_ID = 1000;
     int id = -1;
     String termId;
 
@@ -42,11 +53,13 @@ public class ModifyTermActivity<dynamicViews> extends AppCompatActivity implemen
     EditText endDate;
     Button saveBtn;
     Button addCourseBtn;
+    Switch termReminder;
     LinearLayout detailsBtn;
     ImageView upArrow;
     ImageView downArrow;
     FragmentContainerView courseFragment;
     View[] mDynamicViews;
+
 
 
 
@@ -61,6 +74,7 @@ public class ModifyTermActivity<dynamicViews> extends AppCompatActivity implemen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_modify_term);
+        createNotificationChannel();
 
         Bundle extras = getIntent().getExtras();
         mTermViewModel = new ViewModelProvider(this).get(TermViewModel.class);
@@ -69,6 +83,7 @@ public class ModifyTermActivity<dynamicViews> extends AppCompatActivity implemen
             id = extras.getInt("id");
             termId = String.valueOf(id);
             mTermViewModel.setCurrentTerm(id);
+            NOTIFICATION_ID = NOTIFICATION_ID + id;
         }
 
         editName = findViewById(R.id.editEntityName);
@@ -78,6 +93,7 @@ public class ModifyTermActivity<dynamicViews> extends AppCompatActivity implemen
         saveBtn = findViewById(R.id.saveTermBtn);
         addCourseBtn = findViewById(R.id.add_course_btn);
         detailsBtn = findViewById(R.id.detailsButton);
+        termReminder = findViewById(R.id.termReminderSwitch);
         downArrow = findViewById(R.id.downArrow);
         upArrow = findViewById(R.id.upArrrow);
         courseFragTitle = findViewById(R.id.courseFragTitle);
@@ -99,6 +115,7 @@ public class ModifyTermActivity<dynamicViews> extends AppCompatActivity implemen
         saveBtn.setOnClickListener(saveTerm);
         addCourseBtn.setOnClickListener(addCourse);
         detailsBtn.setOnClickListener(showHideDetails);
+        termReminder.setOnClickListener(setTermNotification);
 
         final Observer<Term> termObserver = new Observer<Term>() {
             @Override
@@ -174,9 +191,56 @@ public class ModifyTermActivity<dynamicViews> extends AppCompatActivity implemen
         }
     };
 
+    public View.OnClickListener setTermNotification = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            boolean on  = ((Switch) view).isChecked();
+
+            if(on) {
+                System.out.println("Switch On");
+                Toast.makeText(ModifyTermActivity.this, "Reminder Set", Toast.LENGTH_LONG).show();
+
+                Intent intent = new Intent(ModifyTermActivity.this, NotificationService.class);
+                intent.putExtra("notificationId", NOTIFICATION_ID);
+                intent.putExtra("notificationChannelId", NOTIFICATION_CHANNEL_ID);
+                PendingIntent pi = PendingIntent.getBroadcast(ModifyTermActivity.this, 0, intent, 0);
+
+                AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+
+                long timeAtButtonClick = System.currentTimeMillis();
+                long  tenSecondAlarm = 1000 * 3;
+                alarmManager.set(AlarmManager.RTC_WAKEUP, timeAtButtonClick + tenSecondAlarm, pi);
+                //TODO
+            } else {
+                System.out.println("canceled");
+
+
+
+                System.out.println("Switch Off");
+                //TODO
+            }
+        }
+    };
+
 
     @Override
     public void onItemSelected() {
 
+    }
+
+    private void createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "notifyProgressPal";
+            String description = "this is a test";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
     }
 }
