@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="modifyButton">
+    <style name="modifyButton" parent="Widget.MaterialComponents.Button">
         <item name="android:layout_width">250dp</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginTop">20dp</item>
         <item name="android:layout_marginBottom">20dp</item>
+        <item name="android:backgroundTint">@color/accent</item>
+        <item name="android:textColor">@color/primary</item>
     </style>
 
     <style name="horizontal_linear">
@@ -34,12 +36,34 @@
         <item name="android:textSize">16sp</item>
         <item name="android:paddingLeft">10dp</item>
         <item name="android:paddingRight">10dp</item>
+
     </style>
     <style name="list_item.name">
         <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/primaryText</item>
     </style>
     <style name="list_item.detail">
         <item name="android:paddingBottom">5dp</item>
+        <item name="android:textColor">@color/secondaryText</item>
+    </style>
+
+    <style name="title">
+        <item name="android:textColor">@color/primary</item>
+        <item name="fontWeight">700</item>
+        <item name="android:layout_height">50dp</item>
+    </style>
+    <style name="title.primary">
+
+    </style>
+    <style name="title.secondary">
+        <item name="android:textSize">20dp</item>
+    </style>
+
+    <style name="divider">
+        <item name="android:layout_height">2dp</item>
+        <item name="android:background">@color/primary</item>
+        <item name="android:layout_marginTop">16dp</item>
+        <item name="android:layout_width">match_parent</item>
     </style>
 
 

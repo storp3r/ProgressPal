@@ -5,6 +5,8 @@
     android:id="@+id/linearLayout4"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:focusableInTouchMode="true"
+    android:focusedByDefault="true"
     tools:context=".Activities.ModifyCourseActivity">
 
 
@@ -28,6 +30,7 @@
             android:id="@+id/editEntityName"
             style="@style/inputObject"
             android:layout_marginStart="8dp"
+            android:focusable="auto"
             android:gravity="bottom"
             android:inputType="textPersonName"
             android:paddingLeft="10dp"
@@ -86,95 +89,149 @@
 
         <Button
             android:id="@+id/saveCourseBtn"
+
+
             style="@style/modifyButton"
             android:text="@string/save_course_btn"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/dateFragment" />
 
-        <LinearLayout
-            android:id="@+id/detailsButton"
-            android:layout_width="0dp"
-            android:layout_height="30dp"
-            android:layout_marginTop="8dp"
-            android:background="@android:color/darker_gray"
-            android:gravity="center"
-            android:orientation="horizontal"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/saveCourseBtn">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/courseDetails"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/saveCourseBtn"
+            tools:layout_editor_absoluteX="0dp">
 
             <TextView
-                android:id="@+id/textView3"
+                android:id="@+id/textView"
+                style="@style/label"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="16dp"
+                android:background="@color/secondary"
+                android:gravity="center"
+                android:text="ADDITIONAL DETAILS"
+                android:textAlignment="center"
+                android:textColor="#FFFFFF"
+                android:textSize="24sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/instructorFragTitle"
+                style="@style/title.secondary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingRight="5dp"
-                android:text="TextView"
-                android:textAlignment="viewEnd"
-                tools:text="ADD/EDIT DETAILS" />
+                android:layout_marginTop="16dp"
+                android:gravity="center"
+                android:text="@string/course_instructor_label"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView" />
 
-            <ImageView
-                android:id="@+id/downArrow"
-                android:layout_width="wrap_content"
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/instructorListFragment"
+                android:name="storper.matt.c196_progress_pal.Fragments.ListFragment"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:visibility="visible"
-                app:srcCompat="@android:drawable/arrow_down_float" />
+                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/instructorFragTitle"
+                tools:visibility="visible" />
 
-            <ImageView
-                android:id="@+id/upArrrow"
+            <Button
+                android:id="@+id/addInstructorBtn"
+                style="@style/modifyButton"
+                android:text="@string/add_course_instructor"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/instructorListFragment"
+                tools:visibility="visible" />
+
+            <View
+                android:id="@+id/divider"
+                style="@style/divider"
+                android:layout_height="2dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/addInstructorBtn" />
+
+            <TextView
+                android:id="@+id/assessmentLabel"
+                style="@style/title.secondary"
                 android:layout_width="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/course_assessment_label"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/divider"
+                tools:visibility="visible" />
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/assessmentListFragment"
+                android:name="storper.matt.c196_progress_pal.Fragments.ListFragment"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
-                app:srcCompat="@android:drawable/arrow_up_float" />
-        </LinearLayout>
+                android:layout_marginTop="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/assessmentLabel"
+                tools:visibility="visible" />
 
-        <TextView
-            android:id="@+id/instructorFragTitle"
-            style="@style/label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:gravity="center"
-            android:text="@string/course_instructor_label"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/detailsButton" />
+            <Button
+                android:id="@+id/add_assessment_btn"
+                style="@style/modifyButton"
+                android:layout_marginTop="16dp"
+                android:text="@string/add_assessment"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/assessmentListFragment"
+                tools:visibility="visible" />
 
-        <androidx.fragment.app.FragmentContainerView
-            android:id="@+id/instructorListFragment"
-            android:name="storper.matt.c196_progress_pal.Fragments.ListFragment"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/instructorFragTitle" />
+            <View
+                android:id="@+id/divider2"
+                style="@style/divider"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/add_assessment_btn" />
 
-        <Button
-            android:id="@+id/addInstructorBtn"
-            style="@style/modifyButton"
-            android:text="@string/add_course_instructor"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/instructorListFragment" />
+            <TextView
+                android:id="@+id/noteLabel"
+                style="@style/title.secondary"
+                android:layout_width="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/course_note_label"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/divider2"
+                tools:visibility="visible" />
 
-        <TextView
-            android:id="@+id/assessmentLabel"
-            style="@style/label"
-            android:layout_width="wrap_content"
-            android:text="@string/course_assessment_label"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/addInstructorBtn" />
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/noteListFragment"
+                android:name="storper.matt.c196_progress_pal.Fragments.ListFragment"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/noteLabel"
+                tools:visibility="visible" />
 
-        <androidx.fragment.app.FragmentContainerView
-            android:id="@+id/assessmentListFragment"
-            android:name="storper.matt.c196_progress_pal.Fragments.ListFragment"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/assessmentLabel" />
+            <Button
+                android:id="@+id/add_note_btn"
+                style="@style/modifyButton"
+                android:layout_marginTop="16dp"
+                android:text="@string/add_note"
+                app:layout_constraintEnd_toEndOf="@+id/noteListFragment"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/noteListFragment"
+                tools:visibility="visible" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline3"
@@ -182,41 +239,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             app:layout_constraintGuide_begin="202dp" />
-
-        <Button
-            android:id="@+id/add_assessment_btn"
-            style="@style/modifyButton"
-            android:text="@string/add_assessment"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.498"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/assessmentListFragment" />
-
-        <TextView
-            android:id="@+id/noteLabel"
-            style="@style/label"
-            android:layout_width="wrap_content"
-            android:text="@string/course_note_label"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/add_assessment_btn" />
-
-        <androidx.fragment.app.FragmentContainerView
-            android:id="@+id/noteListFragment"
-            android:name="storper.matt.c196_progress_pal.Fragments.ListFragment"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/noteLabel" />
-
-        <Button
-            android:id="@+id/add_note_btn"
-            style="@style/modifyButton"
-            android:text="@string/add_note"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/noteListFragment" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

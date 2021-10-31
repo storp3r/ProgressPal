@@ -35,7 +35,7 @@ import storper.matt.c196_progress_pal.Utilities.NotificationService;
 import storper.matt.c196_progress_pal.ViewModel.TermViewModel;
 import storper.matt.c196_progress_pal.Utilities.DataIntegrity;
 
-public class ModifyTermActivity<dynamicViews> extends AppCompatActivity implements ListFragment.OnListItemListener  {
+public class ModifyTermActivity extends AppCompatActivity implements ListFragment.OnListItemListener  {
 
     public TermViewModel mTermViewModel;
     public DataIntegrity mIntegrity = new DataIntegrity();
@@ -98,6 +98,7 @@ public class ModifyTermActivity<dynamicViews> extends AppCompatActivity implemen
         upArrow = findViewById(R.id.upArrrow);
         courseFragTitle = findViewById(R.id.courseFragTitle);
         courseFragment = findViewById(R.id.courseFragmentView);
+        detailsBtn.setVisibility(View.GONE);
 
         mDynamicViews = new View[]{
                 addCourseBtn,
@@ -124,6 +125,7 @@ public class ModifyTermActivity<dynamicViews> extends AppCompatActivity implemen
                 editName.setText(term.getName());
                 startDate.setText(term.getStartDate());
                 endDate.setText(term.getEndDate());
+                detailsBtn.setVisibility(View.VISIBLE);
             }
         };
 

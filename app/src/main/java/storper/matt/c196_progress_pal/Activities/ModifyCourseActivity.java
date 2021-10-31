@@ -2,6 +2,7 @@ package storper.matt.c196_progress_pal.Activities;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
@@ -69,7 +70,8 @@ public class ModifyCourseActivity extends AppCompatActivity implements ListFragm
     Spinner termSelection;
     TextView nameLabel;
     TextView instructorFragTitle;
-    LinearLayout detailsButton;
+
+    ConstraintLayout details;
     ImageView upArrow;
     ImageView downArrow;
 
@@ -113,11 +115,8 @@ public class ModifyCourseActivity extends AppCompatActivity implements ListFragm
         saveBtn = findViewById(R.id.saveCourseBtn);
         addAssessmentBtn = findViewById(R.id.add_assessment_btn) ;
         addNoteBtn = findViewById(R.id.add_note_btn);
-        detailsButton = findViewById(R.id.detailsButton);
-        upArrow = findViewById(R.id.upArrrow);
-        downArrow = findViewById(R.id.downArrow);
-        instructorFragTitle = findViewById(R.id.instructorFragTitle);
-        instructorFrag = findViewById(R.id.instructorListFragment);
+        details = findViewById(R.id.courseDetails);
+
 
         mDynamicViews = new View[]{
             upArrow, downArrow, instructorFragTitle, instructorFrag, addInstructorBtn
@@ -132,7 +131,7 @@ public class ModifyCourseActivity extends AppCompatActivity implements ListFragm
         progressList.addAll(progressItems);
         saveBtn.setOnClickListener(saveCourse);
         addAssessmentBtn.setOnClickListener(addAssessment);
-        detailsButton.setOnClickListener(showHideDetails);
+//        detailsButton.setOnClickListener(showHideDetails);
         progressSelection.setOnItemSelectedListener(progressListener);
         termSelection.setOnItemSelectedListener(termListener);
 
@@ -150,6 +149,7 @@ public class ModifyCourseActivity extends AppCompatActivity implements ListFragm
                     courseId = course.getId();
                     addInstructorBtn.setOnClickListener(editInstructor);
                     addNoteBtn.setOnClickListener(editNote);
+                    details.setVisibility(View.VISIBLE);
 
                     FragmentManager fragmentManager = getSupportFragmentManager();
                     Fragment instructorFragment = fragmentManager.findFragmentById(R.id.list_term_fragment_container);
@@ -258,24 +258,30 @@ public class ModifyCourseActivity extends AppCompatActivity implements ListFragm
 
             if (verify.noNullStrings(name, sDate, eDate, status) && termId > -1) {
                 mCourseViewModel.saveCurrentCourse(name, sDate, eDate, status, termId);
-                Intent intent;
-                if (launchingActivity.equals(modifyTermActivity)) {
-                    intent = new Intent(getApplicationContext(), ModifyTermActivity.class);
-                    intent.putExtra("id", termId);
-                } else {
-                    intent = new Intent(getApplicationContext(), CourseListActivity.class);
-                }
-                startActivity(intent);
+//                Intent intent;
+//                if (launchingActivity.equals(modifyTermActivity)) {
+//                    intent = new Intent(getApplicationContext(), ModifyTermActivity.class);
+//                    intent.putExtra("id", termId);
+//                } else {
+//                    intent = new Intent(getApplicationContext(), CourseListActivity.class);
+//                }
+//                startActivity(intent);
+                details.setVisibility(View.VISIBLE);
             }
         }
     };
 
-    public View.OnClickListener showHideDetails = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            mMenuHandler.setVisibility(id, mDynamicViews);
-        }
-    };
+//    public View.OnClickListener showHideDetails = new View.OnClickListener() {
+//        @Override
+//        public void onClick(View view) {
+//            boolean visible = details.getVisibility() == View.VISIBLE;
+//            if(visible) {
+//                details.setVisibility(View.GONE);
+//            } else {
+//                details.setVisibility(View.VISIBLE);
+//            }
+//        }
+//    };
 
     private void setTermSpinner() {
         Log.d(TAG, "setTermSpinner: started");
