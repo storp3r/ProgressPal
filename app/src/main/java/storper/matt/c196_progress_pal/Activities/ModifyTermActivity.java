@@ -14,6 +14,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
@@ -30,6 +31,7 @@ import android.widget.Toast;
 import storper.matt.c196_progress_pal.Database.Entities.Term;
 import storper.matt.c196_progress_pal.Fragments.ListFragment;
 import storper.matt.c196_progress_pal.R;
+import storper.matt.c196_progress_pal.Utilities.DateConverter;
 import storper.matt.c196_progress_pal.Utilities.MenuHandler;
 import storper.matt.c196_progress_pal.Utilities.NotificationService;
 import storper.matt.c196_progress_pal.ViewModel.TermViewModel;
@@ -40,9 +42,15 @@ public class ModifyTermActivity extends AppCompatActivity implements ListFragmen
     public TermViewModel mTermViewModel;
     public DataIntegrity mIntegrity = new DataIntegrity();
     public MenuHandler mMenuHandler;
+    private NotificationService notificationService = new NotificationService();
+    private DateConverter dateConverter = new DateConverter();
     private static final String TAG = "ModifyTerm";
-    private static final String NOTIFICATION_CHANNEL_ID = "Term";
-    private int NOTIFICATION_ID = 1000;
+    private static String NOTIFICATION_CHANNEL_ID = "Term";
+    private String termStart;
+    private String termEnd;
+
+    private int NOTIFICATION_ID_START = 1000;
+    private int NOTIFICATION_ID_END = 2000;
     int id = -1;
     String termId;
 
@@ -61,20 +69,11 @@ public class ModifyTermActivity extends AppCompatActivity implements ListFragmen
     View[] mDynamicViews;
 
 
-
-
-
-
-    public interface OnPassDataToFragment {
-        void onPassData(String test);
-    }
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_modify_term);
-        createNotificationChannel();
+        createNotificationChannel("ModifyTerm",NOTIFICATION_CHANNEL_ID);
 
         Bundle extras = getIntent().getExtras();
         mTermViewModel = new ViewModelProvider(this).get(TermViewModel.class);
@@ -83,7 +82,9 @@ public class ModifyTermActivity extends AppCompatActivity implements ListFragmen
             id = extras.getInt("id");
             termId = String.valueOf(id);
             mTermViewModel.setCurrentTerm(id);
-            NOTIFICATION_ID = NOTIFICATION_ID + id;
+            NOTIFICATION_ID_START = NOTIFICATION_ID_START + id;
+            NOTIFICATION_ID_END = NOTIFICATION_ID_END + id;
+
         }
 
         editName = findViewById(R.id.editEntityName);
@@ -112,6 +113,8 @@ public class ModifyTermActivity extends AppCompatActivity implements ListFragmen
     }
 
     private void initViewModel() {
+        SharedPreferences sharedPreferences = getSharedPreferences("notificationState", MODE_PRIVATE);
+        termReminder.setChecked(sharedPreferences.getBoolean("termNotification" + termId, true));
         nameLabel.setText(R.string.term_label);
         saveBtn.setOnClickListener(saveTerm);
         addCourseBtn.setOnClickListener(addCourse);
@@ -123,8 +126,10 @@ public class ModifyTermActivity extends AppCompatActivity implements ListFragmen
             public void onChanged(@Nullable final Term term) {
                 assert term != null;
                 editName.setText(term.getName());
-                startDate.setText(term.getStartDate());
-                endDate.setText(term.getEndDate());
+                termStart = term.getStartDate();
+                termEnd = term.getEndDate();
+                startDate.setText(termStart);
+                endDate.setText(termEnd);
                 detailsBtn.setVisibility(View.VISIBLE);
             }
         };
@@ -133,11 +138,7 @@ public class ModifyTermActivity extends AppCompatActivity implements ListFragmen
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         Fragment fragment = fragmentManager.findFragmentById(R.id.list_term_fragment_container);
-        mMenuHandler = new MenuHandler();
-
-//Pass information to fragment and start fragment
         if(fragment == null) {
-            String currentClass = mMenuHandler.getCurrentClass(ModifyTermActivity.class);
             fragment = ListFragment.newInstance(ListFragment.ENTITY.COURSE, termId);
             fragmentManager.beginTransaction()
                     .replace(R.id.courseFragmentView, fragment)
@@ -169,6 +170,10 @@ public class ModifyTermActivity extends AppCompatActivity implements ListFragmen
 
            if(mIntegrity.noNullStrings(name, sDate, eDate)) {
                mTermViewModel.saveCurrentTerm(name, sDate, eDate);
+               if(termReminder.isChecked()) {
+                   termReminder.setChecked(false);
+                   termReminder.setChecked(true);
+               }
                Intent intent = new Intent(getApplicationContext(), TermListActivity.class);
                startActivity(intent);
            }
@@ -197,29 +202,24 @@ public class ModifyTermActivity extends AppCompatActivity implements ListFragmen
         @Override
         public void onClick(View view) {
             boolean on  = ((Switch) view).isChecked();
+            AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
+            PendingIntent pi = notificationService.setPendingIntent(getApplicationContext(), NOTIFICATION_ID_START, NOTIFICATION_CHANNEL_ID
+                    , "TERM " + termId, "Term has Started!");
+            PendingIntent pi2 = notificationService.setPendingIntent(getApplicationContext(), NOTIFICATION_ID_END, NOTIFICATION_CHANNEL_ID
+                    , "TERM " + termId, "Term has Ended!");
             if(on) {
-                System.out.println("Switch On");
                 Toast.makeText(ModifyTermActivity.this, "Reminder Set", Toast.LENGTH_LONG).show();
 
-                Intent intent = new Intent(ModifyTermActivity.this, NotificationService.class);
-                intent.putExtra("notificationId", NOTIFICATION_ID);
-                intent.putExtra("notificationChannelId", NOTIFICATION_CHANNEL_ID);
-                PendingIntent pi = PendingIntent.getBroadcast(ModifyTermActivity.this, 0, intent, 0);
+                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, dateConverter.convertStringToDate(termStart).getTime(), AlarmManager.INTERVAL_DAY, pi);
+                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, dateConverter.convertStringToDate(termEnd).getTime()
+                        ,AlarmManager.INTERVAL_DAY, pi2);
+                setNotificationState(true);
 
-                AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-
-                long timeAtButtonClick = System.currentTimeMillis();
-                long  tenSecondAlarm = 1000 * 3;
-                alarmManager.set(AlarmManager.RTC_WAKEUP, timeAtButtonClick + tenSecondAlarm, pi);
-                //TODO
             } else {
-                System.out.println("canceled");
-
-
-
-                System.out.println("Switch Off");
-                //TODO
+                alarmManager.cancel(pi);
+                alarmManager.cancel(pi2);
+                setNotificationState(false);
             }
         }
     };
@@ -230,17 +230,18 @@ public class ModifyTermActivity extends AppCompatActivity implements ListFragmen
 
     }
 
-    private void createNotificationChannel() {
+    private void setNotificationState(boolean isSet) {
+        SharedPreferences.Editor editor = getSharedPreferences("notificationState", MODE_PRIVATE).edit();
+        editor.putBoolean("termNotification" + termId, isSet);
+        editor.apply();
+    }
+
+    private void createNotificationChannel(CharSequence name,String channelId) {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = "notifyProgressPal";
-            String description = "this is a test";
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, name, importance);
-            channel.setDescription(description);
-            // Register the channel with the system; you can't change the importance
-            // or other notification behaviors after this
+            NotificationChannel channel = new NotificationChannel(channelId, name, importance);
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
         }

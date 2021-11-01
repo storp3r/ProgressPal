@@ -129,8 +129,9 @@
                 android:gravity="center"
                 android:text="@string/course_instructor_label"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.552"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView" />
+                app:layout_constraintTop_toBottomOf="@+id/courseReminderSwitch" />
 
             <androidx.fragment.app.FragmentContainerView
                 android:id="@+id/instructorListFragment"
@@ -230,6 +231,17 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/noteListFragment"
                 tools:visibility="visible" />
+
+            <Switch
+                android:id="@+id/courseReminderSwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:checked="false"
+                android:text="Course Reminders"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

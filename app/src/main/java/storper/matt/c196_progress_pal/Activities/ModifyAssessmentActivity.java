@@ -4,6 +4,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.app.AlarmManager;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -12,6 +18,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +33,8 @@ import storper.matt.c196_progress_pal.Database.Entities.Course;
 import storper.matt.c196_progress_pal.R;
 import storper.matt.c196_progress_pal.Utilities.Alert;
 import storper.matt.c196_progress_pal.Utilities.DataIntegrity;
+import storper.matt.c196_progress_pal.Utilities.DateConverter;
+import storper.matt.c196_progress_pal.Utilities.NotificationService;
 import storper.matt.c196_progress_pal.Utilities.StringWithTag;
 import storper.matt.c196_progress_pal.ViewModel.AssessmentViewModel;
 import storper.matt.c196_progress_pal.ViewModel.CourseViewModel;
@@ -33,8 +42,11 @@ import storper.matt.c196_progress_pal.ViewModel.CourseViewModel;
 public class ModifyAssessmentActivity extends AppCompatActivity {
 
     private static final String TAG = "ModifyAssessment";
-    public AssessmentViewModel mAssessmentViewModel;
-    public DataIntegrity verify = new DataIntegrity();
+    private AssessmentViewModel mAssessmentViewModel;
+    private DataIntegrity verify = new DataIntegrity();
+    private DateConverter dateConverter = new DateConverter();
+    private NotificationService notificationService = new NotificationService();
+    private final String NOTIFICATION_CHANNEL_ID = "Assessment";
     private final ArrayList<StringWithTag> courseList = new ArrayList<>();
     private final List<String> typeItems = Arrays.asList("Objective", "Performance");
     private final ArrayList<String> typeList = new ArrayList<>();
@@ -42,10 +54,14 @@ public class ModifyAssessmentActivity extends AppCompatActivity {
 
     private int courseId = -1;
     private int assessmentId = -1;
+    private String assessmentIdString;
+    private String dueDateString;
+    private int NOTIFICATION_ID_START = 5000;
     private Object tag;
     private String type;
 
     Button saveAssessmentBtn;
+    Switch assessmentReminder;
     EditText editName;
     EditText dueDate;
     TextView title;
@@ -72,6 +88,7 @@ public class ModifyAssessmentActivity extends AppCompatActivity {
             courseId = extras.getInt("courseId");
             assessmentId = extras.getInt("id");
             mAssessmentViewModel.setCurrentAssessment(assessmentId);
+            assessmentIdString = String.valueOf(assessmentId);
         }
 
         saveAssessmentBtn = findViewById(R.id.saveAssessmentBtn);
@@ -81,12 +98,15 @@ public class ModifyAssessmentActivity extends AppCompatActivity {
         title = findViewById(R.id.assessmentTitle);
         courseSpinner = findViewById(R.id.courseSpinner);
         typeSpinner = findViewById(R.id.typeSpinner);
+        assessmentReminder = findViewById(R.id.assessmentReminderSwitch);
 
         initViewModel();
 
     }
 
     public void initViewModel() {
+        SharedPreferences sharedPreferences = getSharedPreferences("notificationState", MODE_PRIVATE);
+        assessmentReminder.setChecked(sharedPreferences.getBoolean("assessmentNotification" + assessmentIdString, true));
         dueDateLabel.setText("Due Date: ");
         if (assessmentId != -1) {
             title.setText("Edit Assessment");
@@ -97,6 +117,7 @@ public class ModifyAssessmentActivity extends AppCompatActivity {
         courseSpinner.setOnItemSelectedListener(courseListener);
         typeSpinner.setOnItemSelectedListener(typeListener);
         saveAssessmentBtn.setOnClickListener(saveAssessment);
+        assessmentReminder.setOnClickListener(setAssessmentNotification);
 
         final Observer<Assessment> assessmentObserver = new Observer<Assessment>() {
             @Override
@@ -104,11 +125,13 @@ public class ModifyAssessmentActivity extends AppCompatActivity {
 
                 if(assessment != null) {
                     editName.setText(assessment.getName());
-                    dueDate.setText(assessment.getDueDate());
+                    dueDateString = assessment.getDueDate();
+                    dueDate.setText(dueDateString);
                     tag = assessment.getCourseId();
                     type = assessment.getType();
                 } else {
                     tag = courseId;
+                    assessmentReminder.setVisibility(View.INVISIBLE);
                 }
             }
         };
@@ -193,6 +216,11 @@ public class ModifyAssessmentActivity extends AppCompatActivity {
             courseId = (int) tag;
             if(verify.noNullStrings(name, dueDateString, type) && courseId > -1) {
                 mAssessmentViewModel.saveCurrentAssessment(name, type, dueDateString, courseId);
+                if(assessmentReminder.isChecked()) {
+                    assessmentReminder.setChecked(false);
+                    assessmentReminder.setChecked(true);
+                    assessmentReminder.setVisibility(View.VISIBLE);
+                }
                 Toast.makeText(ModifyAssessmentActivity.this, "Assessment Successfully Saved", Toast.LENGTH_LONG).show();
             } else {
                 Alert.emptyFields(ModifyAssessmentActivity.this);
@@ -201,9 +229,49 @@ public class ModifyAssessmentActivity extends AppCompatActivity {
         }
     };
 
+    public View.OnClickListener setAssessmentNotification = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            boolean on  = ((Switch) view).isChecked();
+            AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+
+            PendingIntent pi = notificationService.setPendingIntent(getApplicationContext(), NOTIFICATION_ID_START + assessmentId, NOTIFICATION_CHANNEL_ID
+                    , "Assessment " + assessmentIdString, "Assessment is Due!");
+
+            if(on) {
+                Toast.makeText(ModifyAssessmentActivity.this, "Reminder Set", Toast.LENGTH_LONG).show();
+
+                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, dateConverter.convertStringToDate(dueDateString).getTime()
+                        ,AlarmManager.INTERVAL_DAY, pi);
+                setNotificationState(true);
+
+            } else {
+                alarmManager.cancel(pi);
+                setNotificationState(false);
+            }
+        }
+    };
+
     public void sendParentDates(String startDate, String endDate) {
         if (assessmentDataPasser != null) {
             assessmentDataPasser.onPassData(true, startDate, endDate);
+        }
+    }
+
+    private void setNotificationState(boolean isSet) {
+        SharedPreferences.Editor editor = getSharedPreferences("notificationState", MODE_PRIVATE).edit();
+        editor.putBoolean("assessmentNotification" + assessmentIdString, isSet);
+        editor.apply();
+    }
+
+    private void createNotificationChannel(CharSequence name,String channelId) {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(channelId, name, importance);
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
         }
     }
 }
