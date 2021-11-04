@@ -14,13 +14,22 @@
 
         <activity
             android:name=".Activities.ModifyAssessmentActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:parentActivityName=".Activities.AssessmentListActivity"
+            />
         <activity
             android:name=".Activities.ModifyCourseActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:parentActivityName=".Activities.CourseListActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Activities.CourseListActivity" />
+        </activity>
+
         <activity
             android:name=".Activities.ModifyTermActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:parentActivityName=".Activities.TermListActivity"/>
         <activity
             android:name=".Activities.AssessmentListActivity"
             android:exported="true" />

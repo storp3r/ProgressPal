@@ -8,6 +8,8 @@
     android:layout_alignParentStart="false"
     android:layout_centerHorizontal="false"
     android:layout_gravity="center_horizontal"
+    android:focusableInTouchMode="true"
+    android:focusedByDefault="true"
     tools:context=".Activities.ModifyTermActivity">
 
 
@@ -50,39 +52,70 @@
        app:layout_constraintStart_toStartOf="parent"
        app:layout_constraintTop_toBottomOf="@+id/dateFragment" />
 
-   <TextView
-       android:id="@+id/courseFragTitle"
-       style="@style/inputObject"
-       android:layout_width="wrap_content"
-       android:layout_marginTop="16dp"
-       android:text="@string/term_course_label"
-       android:visibility="visible"
-       app:layout_constraintEnd_toEndOf="parent"
-       app:layout_constraintHorizontal_bias="0.498"
-       app:layout_constraintStart_toStartOf="parent"
-       app:layout_constraintTop_toBottomOf="@+id/termReminderSwitch" />
-
-   <androidx.fragment.app.FragmentContainerView
-       android:id="@+id/courseFragmentView"
-       android:name="storper.matt.c196_progress_pal.Fragments.ListFragment"
-       android:layout_width="0dp"
+   <androidx.constraintlayout.widget.ConstraintLayout
+       android:id="@+id/termDetails"
+       android:layout_width="match_parent"
        android:layout_height="wrap_content"
-       android:visibility="visible"
-       app:layout_constraintEnd_toEndOf="parent"
-       app:layout_constraintStart_toStartOf="parent"
-       app:layout_constraintTop_toBottomOf="@+id/courseFragTitle" />
+       app:layout_constraintTop_toBottomOf="@+id/saveTermBtn">
 
-   <Button
-       android:id="@+id/add_course_btn"
-       android:layout_width="wrap_content"
-       android:layout_height="60dp"
-       android:layout_marginTop="8dp"
-       android:text="@string/add_course"
-       android:visibility="visible"
-       app:layout_constraintEnd_toEndOf="parent"
-       app:layout_constraintHorizontal_bias="0.497"
-       app:layout_constraintStart_toStartOf="parent"
-       app:layout_constraintTop_toBottomOf="@+id/courseFragmentView" />
+      <TextView
+          android:id="@+id/textView"
+          style="@style/label"
+          android:layout_width="0dp"
+          android:layout_height="40dp"
+          android:layout_marginTop="16dp"
+          android:background="@color/secondary"
+          android:gravity="center"
+          android:text="ADDITIONAL DETAILS"
+          android:textAlignment="center"
+          android:textColor="#FFFFFF"
+          android:textSize="24sp"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent" />
+
+      <Switch
+          android:id="@+id/termReminderSwitch"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="16dp"
+          android:layout_marginTop="16dp"
+          android:text="Set Term Reminder "
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+      <TextView
+          android:id="@+id/courseFragTitle"
+          style="@style/inputObject"
+          android:layout_width="wrap_content"
+          android:layout_marginTop="16dp"
+          android:text="@string/term_course_label"
+          android:visibility="visible"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/termReminderSwitch" />
+
+      <androidx.fragment.app.FragmentContainerView
+          android:id="@+id/courseFragmentView"
+          android:name="storper.matt.c196_progress_pal.Fragments.ListFragment"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:visibility="visible"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/courseFragTitle" />
+
+      <Button
+          android:id="@+id/add_course_btn"
+          style="@style/modifyButton"
+          android:layout_marginTop="16dp"
+          android:text="@string/add_course"
+          android:visibility="visible"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/courseFragmentView" />
+
+   </androidx.constraintlayout.widget.ConstraintLayout>
 
    <androidx.constraintlayout.widget.Guideline
        android:id="@+id/guideline6"
@@ -90,52 +123,6 @@
        android:layout_height="wrap_content"
        android:orientation="vertical"
        app:layout_constraintGuide_begin="205dp" />
-
-   <LinearLayout
-       android:id="@+id/detailsButton"
-       android:layout_width="0dp"
-       android:layout_height="30dp"
-       android:layout_marginTop="24dp"
-       android:background="@android:color/darker_gray"
-       android:gravity="center"
-       android:orientation="horizontal"
-       app:layout_constraintEnd_toEndOf="parent"
-       app:layout_constraintStart_toStartOf="parent"
-       app:layout_constraintTop_toBottomOf="@+id/saveTermBtn">
-
-      <TextView
-          android:id="@+id/textView3"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:paddingRight="5dp"
-          android:text="TextView"
-          android:textAlignment="viewEnd"
-          tools:text="ADD/EDIT DETAILS" />
-
-      <ImageView
-          android:id="@+id/downArrow"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:visibility="visible"
-          app:srcCompat="@android:drawable/arrow_down_float" />
-
-      <ImageView
-          android:id="@+id/upArrrow"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:visibility="gone"
-          app:srcCompat="@android:drawable/arrow_up_float" />
-   </LinearLayout>
-
-   <Switch
-       android:id="@+id/termReminderSwitch"
-       android:layout_width="wrap_content"
-       android:layout_height="wrap_content"
-       android:layout_marginStart="16dp"
-       android:layout_marginTop="24dp"
-       android:text="Set Term Reminder "
-       app:layout_constraintStart_toStartOf="parent"
-       app:layout_constraintTop_toBottomOf="@+id/detailsButton" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

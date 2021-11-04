@@ -1,8 +1,10 @@
 package storper.matt.c196_progress_pal.Activities;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.NavUtils;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
@@ -26,7 +28,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -59,6 +60,7 @@ public class ModifyCourseActivity extends AppCompatActivity implements ListFragm
 
     private CourseViewModel mCourseViewModel;
     private DataIntegrity verify = new DataIntegrity();
+    private MenuHandler mMenuHandler = new MenuHandler();
     private NotificationService notificationService = new NotificationService();
     private DateConverter dateConverter = new DateConverter();
     private String launchingActivity;
@@ -90,7 +92,7 @@ public class ModifyCourseActivity extends AppCompatActivity implements ListFragm
     TextView nameLabel;
     TextView instructorFragTitle;
 
-    ConstraintLayout details;
+    ConstraintLayout courseDetails;
     ImageView upArrow;
     ImageView downArrow;
 
@@ -113,7 +115,10 @@ public class ModifyCourseActivity extends AppCompatActivity implements ListFragm
         Log.d(TAG, "onCreate: started");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_modify_course);
-        createNotificationChannel("ModifyCourse",NOTIFICATION_CHANNEL_ID);
+        getSupportActionBar().setTitle("Modify Course"); // for set actionbar title
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        createNotificationChannel("ModifyCourse", NOTIFICATION_CHANNEL_ID);
         Bundle extras = getIntent().getExtras();
         mCourseViewModel = new ViewModelProvider(this).get(CourseViewModel.class);
 
@@ -135,22 +140,16 @@ public class ModifyCourseActivity extends AppCompatActivity implements ListFragm
         termSelection = findViewById(R.id.termSpinner);
         addInstructorBtn = findViewById(R.id.addInstructorBtn);
         saveBtn = findViewById(R.id.saveCourseBtn);
-        addAssessmentBtn = findViewById(R.id.add_assessment_btn) ;
+        addAssessmentBtn = findViewById(R.id.add_assessment_btn);
         addNoteBtn = findViewById(R.id.add_note_btn);
         courseReminder = findViewById(R.id.courseReminderSwitch);
-        details = findViewById(R.id.courseDetails);
-
-
-        mDynamicViews = new View[]{
-            upArrow, downArrow, instructorFragTitle, instructorFrag, addInstructorBtn
-        };
+        courseDetails = findViewById(R.id.courseDetails);
 
         initViewModel();
     }
 
     private void initViewModel() {
-        SharedPreferences sharedPreferences = getSharedPreferences("notificationState", MODE_PRIVATE);
-        courseReminder.setChecked(sharedPreferences.getBoolean("courseNotification" + courseIdString, false));
+
         nameLabel.setText(R.string.course_label);
         progressList.addAll(progressItems);
         saveBtn.setOnClickListener(saveCourse);
@@ -159,6 +158,7 @@ public class ModifyCourseActivity extends AppCompatActivity implements ListFragm
         progressSelection.setOnItemSelectedListener(progressListener);
         termSelection.setOnItemSelectedListener(termListener);
         courseReminder.setOnClickListener(setCourseNotification);
+        courseDetails.setVisibility(View.GONE);
 
         final Observer<Course> courseObserver = new Observer<Course>() {
             @Override
@@ -176,8 +176,11 @@ public class ModifyCourseActivity extends AppCompatActivity implements ListFragm
                     courseId = course.getId();
                     addInstructorBtn.setOnClickListener(editInstructor);
                     addNoteBtn.setOnClickListener(editNote);
-                    details.setVisibility(View.VISIBLE);
+                    courseDetails.setVisibility(View.VISIBLE);
 
+                    SharedPreferences sharedPreferences = getSharedPreferences("notificationState", MODE_PRIVATE);
+                    courseReminder.setChecked(sharedPreferences.getBoolean("courseNotification " + courseIdString, true));
+                    Log.d(TAG, "onChanged: " + sharedPreferences.getBoolean("courseNotification " + courseIdString, true));
                     FragmentManager fragmentManager = getSupportFragmentManager();
                     Fragment instructorFragment = fragmentManager.findFragmentById(R.id.list_term_fragment_container);
                     Log.d(TAG, "initViewModel: courseID is " + courseId);
@@ -189,7 +192,7 @@ public class ModifyCourseActivity extends AppCompatActivity implements ListFragm
                     }
                     FragmentManager fragmentManager2 = getSupportFragmentManager();
                     Fragment assessmentFragement = fragmentManager2.findFragmentById(R.id.list_term_fragment_container);
-                    if(assessmentFragement == null) {
+                    if (assessmentFragement == null) {
                         assessmentFragement = ListFragment.newInstance(ListFragment.ENTITY.ASSESSMENT, String.valueOf(courseId));
                         fragmentManager2.beginTransaction()
                                 .add(R.id.assessmentListFragment, assessmentFragement)
@@ -197,7 +200,7 @@ public class ModifyCourseActivity extends AppCompatActivity implements ListFragm
                     }
                     FragmentManager fragmentManager3 = getSupportFragmentManager();
                     Fragment noteFragment = fragmentManager3.findFragmentById(R.id.list_term_fragment_container);
-                    if(noteFragment == null) {
+                    if (noteFragment == null) {
                         noteFragment = ListFragment.newInstance(ListFragment.ENTITY.NOTE, String.valueOf(courseId));
                         fragmentManager3.beginTransaction()
                                 .add(R.id.noteListFragment, noteFragment)
@@ -217,24 +220,25 @@ public class ModifyCourseActivity extends AppCompatActivity implements ListFragm
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.modified_menu, menu);
-        MenuItem item = menu.getItem(0);
-        item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                Intent intent;
-                if (launchingActivity.equals(modifyTermActivity)) {
-                    intent = new Intent(getApplicationContext(), ModifyTermActivity.class);
-                    termId = (int) tag;
-                    intent.putExtra("id", termId);
-                } else {
-                    intent = new Intent(ModifyCourseActivity.this, CourseListActivity.class);
-                }
-                startActivity(intent);
-                return true;
-            }
-        });
+        getMenuInflater().inflate(R.menu.appbar_menu, menu);
         return super.onCreateOptionsMenu(menu);
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        int id = item.getItemId();
+
+        if (id == android.R.id.home) {
+            finish();
+            return true;
+        } else {
+            Class<?> targetActivity = mMenuHandler.handleMenuSelection(item);
+            Intent intent = new Intent(ModifyCourseActivity.this, targetActivity);
+            startActivity(intent);
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     public View.OnClickListener addInstructor = new View.OnClickListener() {
@@ -281,15 +285,20 @@ public class ModifyCourseActivity extends AppCompatActivity implements ListFragm
             String name = editName.getText().toString().trim();
             String sDate = startDate.getText().toString().trim();
             String eDate = endDate.getText().toString().trim();
+            courseStart = sDate;
+            courseEnd = eDate;
             termId = (int) tag;
 
             if (verify.noNullStrings(name, sDate, eDate, status) && termId > -1) {
                 mCourseViewModel.saveCurrentCourse(name, sDate, eDate, status, termId);
-//                if(courseReminder.isChecked()) {
-//                    courseReminder.setChecked(false);
-//                    courseReminder.setChecked(true);
-//                }
-                details.setVisibility(View.VISIBLE);
+                if (courseReminder.isChecked()) {
+                    Log.d(TAG, "onClick: ran");
+                    courseReminder.setChecked(false);
+                    courseReminder.setChecked(true);
+                } else {
+                    setNotificationState(false);
+                }
+                courseDetails.setVisibility(View.VISIBLE);
             }
         }
     };
@@ -368,7 +377,7 @@ public class ModifyCourseActivity extends AppCompatActivity implements ListFragm
     public View.OnClickListener setCourseNotification = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            boolean on  = ((Switch) view).isChecked();
+            boolean on = ((Switch) view).isChecked();
             AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
 
@@ -376,12 +385,12 @@ public class ModifyCourseActivity extends AppCompatActivity implements ListFragm
                     , "Course " + courseId, "Course has Started!");
             PendingIntent pi2 = notificationService.setPendingIntent(getApplicationContext(), NOTIFICATION_ID_END, NOTIFICATION_CHANNEL_ID
                     , "Course " + courseId, "Course has Ended!");
-            if(on) {
+            if (on) {
                 Toast.makeText(ModifyCourseActivity.this, "Reminder Set", Toast.LENGTH_LONG).show();
 
                 alarmManager.set(AlarmManager.RTC_WAKEUP, dateConverter.convertStringToDate(courseStart).getTime(), pi);
                 alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, dateConverter.convertStringToDate(courseEnd).getTime()
-                        ,AlarmManager.INTERVAL_DAY, pi2);
+                        , AlarmManager.INTERVAL_DAY, pi2);
                 setNotificationState(true);
 
             } else {
@@ -394,19 +403,18 @@ public class ModifyCourseActivity extends AppCompatActivity implements ListFragm
 
     public void sendParentDates(String startDate, String endDate) {
         if (courseDataPasser != null) {
-            courseDataPasser.onPassData(false,startDate, endDate);
+            courseDataPasser.onPassData(false, startDate, endDate);
         }
     }
 
     public void setNotificationState(boolean isSet) {
-
         SharedPreferences.Editor editor = getSharedPreferences("notificationState", MODE_PRIVATE).edit();
-        editor.putBoolean("courseNotification" + courseIdString, isSet);
+        editor.putBoolean("courseNotification " + courseIdString, isSet);
         editor.apply();
-        System.out.println(isSet);
+        Log.d(TAG, "setNotificationState: " + courseIdString + isSet);
     }
 
-    private void createNotificationChannel(CharSequence name,String channelId) {
+    private void createNotificationChannel(CharSequence name, String channelId) {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

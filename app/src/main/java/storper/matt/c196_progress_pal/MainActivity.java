@@ -1,6 +1,7 @@
 package storper.matt.c196_progress_pal;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -9,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toolbar;
 
 import storper.matt.c196_progress_pal.Activities.AssessmentListActivity;
 import storper.matt.c196_progress_pal.Activities.CourseListActivity;
@@ -43,6 +45,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        getSupportActionBar().setTitle("Progress Pal"); // for set actionbar title
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+
 
         Button termButton = findViewById(R.id.termBtn);
         Button courseButton = findViewById(R.id.courseBtn);
@@ -60,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.appbar_menu, menu);
-        mMenuHandler.setMenuOptions(getClass(), menu);
+        mMenuHandler.setMenuOptions(getClass(),menu);
 
         return super.onCreateOptionsMenu(menu);
     }

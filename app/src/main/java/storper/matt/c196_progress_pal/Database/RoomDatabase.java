@@ -91,19 +91,19 @@ public abstract class RoomDatabase extends androidx.room.RoomDatabase {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            Log.d(TAG, "doInBackground: insertions started");
-
-            //Populate database first time
-            mTermDao.insertTerm(new Term("Term10", "2021-10-06", "2022-02-22"));
-            mTermDao.insertTerm(new Term("Term2","2021-11-06", "2022-10-06"));
-            mCourseDao.insertCourse(new Course("Course 1", "2021-10-06", "2021-10-08", "in-progess", 1));
-            mAssessmentDao.insertAssessment(new Assessment("Assessment 1", "objective", "2021-10-18", 1));
-            mInstructorDao.insertInstructor(new Instructor("john", "4984984", "dfssdf", 1));
-
-            Log.d(TAG, "doInBackground: instructors"
-            + mInstructorDao.getInstructorCount());
-
-            Log.d(TAG, "doInBackground: courses " + mCourseDao.getCourseCount());
+//            Log.d(TAG, "doInBackground: insertions started");
+//
+//            //Populate database first time
+//            mTermDao.insertTerm(new Term("Term10", "2021-10-06", "2022-02-22"));
+//            mTermDao.insertTerm(new Term("Term2","2021-11-06", "2022-10-06"));
+//            mCourseDao.insertCourse(new Course("Course 1", "2021-10-06", "2021-10-08", "in-progess", 1));
+//            mAssessmentDao.insertAssessment(new Assessment("Assessment 1", "objective", "2021-10-18", 1));
+//            mInstructorDao.insertInstructor(new Instructor("john", "4984984", "dfssdf", 1));
+//
+//            Log.d(TAG, "doInBackground: instructors"
+//            + mInstructorDao.getInstructorCount());
+//
+//            Log.d(TAG, "doInBackground: courses " + mCourseDao.getCourseCount());
 
             return null;
         }

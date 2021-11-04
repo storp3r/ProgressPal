@@ -31,6 +31,8 @@ public class CourseListActivity extends AppCompatActivity implements ListFragmen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_term_list);
+        getSupportActionBar().setTitle("Course List"); // for set actionbar title
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         Fragment fragment = fragmentManager.findFragmentById(R.id.list_term_fragment_container);

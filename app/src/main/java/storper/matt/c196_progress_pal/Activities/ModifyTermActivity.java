@@ -1,7 +1,10 @@
 package storper.matt.c196_progress_pal.Activities;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.NavUtils;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
@@ -17,6 +20,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -41,7 +45,7 @@ public class ModifyTermActivity extends AppCompatActivity implements ListFragmen
 
     public TermViewModel mTermViewModel;
     public DataIntegrity mIntegrity = new DataIntegrity();
-    public MenuHandler mMenuHandler;
+    public MenuHandler mMenuHandler = new MenuHandler();
     private NotificationService notificationService = new NotificationService();
     private DateConverter dateConverter = new DateConverter();
     private static final String TAG = "ModifyTerm";
@@ -62,11 +66,9 @@ public class ModifyTermActivity extends AppCompatActivity implements ListFragmen
     Button saveBtn;
     Button addCourseBtn;
     Switch termReminder;
-    LinearLayout detailsBtn;
-    ImageView upArrow;
-    ImageView downArrow;
-    FragmentContainerView courseFragment;
-    View[] mDynamicViews;
+    ConstraintLayout termDetails;
+
+
 
 
     @Override
@@ -74,6 +76,8 @@ public class ModifyTermActivity extends AppCompatActivity implements ListFragmen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_modify_term);
         createNotificationChannel("ModifyTerm",NOTIFICATION_CHANNEL_ID);
+        getSupportActionBar().setTitle("Modify Term");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Bundle extras = getIntent().getExtras();
         mTermViewModel = new ViewModelProvider(this).get(TermViewModel.class);
@@ -93,44 +97,39 @@ public class ModifyTermActivity extends AppCompatActivity implements ListFragmen
         endDate = findViewById(R.id.editEndDate);
         saveBtn = findViewById(R.id.saveTermBtn);
         addCourseBtn = findViewById(R.id.add_course_btn);
-        detailsBtn = findViewById(R.id.detailsButton);
         termReminder = findViewById(R.id.termReminderSwitch);
-        downArrow = findViewById(R.id.downArrow);
-        upArrow = findViewById(R.id.upArrrow);
-        courseFragTitle = findViewById(R.id.courseFragTitle);
-        courseFragment = findViewById(R.id.courseFragmentView);
-        detailsBtn.setVisibility(View.GONE);
-
-        mDynamicViews = new View[]{
-                addCourseBtn,
-                courseFragment,
-                courseFragTitle,
-                downArrow,
-                upArrow
-        };
+        termDetails = findViewById(R.id.termDetails);
+        termDetails.setVisibility(View.GONE);
 
        initViewModel();
     }
 
     private void initViewModel() {
-        SharedPreferences sharedPreferences = getSharedPreferences("notificationState", MODE_PRIVATE);
-        termReminder.setChecked(sharedPreferences.getBoolean("termNotification" + termId, true));
+
         nameLabel.setText(R.string.term_label);
         saveBtn.setOnClickListener(saveTerm);
         addCourseBtn.setOnClickListener(addCourse);
-        detailsBtn.setOnClickListener(showHideDetails);
+        termReminder.setChecked(false);
         termReminder.setOnClickListener(setTermNotification);
 
         final Observer<Term> termObserver = new Observer<Term>() {
             @Override
             public void onChanged(@Nullable final Term term) {
-                assert term != null;
-                editName.setText(term.getName());
-                termStart = term.getStartDate();
-                termEnd = term.getEndDate();
-                startDate.setText(termStart);
-                endDate.setText(termEnd);
-                detailsBtn.setVisibility(View.VISIBLE);
+                if(term != null) {
+                    SharedPreferences sharedPreferences = getSharedPreferences("notificationState", MODE_PRIVATE);
+                    termReminder.setChecked(sharedPreferences.getBoolean("termNotification" + termId, true));
+                    editName.setText(term.getName());
+                    termStart = term.getStartDate();
+                    termEnd = term.getEndDate();
+                    startDate.setText(termStart);
+                    endDate.setText(termEnd);
+                    termDetails.setVisibility(View.VISIBLE);
+                    Log.d(TAG, "onChanged: not null");
+                } else {
+                    termDetails.setVisibility(View.GONE);
+                    Log.d(TAG, "onChanged: null");
+                }
+
             }
         };
 
@@ -148,17 +147,19 @@ public class ModifyTermActivity extends AppCompatActivity implements ListFragmen
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.modified_menu, menu);
-        MenuItem item = menu.getItem(0);
-        item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                Intent intent = new Intent(ModifyTermActivity.this, TermListActivity.class);
-                startActivity(intent);
-                return true;
-            }
-        });
+        getMenuInflater().inflate(R.menu.appbar_menu, menu);
         return super.onCreateOptionsMenu(menu);
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        Class<?> targetActivity = mMenuHandler.handleMenuSelection(item);
+
+        Intent intent = new Intent(ModifyTermActivity.this, targetActivity);
+        startActivity(intent);
+
+        return super.onOptionsItemSelected(item);
     }
 
     public View.OnClickListener saveTerm = new View.OnClickListener() {
@@ -167,15 +168,15 @@ public class ModifyTermActivity extends AppCompatActivity implements ListFragmen
            String name  = editName.getText().toString().trim();
            String sDate = startDate.getText().toString().trim();
            String eDate = endDate.getText().toString().trim();
-
+            termStart = sDate;
+            termEnd = eDate;
            if(mIntegrity.noNullStrings(name, sDate, eDate)) {
                mTermViewModel.saveCurrentTerm(name, sDate, eDate);
                if(termReminder.isChecked()) {
                    termReminder.setChecked(false);
                    termReminder.setChecked(true);
                }
-               Intent intent = new Intent(getApplicationContext(), TermListActivity.class);
-               startActivity(intent);
+               termDetails.setVisibility(View.VISIBLE);
            }
 
         }
@@ -184,19 +185,15 @@ public class ModifyTermActivity extends AppCompatActivity implements ListFragmen
     public View.OnClickListener addCourse = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            Intent intent = new Intent(getApplicationContext(), ModifyCourseActivity.class);
+            Intent intent = new Intent(ModifyTermActivity.this, ModifyCourseActivity.class);
             intent.putExtra("termId", termId);
             intent.putExtra("launchActivity", "ModifyTermActivity");
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
+
         }
     };
 
-    public View.OnClickListener showHideDetails = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            mMenuHandler.setVisibility(id ,mDynamicViews);
-        }
-    };
 
     public View.OnClickListener setTermNotification = new View.OnClickListener() {
         @Override

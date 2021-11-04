@@ -1,5 +1,6 @@
 package storper.matt.c196_progress_pal.Utilities;
 
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,13 +29,13 @@ public class MenuHandler extends AppCompatActivity {
                 case "MainActivity":
                     item.setVisible(item.getItemId() != R.id.action_home);
                     break;
-                case "ViewTermsActivity":
+                case "TermListActivity":
                     item.setVisible(item.getItemId() != R.id.action_terms);
                     break;
-                case "ViewCoursesActivity":
+                case "CourseListActivity":
                     item.setVisible(item.getItemId() != R.id.action_courses);
                     break;
-                case "ViewAssessmentsActivity":
+                case "AssessmentListActivity":
                     item.setVisible(item.getItemId() != R.id.action_assessments);
                     break;
             }
@@ -76,21 +77,4 @@ public class MenuHandler extends AppCompatActivity {
         return classString;
     }
 
-    public void setVisibility(int id ,View...views) {
-
-        if(id > -1){
-            for(View view : views) {
-                if(view.isShown()) {
-                    view.setVisibility(View.GONE);
-                } else {
-                    view.setVisibility(View.VISIBLE);
-                }
-            }
-        } else {
-            //TODO add alert
-        }
-
-
-
-    }
 }
