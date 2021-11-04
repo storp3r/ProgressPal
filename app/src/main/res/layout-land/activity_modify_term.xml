@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusableInTouchMode="true"
+    android:focusedByDefault="true"
+    tools:context=".Activities.ModifyTermActivity">
+
+   <androidx.constraintlayout.widget.ConstraintLayout
+       android:id="@+id/linearLayout6"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       >
+
+
+      <TextView
+          android:id="@+id/entityNameLabel"
+          style="@style/label"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="16dp"
+          android:layout_marginTop="16dp"
+          android:text="TextView"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent" />
+
+
+      <EditText
+          android:id="@+id/editEntityName"
+          style="@style/inputObject"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="8dp"
+          android:layout_marginEnd="16dp"
+          android:inputType="textPersonName"
+          android:text=""
+          app:layout_constraintBaseline_toBaselineOf="@+id/entityNameLabel"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="@+id/guideline6" />
+
+      <fragment
+          android:id="@+id/dateFragment"
+          android:name="storper.matt.c196_progress_pal.Fragments.TempDateFragment"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/entityNameLabel" />
+
+      <Button
+          android:id="@+id/saveTermBtn"
+          style="@style/modifyButton"
+          android:layout_marginTop="8dp"
+          android:text="@string/save_term_btn"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/dateFragment" />
+
+      <androidx.constraintlayout.widget.ConstraintLayout
+          android:id="@+id/termDetails"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          app:layout_constraintTop_toBottomOf="@+id/saveTermBtn">
+
+         <TextView
+             android:id="@+id/textView"
+             style="@style/label"
+             android:layout_width="0dp"
+             android:layout_height="40dp"
+             android:layout_marginTop="16dp"
+             android:background="@color/secondary"
+             android:gravity="center"
+             android:text="ADDITIONAL DETAILS"
+             android:textAlignment="center"
+             android:textColor="#FFFFFF"
+             android:textSize="24sp"
+             app:layout_constraintEnd_toEndOf="parent"
+             app:layout_constraintStart_toStartOf="parent"
+             app:layout_constraintTop_toTopOf="parent" />
+
+         <Switch
+             android:id="@+id/termReminderSwitch"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_marginStart="16dp"
+             android:layout_marginTop="16dp"
+             android:text="Set Term Reminder "
+             app:layout_constraintStart_toStartOf="parent"
+             app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+         <TextView
+             android:id="@+id/courseFragTitle"
+             style="@style/inputObject"
+             android:layout_width="wrap_content"
+             android:layout_marginTop="16dp"
+             android:text="@string/term_course_label"
+             android:visibility="visible"
+             app:layout_constraintEnd_toEndOf="parent"
+             app:layout_constraintStart_toStartOf="parent"
+             app:layout_constraintTop_toBottomOf="@+id/termReminderSwitch" />
+
+         <androidx.fragment.app.FragmentContainerView
+             android:id="@+id/courseFragmentView"
+             android:name="storper.matt.c196_progress_pal.Fragments.ListFragment"
+             android:layout_width="0dp"
+             android:layout_height="wrap_content"
+             android:visibility="visible"
+             app:layout_constraintEnd_toEndOf="parent"
+             app:layout_constraintStart_toStartOf="parent"
+             app:layout_constraintTop_toBottomOf="@+id/courseFragTitle" />
+
+         <Button
+             android:id="@+id/add_course_btn"
+             style="@style/modifyButton"
+             android:layout_marginTop="16dp"
+             android:text="@string/add_course"
+             android:visibility="visible"
+             app:layout_constraintEnd_toEndOf="parent"
+             app:layout_constraintStart_toStartOf="parent"
+             app:layout_constraintTop_toBottomOf="@+id/courseFragmentView" />
+
+      </androidx.constraintlayout.widget.ConstraintLayout>
+
+      <androidx.constraintlayout.widget.Guideline
+          android:id="@+id/guideline6"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:orientation="vertical"
+          app:layout_constraintGuide_begin="205dp" />
+
+
+   </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

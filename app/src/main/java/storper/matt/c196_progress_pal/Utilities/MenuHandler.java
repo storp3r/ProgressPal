@@ -17,7 +17,6 @@ import storper.matt.c196_progress_pal.Activities.TermListActivity;
 public class MenuHandler extends AppCompatActivity {
     private static final String TAG = "MenuHandler";
 
-
     //check current activity to dynamically display menu options
     public void setMenuOptions(Class currentClass, Menu menu) {
         String activeClass = getCurrentClass(currentClass);
@@ -43,11 +42,8 @@ public class MenuHandler extends AppCompatActivity {
         }
     }
 
-
-
     //handle menu option click functionality
     public Class<?> handleMenuSelection(MenuItem item) {
-
         Class<?> target = null;
 
         switch(item.getItemId()){
@@ -66,8 +62,6 @@ public class MenuHandler extends AppCompatActivity {
         }
         return target;
     }
-
-
 
     public String getCurrentClass(Class current) {
         String classString = current.toString();
