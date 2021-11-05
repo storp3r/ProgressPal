@@ -21,7 +21,7 @@
     <ImageButton
         android:id="@+id/startDateButton"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:backgroundTint="@color/secondary"
         app:layout_constraintBottom_toBottomOf="@+id/startDateLabel"
         app:layout_constraintEnd_toStartOf="@+id/guideline5"
@@ -48,6 +48,7 @@
         style="@style/label"
         android:layout_width="100dp"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
         android:text="@string/end_date"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/startDateLabel" />
@@ -55,8 +56,9 @@
     <ImageButton
         android:id="@+id/endDateButton"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:backgroundTint="@color/secondary"
+        android:scaleType="center"
         app:layout_constraintBottom_toBottomOf="@+id/endDateLabel"
         app:layout_constraintEnd_toEndOf="@+id/startDateButton"
         app:layout_constraintStart_toEndOf="@+id/endDateLabel"

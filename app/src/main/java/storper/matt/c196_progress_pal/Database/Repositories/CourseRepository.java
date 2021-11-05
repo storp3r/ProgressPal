@@ -22,6 +22,7 @@ public class CourseRepository {
     private LiveData<List<Course>> mAllCourses;
     private LiveData<List<Course>> mCoursesByTerm;
 
+
     public Transaction.Status transactionStatus;
 
 
@@ -61,8 +62,6 @@ public class CourseRepository {
         return statusFuture;
     }
 
-
-
     public LiveData<List<Course>> getAllCourses() {
         return mAllCourses;
     }
@@ -84,8 +83,9 @@ public class CourseRepository {
         return mCourseDao.getCourseById(courseId);
     }
 
-    public int getLastCourseId() {
-        return mCourseDao.getLastCourseId();
+    public LiveData<Integer> getCourseCount() {
+        Log.d(TAG, "getCourseCount: " + mCourseDao.getCourseCount());
+        return mCourseDao.getCourseCount();
     }
 
 }

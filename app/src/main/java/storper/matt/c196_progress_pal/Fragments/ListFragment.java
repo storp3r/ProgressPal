@@ -45,30 +45,77 @@ import storper.matt.c196_progress_pal.ViewModel.TermViewModel;
 
 public class ListFragment extends Fragment {
 
-    public enum ENTITY {TERM, COURSE, ASSESSMENT, INSTRUCTOR, NOTE, NULL}
-
+    private static final String TAG = "ListFragment: ";
+    private static String parentId;
     private TermViewModel mTermViewModel;
     private CourseViewModel mCourseViewModel;
     private AssessmentViewModel mAssessmentViewModel;
     private InstructorViewModel mInstructorViewModel;
     private NoteViewModel mNoteViewModel;
     private Alert alert = new Alert();
+    final Observer<Term> termObserver = new Observer<Term>() {
+        @Override
+        public void onChanged(Term term) {
+           Future<Transaction.Status> status = mTermViewModel.deleteCurrentTerm(term);
+            try {
+                if (status.get() == Transaction.Status.FAILED) {
+                    alert.deleteError(getContext());
+                } else {
+                    Toast.makeText(getContext(), "Term successfully deleted", Toast.LENGTH_LONG).show();
+                }
+            } catch (ExecutionException | InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    };
+    final Observer<Course> courseObserver = new Observer<Course>() {
+        @Override
+        public void onChanged(Course course) {
+            Future<Transaction.Status> status = mCourseViewModel.deleteCurrentCourse(course);
+            try {
+                if (status.get() == Transaction.Status.FAILED) {
+                    alert.deleteError(getContext());
+                } else {
+                    Toast.makeText(getContext(), "Term successfully deleted", Toast.LENGTH_LONG).show();
+                }
+            } catch (ExecutionException | InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    };
     private ListAdapter adapter = null;
-
-
-    private static final String TAG = "ListFragment: ";
     private ENTITY entityType;
-    public static String parentId;
-    //Reference to the activity
-    public OnListItemListener mListener;
+    private RecyclerView recyclerView;
+    ItemTouchHelper.SimpleCallback touchHelperCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
 
+        @Override
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+            return true;
+        }
 
-    public RecyclerView recyclerView;
+        @Override
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+            int position = viewHolder.getAbsoluteAdapterPosition();
+            RecyclerView.ViewHolder swipedViewHolder = recyclerView.findViewHolderForLayoutPosition(position);
+            assert swipedViewHolder != null;
+            View swipedItem = swipedViewHolder.itemView;
 
-
-    public interface OnListItemListener {
-        void onItemSelected();
-    }
+            if (direction > 0) {
+                if (entityType == ENTITY.TERM) {
+                    handleTermSwipe(swipedItem.getId());
+                } else if (entityType == ENTITY.COURSE) {
+                    handleCourseSwipe(swipedItem.getId());
+                } else if (entityType == ENTITY.ASSESSMENT) {
+                    handleAssessmentSwipe(swipedItem.getId());
+                } else if (entityType == ENTITY.INSTRUCTOR) {
+                    handleInstructorSwipe(swipedItem.getId());
+                } else if(entityType == ENTITY.NOTE) {
+                    handleNoteSwipe(swipedItem.getId());
+                }
+                adapter.notifyItemChanged(position);
+            }
+        }
+    };
 
     public static ListFragment newInstance(final ENTITY type, String parentEntityId) {
         ListFragment fragment = new ListFragment();
@@ -96,25 +143,7 @@ public class ListFragment extends Fragment {
         if (entityType != ENTITY.NULL) {
             setCurrentAdapter(view);
         }
-
         return view;
-    }
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-
-        if (context instanceof OnListItemListener) {
-            mListener = (OnListItemListener) context;
-        } else {
-            throw new RuntimeException(context.toString() + " must implement OnListItemListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
     }
 
     public void setCurrentAdapter(View view) {
@@ -170,84 +199,14 @@ public class ListFragment extends Fragment {
                 Log.d(TAG, "setCurrentAdapter: adapter not supported");
                 break;
         }
+
         recyclerView.setAdapter(adapter);
-
-
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
                 DividerItemDecoration.VERTICAL);
         recyclerView.addItemDecoration(dividerItemDecoration);
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(touchHelperCallback);
         itemTouchHelper.attachToRecyclerView(recyclerView);
-
     }
-
-    ItemTouchHelper.SimpleCallback touchHelperCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
-
-        @Override
-        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-            return true;
-        }
-
-        @Override
-        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-            int position = viewHolder.getAbsoluteAdapterPosition();
-            RecyclerView.ViewHolder swipedViewHolder = recyclerView.findViewHolderForLayoutPosition(position);
-            View swipedItem = swipedViewHolder.itemView;
-
-
-            if (direction > 0) {
-                if (entityType == ENTITY.TERM) {
-                    handleTermSwipe(swipedItem.getId());
-                } else if (entityType == ENTITY.COURSE) {
-                    handleCourseSwipe(swipedItem.getId());
-                } else if (entityType == ENTITY.ASSESSMENT) {
-                    handleAssessmentSwipe(swipedItem.getId());
-                } else if (entityType == ENTITY.INSTRUCTOR) {
-                    handleInstructorSwipe(swipedItem.getId());
-                } else if(entityType == ENTITY.NOTE) {
-                    handleNoteSwipe(swipedItem.getId());
-                }
-                adapter.notifyItemChanged(position);
-            }
-
-        }
-    };
-
-    final Observer<Term> termObserver = new Observer<Term>() {
-        @Override
-        public void onChanged(Term term) {
-           Future<Transaction.Status> status = mTermViewModel.deleteCurrentTerm(term);
-            try {
-                if (status.get() == Transaction.Status.FAILED) {
-                    alert.deleteError(getContext());
-                } else {
-                    Toast.makeText(getContext(), "Term successfully deleted", Toast.LENGTH_LONG).show();
-                }
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    };
-
-    final Observer<Course> courseObserver = new Observer<Course>() {
-        @Override
-        public void onChanged(Course course) {
-            Future<Transaction.Status> status = mCourseViewModel.deleteCurrentCourse(course);
-            try {
-                if (status.get() == Transaction.Status.FAILED) {
-                    alert.deleteError(getContext());
-                } else {
-                    Toast.makeText(getContext(), "Term successfully deleted", Toast.LENGTH_LONG).show();
-                }
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    };
 
     public void handleTermSwipe(int id) {
         mTermViewModel.setCurrentTerm(id);
@@ -289,5 +248,5 @@ public class ListFragment extends Fragment {
         });
     }
 
-
+    public enum ENTITY {TERM, COURSE, ASSESSMENT, INSTRUCTOR, NOTE, NULL}
 }

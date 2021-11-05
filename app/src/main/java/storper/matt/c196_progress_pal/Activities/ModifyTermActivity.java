@@ -3,6 +3,7 @@ package storper.matt.c196_progress_pal.Activities;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.NavUtils;
 import androidx.fragment.app.Fragment;
@@ -43,37 +44,31 @@ import storper.matt.c196_progress_pal.Utilities.NotificationService;
 import storper.matt.c196_progress_pal.ViewModel.TermViewModel;
 import storper.matt.c196_progress_pal.Utilities.DataIntegrity;
 
-public class ModifyTermActivity extends AppCompatActivity implements ListFragment.OnListItemListener  {
+public class ModifyTermActivity extends AppCompatActivity  {
 
-    public TermViewModel mTermViewModel;
-    public DataIntegrity mIntegrity = new DataIntegrity();
-    public MenuHandler mMenuHandler = new MenuHandler();
-    private NotificationService notificationService = new NotificationService();
-    private DateConverter dateConverter = new DateConverter();
+    private TermViewModel mTermViewModel;
+    private final DataIntegrity mIntegrity = new DataIntegrity();
+    private final MenuHandler mMenuHandler = new MenuHandler();
+    private final NotificationService notificationService = new NotificationService();
+    private final DateConverter dateConverter = new DateConverter();
     private static final String TAG = "ModifyTerm";
-    private static String NOTIFICATION_CHANNEL_ID = "Term";
+    private static final String NOTIFICATION_CHANNEL_ID = "Term";
     private String termStart;
     private String termEnd;
     private String termName;
-
     private int NOTIFICATION_ID_START = 1000;
     private int NOTIFICATION_ID_END = 2000;
     int id = -1;
     String termId;
-
-    TextView courseFragTitle;
     TextView nameLabel;
     EditText editName;
     EditText startDate;
     EditText endDate;
     Button saveBtn;
     Button addCourseBtn;
-    Switch termReminder;
+    SwitchCompat termReminder;
     ConstraintLayout termDetails;
     ScrollView scrollView;
-
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,9 +78,9 @@ public class ModifyTermActivity extends AppCompatActivity implements ListFragmen
         getSupportActionBar().setTitle("Modify Term");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        Bundle extras = getIntent().getExtras();
         mTermViewModel = new ViewModelProvider(this).get(TermViewModel.class);
 
+        Bundle extras = getIntent().getExtras();
         if (extras != null) {
             id = extras.getInt("id");
             termId = String.valueOf(id);
@@ -111,11 +106,18 @@ public class ModifyTermActivity extends AppCompatActivity implements ListFragmen
             scrollView.smoothScrollTo(0,0);
         }
 
+        initViewModel(savedInstanceState);
 
-       initViewModel();
     }
 
-    private void initViewModel() {
+    protected void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putString("termName", editName.getText().toString());
+        savedInstanceState.putString("termStart", startDate.getText().toString());
+        savedInstanceState.putString("termEnd", endDate.getText().toString());
+    }
+
+    private void initViewModel(Bundle savedInstanceState) {
 
         nameLabel.setText(R.string.term_label);
         saveBtn.setOnClickListener(saveTerm);
@@ -123,17 +125,23 @@ public class ModifyTermActivity extends AppCompatActivity implements ListFragmen
         termReminder.setChecked(false);
         termReminder.setOnClickListener(setTermNotification);
 
-
         final Observer<Term> termObserver = new Observer<Term>() {
             @Override
             public void onChanged(@Nullable final Term term) {
                 if(term != null) {
                     SharedPreferences sharedPreferences = getSharedPreferences("notificationState", MODE_PRIVATE);
                     termReminder.setChecked(sharedPreferences.getBoolean("termNotification" + termId, true));
-                    termName = term.getName();
+
+                    if(savedInstanceState == null) {
+                        termName = term.getName();
+                        termStart = term.getStartDate();
+                        termEnd = term.getEndDate();
+                    } else {
+                        termName = savedInstanceState.getString("termName");
+                        termStart = savedInstanceState.getString("termStart");
+                        termEnd = savedInstanceState.getString("termEnd");
+                    }
                     editName.setText(termName);
-                    termStart = term.getStartDate();
-                    termEnd = term.getEndDate();
                     startDate.setText(termStart);
                     endDate.setText(termEnd);
                     termDetails.setVisibility(View.VISIBLE);
@@ -168,8 +176,8 @@ public class ModifyTermActivity extends AppCompatActivity implements ListFragmen
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         Class<?> targetActivity = mMenuHandler.handleMenuSelection(item);
-
         Intent intent = new Intent(ModifyTermActivity.this, targetActivity);
+
         startActivity(intent);
 
         return super.onOptionsItemSelected(item);
@@ -213,7 +221,6 @@ public class ModifyTermActivity extends AppCompatActivity implements ListFragmen
         public void onClick(View view) {
             boolean on  = ((Switch) view).isChecked();
             AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-
             PendingIntent pi = notificationService.setPendingIntent(getApplicationContext(), NOTIFICATION_ID_START, NOTIFICATION_CHANNEL_ID
                     , "TERM " + termName, "Term has Started!");
             PendingIntent pi2 = notificationService.setPendingIntent(getApplicationContext(), NOTIFICATION_ID_END, NOTIFICATION_CHANNEL_ID
@@ -233,12 +240,6 @@ public class ModifyTermActivity extends AppCompatActivity implements ListFragmen
             }
         }
     };
-
-
-    @Override
-    public void onItemSelected() {
-
-    }
 
     private void setNotificationState(boolean isSet) {
         SharedPreferences.Editor editor = getSharedPreferences("notificationState", MODE_PRIVATE).edit();

@@ -18,7 +18,7 @@ import storper.matt.c196_progress_pal.Fragments.ListFragment;
 import storper.matt.c196_progress_pal.R;
 import storper.matt.c196_progress_pal.Utilities.MenuHandler;
 
-public class TermListActivity extends AppCompatActivity implements ListFragment.OnListItemListener {
+public class TermListActivity extends AppCompatActivity {
 
     private MenuHandler mMenuHandler;
 
@@ -52,14 +52,6 @@ public class TermListActivity extends AppCompatActivity implements ListFragment.
             Intent intent = new Intent(TermListActivity.this, ModifyTermActivity.class);
             startActivity(intent);
         });
-
-
-    }
-
-    @Override
-    public void onItemSelected() {
-
-
     }
 
     @Override

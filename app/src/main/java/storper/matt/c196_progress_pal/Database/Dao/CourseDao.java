@@ -18,17 +18,14 @@ public interface CourseDao {
     @Query("SELECT * FROM courses")
     LiveData<List<Course>> getCourses();
 
-    @Query("SELECT COUNT(*) FROM courses")
-    int getCourseCount();
+    @Query("SELECT COUNT(courseId) FROM courses")
+    LiveData<Integer> getCourseCount();
 
     @Query("SELECT * FROM courses WHERE termId = :termId")
     LiveData<List<Course>> getCoursesByTermId(int termId);
 
     @Query("SELECT * FROM courses WHERE courseId = :courseId")
     Course getCourseById(int courseId);
-
-    @Query("SELECT seq from sqlite_sequence WHERE name = 'courses'")
-    int getLastCourseId();
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
     public void insertCourse(Course course);

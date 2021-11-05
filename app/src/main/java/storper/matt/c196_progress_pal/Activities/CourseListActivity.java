@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.app.ListActivity;
 import android.content.Intent;
@@ -11,21 +13,18 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import storper.matt.c196_progress_pal.Fragments.ListFragment;
 import storper.matt.c196_progress_pal.R;
 import storper.matt.c196_progress_pal.Utilities.MenuHandler;
+import storper.matt.c196_progress_pal.ViewModel.TermViewModel;
 
-public class CourseListActivity extends AppCompatActivity implements ListFragment.OnListItemListener {
+public class CourseListActivity extends AppCompatActivity {
     private static final String TAG = "CouseList";
     private MenuHandler mMenuHandler;
-
-    @Override
-    public void onItemSelected() {
-
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,18 +32,16 @@ public class CourseListActivity extends AppCompatActivity implements ListFragmen
         setContentView(R.layout.activity_term_list);
         getSupportActionBar().setTitle("Course List"); // for set actionbar title
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         FragmentManager fragmentManager = getSupportFragmentManager();
         Fragment fragment = fragmentManager.findFragmentById(R.id.list_term_fragment_container);
 
         mMenuHandler = new MenuHandler();
 
-
         if(fragment == null) {
             Log.d(TAG, "onCreate: courseList");
             fragment = new ListFragment();
             Bundle args = new Bundle();
-//            String currentClass = mMenuHandler.getCurrentClass(CourseListActivity.class);
+
             args.putSerializable("entityType", ListFragment.ENTITY.COURSE);
             fragment.setArguments(args);
             fragmentManager.beginTransaction()
@@ -52,15 +49,41 @@ public class CourseListActivity extends AppCompatActivity implements ListFragmen
                     .commit();
         }
 
-        FloatingActionButton addButton = findViewById(R.id.addButton);
+        initViewModel();
+    }
 
-        addButton.setOnClickListener(v -> {
-            Intent intent = new Intent(CourseListActivity.this, ModifyCourseActivity.class);
-            startActivity(intent);
+    private void initViewModel() {
+        FloatingActionButton addButton = findViewById(R.id.addButton);
+        TermViewModel mTermViewModel = new ViewModelProvider(this).get(TermViewModel.class);
+        mTermViewModel.getTermCount().observe(this, new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                int count = 0;
+                if(integer != null) count = integer;
+                if(count > 0) {
+                    addButton.setOnClickListener(addCourse);
+                } else {
+                    addButton.setOnClickListener(noTermAlert);
+                }
+            }
         });
     }
 
+    private View.OnClickListener addCourse = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            Intent intent = new Intent(CourseListActivity.this, ModifyAssessmentActivity.class);
+            startActivity(intent);
+        }
+    };
 
+    private View.OnClickListener noTermAlert = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            Log.d(TAG, "onClick: Sorry no term");
+            //TODO add alert
+        }
+    };
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -73,8 +96,8 @@ public class CourseListActivity extends AppCompatActivity implements ListFragmen
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         Class<?> targetActivity = mMenuHandler.handleMenuSelection(item);
-
         Intent intent = new Intent(CourseListActivity.this, targetActivity);
+
         startActivity(intent);
 
         return super.onOptionsItemSelected(item);

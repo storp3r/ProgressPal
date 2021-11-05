@@ -20,17 +20,9 @@ import storper.matt.c196_progress_pal.Utilities.Transaction.Status;
 
 public class TermRepository {
 
-    Alert alert = new Alert();
-
-
     private static final String TAG = "TermRepository";
-
     private TermDao mTermDao;
     private LiveData<List<Term>> mAllTerms;
-
-
-
-
 
     //Instantiate Repository
     public TermRepository(Application application) {
@@ -75,6 +67,10 @@ public class TermRepository {
 
     public Term getTermById(int termId) {
         return mTermDao.getTermById(termId);
+    }
+
+    public LiveData<Integer> getTermCount() {
+        return mTermDao.getTermCount();
     }
 
 }

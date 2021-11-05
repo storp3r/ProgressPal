@@ -3,6 +3,7 @@ package storper.matt.c196_progress_pal.Activities;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.NavUtils;
 import androidx.fragment.app.Fragment;
@@ -51,7 +52,7 @@ import storper.matt.c196_progress_pal.Utilities.StringWithTag;
 import storper.matt.c196_progress_pal.ViewModel.CourseViewModel;
 import storper.matt.c196_progress_pal.ViewModel.TermViewModel;
 
-public class ModifyCourseActivity extends AppCompatActivity implements ListFragment.OnListItemListener {
+public class ModifyCourseActivity extends AppCompatActivity {
     private static final String TAG = "ModifyCourse";
     private static final String modifyTermActivity = "ModifyTermActivity";
     private final ArrayList<StringWithTag> termList = new ArrayList<>();
@@ -59,12 +60,11 @@ public class ModifyCourseActivity extends AppCompatActivity implements ListFragm
     private final ArrayList<String> progressList = new ArrayList<>();
 
     private CourseViewModel mCourseViewModel;
-    private DataIntegrity verify = new DataIntegrity();
-    private MenuHandler mMenuHandler = new MenuHandler();
-    private NotificationService notificationService = new NotificationService();
-    private DateConverter dateConverter = new DateConverter();
-    private String launchingActivity;
-    private static String NOTIFICATION_CHANNEL_ID = "Course";
+    private final DataIntegrity verify = new DataIntegrity();
+    private final MenuHandler mMenuHandler = new MenuHandler();
+    private final NotificationService notificationService = new NotificationService();
+    private final DateConverter dateConverter = new DateConverter();
+    private static final String NOTIFICATION_CHANNEL_ID = "Course";
     private int NOTIFICATION_ID_START = 3000;
     private int NOTIFICATION_ID_END = 4000;
 
@@ -72,6 +72,7 @@ public class ModifyCourseActivity extends AppCompatActivity implements ListFragm
     private int courseId;
     private int termId;
     String courseIdString;
+    private String courseName;
     private String courseStart;
     private String courseEnd;
     private Object tag;
@@ -85,23 +86,11 @@ public class ModifyCourseActivity extends AppCompatActivity implements ListFragm
     EditText editName;
     EditText startDate;
     EditText endDate;
-    FragmentContainerView instructorFrag;
-    Switch courseReminder;
+    SwitchCompat courseReminder;
     Spinner progressSelection;
     Spinner termSelection;
     TextView nameLabel;
-    TextView instructorFragTitle;
-
     ConstraintLayout courseDetails;
-    ImageView upArrow;
-    ImageView downArrow;
-
-    View[] mDynamicViews;
-
-    @Override
-    public void onItemSelected() {
-
-    }
 
     public interface OnPassDataToFragment {
         void onPassData(boolean isAssessment, String data, String data2);
@@ -124,7 +113,6 @@ public class ModifyCourseActivity extends AppCompatActivity implements ListFragm
 
         if (extras != null) {
             id = extras.getInt("id");
-            launchingActivity = extras.getString("launchActivity");
             tempId = extras.getString("termId");
             mCourseViewModel.setCurrentCourse(id);
             NOTIFICATION_ID_START = NOTIFICATION_ID_START + id;
@@ -145,16 +133,22 @@ public class ModifyCourseActivity extends AppCompatActivity implements ListFragm
         courseReminder = findViewById(R.id.courseReminderSwitch);
         courseDetails = findViewById(R.id.courseDetails);
 
-        initViewModel();
+        initViewModel(savedInstanceState);
     }
 
-    private void initViewModel() {
+    protected void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putString("courseName", editName.getText().toString());
+        savedInstanceState.putString("courseStart", startDate.getText().toString());
+        savedInstanceState.putString("courseEnd", endDate.getText().toString());
+        savedInstanceState.putString("courseStatus", progressSelection.getSelectedItem().toString());
+    }
 
+    private void initViewModel(Bundle savedInstanceState) {
         nameLabel.setText(R.string.course_label);
         progressList.addAll(progressItems);
         saveBtn.setOnClickListener(saveCourse);
         addAssessmentBtn.setOnClickListener(addAssessment);
-//        detailsButton.setOnClickListener(showHideDetails);
         progressSelection.setOnItemSelectedListener(progressListener);
         termSelection.setOnItemSelectedListener(termListener);
         courseReminder.setOnClickListener(setCourseNotification);
@@ -165,13 +159,23 @@ public class ModifyCourseActivity extends AppCompatActivity implements ListFragm
             public void onChanged(@Nullable final Course course) {
 
                 if (course != null) {
-                    editName.setText(course.getName());
-                    courseStart = course.getStartDate();
+
+                    if(savedInstanceState == null) {
+                        courseName = course.getName();
+                        courseStart = course.getStartDate();
+                        courseEnd = course.getEndDate();
+                        status = course.getStatus();
+                    } else {
+                        courseName = savedInstanceState.getString("courseName");
+                        courseStart = savedInstanceState.getString("courseStart");
+                        courseEnd = savedInstanceState.getString("courseEnd");
+                        status = savedInstanceState.getString("courseStatus");
+                    }
+
+                    editName.setText(courseName);
                     startDate.setText(courseStart);
-                    courseEnd = course.getEndDate();
                     endDate.setText(courseEnd);
                     tag = course.getTermId();
-                    status = course.getStatus();
                     setProgressSpinner(status);
                     courseId = course.getId();
                     addInstructorBtn.setOnClickListener(editInstructor);
@@ -180,7 +184,7 @@ public class ModifyCourseActivity extends AppCompatActivity implements ListFragm
 
                     SharedPreferences sharedPreferences = getSharedPreferences("notificationState", MODE_PRIVATE);
                     courseReminder.setChecked(sharedPreferences.getBoolean("courseNotification " + courseIdString, true));
-                    Log.d(TAG, "onChanged: " + sharedPreferences.getBoolean("courseNotification " + courseIdString, true));
+
                     FragmentManager fragmentManager = getSupportFragmentManager();
                     Fragment instructorFragment = fragmentManager.findFragmentById(R.id.list_term_fragment_container);
                     Log.d(TAG, "initViewModel: courseID is " + courseId);
@@ -344,7 +348,6 @@ public class ModifyCourseActivity extends AppCompatActivity implements ListFragm
             }
         }
     }
-
 
     public AdapterView.OnItemSelectedListener termListener = new AdapterView.OnItemSelectedListener() {
         @Override

@@ -33,7 +33,7 @@ import storper.matt.c196_progress_pal.Fragments.NoteFragment;
 import storper.matt.c196_progress_pal.Fragments.SmsFragment;
 import storper.matt.c196_progress_pal.R;
 
-public class EntityViewHolder extends RecyclerView.ViewHolder implements ListFragment.OnListItemListener {
+public class EntityViewHolder extends RecyclerView.ViewHolder  {
 
     private static final String TAG = "EntityViewHolder";
     public enum Type {TERM, COURSE, ASSESSMENT, NOTE, INSTRUCTOR, NULL}
@@ -83,13 +83,11 @@ public class EntityViewHolder extends RecyclerView.ViewHolder implements ListFra
             currentActivity = null;
         }
 
-
-        String launchingActivity;
-        launchingActivity = rootView.toString();
+        String launchingActivity = rootView.toString();
         String[] stringArray = launchingActivity.split("\\.|@");
         launchingActivity = stringArray[stringArray.length - 2];
-
         String finalLaunchingActivity = launchingActivity;
+
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -113,11 +111,6 @@ public class EntityViewHolder extends RecyclerView.ViewHolder implements ListFra
                 }
             }
         });
-    }
-
-    @Override
-    public void onItemSelected() {
-        System.out.println("TAGGED: " + mEntityName.getTag());
     }
 
     public static EntityViewHolder create(ViewGroup parent) {

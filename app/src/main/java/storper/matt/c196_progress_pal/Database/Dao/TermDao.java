@@ -24,6 +24,9 @@ public interface TermDao {
     @Query("SELECT * FROM terms WHERE termId = :termId")
     Term getTermById(int termId);
 
+    @Query("SELECT COUNT(termId) from terms")
+    LiveData<Integer> getTermCount();
+
     @Query("DELETE FROM terms")
     public void deleteAll();
 

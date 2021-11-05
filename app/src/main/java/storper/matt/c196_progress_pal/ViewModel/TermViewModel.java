@@ -23,7 +23,7 @@ public class TermViewModel extends AndroidViewModel {
     private static final String TAG = "TermVM";
     private final LiveData<List<Term>> mAllTerms;
     public MutableLiveData<Term> mTerm = new MutableLiveData<>();
-    public Transaction.Status mTransactionStatus;
+
 
     private TermRepository mRepository;
     Executor e = Executors.newSingleThreadExecutor();
@@ -36,6 +36,10 @@ public class TermViewModel extends AndroidViewModel {
 
     public LiveData<List<Term>> getAllTerms() {
         return mAllTerms;
+    }
+
+    public LiveData<Integer> getTermCount() {
+        return mRepository.getTermCount();
     }
 
     public void setCurrentTerm(final int id){

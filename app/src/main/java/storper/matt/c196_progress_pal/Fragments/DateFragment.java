@@ -29,7 +29,7 @@ import storper.matt.c196_progress_pal.Activities.ModifyCourseActivity;
 import storper.matt.c196_progress_pal.R;
 import storper.matt.c196_progress_pal.Utilities.Alert;
 
-public class TempDateFragment extends Fragment implements ModifyCourseActivity.OnPassDataToFragment
+public class DateFragment extends Fragment implements ModifyCourseActivity.OnPassDataToFragment
         , ModifyAssessmentActivity.OnPassDataToFragment {
     private static final String TAG = "TempDate";
     final Calendar calendar = Calendar.getInstance();
@@ -93,7 +93,6 @@ public class TempDateFragment extends Fragment implements ModifyCourseActivity.O
                 startDate = convertStringToDate(editStartDate.getText().toString());
                 endDate = convertStringToDate(editEndDate.getText().toString());
             }
-
             setMinDate();
             setMaxDate();
 
@@ -164,12 +163,9 @@ public class TempDateFragment extends Fragment implements ModifyCourseActivity.O
     //set minimum date range
     public void setMinDate() {
         List<Date> minDateList = new ArrayList<>();
-//        if (datesOkay()) {
-//            minDateList.add(now);
-//        }
         minDateList.add(now);
-        minDateList.add(startDate);
         minDateList.add(parentStartDate);
+
         minDate = null;
 
         for (Date date : minDateList) {
@@ -188,6 +184,7 @@ public class TempDateFragment extends Fragment implements ModifyCourseActivity.O
         } else if (startDate == null && parentStartDate != null) {
             editStartDate.setText(convertDateToString(parentStartDate));
         }
+        Log.d(TAG, "setMinDate: minDate " + minDate);
     }
 
     //Set calendars maxDate range
@@ -219,10 +216,22 @@ public class TempDateFragment extends Fragment implements ModifyCourseActivity.O
     @Override
     public void onPassData(boolean isAssessment, @NonNull String data, @NonNull String data2) {
         parentStartDate = convertStringToDate(data);
-        startDate = convertStringToDate(editStartDate.getText().toString());
-        endDate = convertStringToDate(editEndDate.getText().toString());
         parentEndDate = convertStringToDate(data2);
+        Log.d(TAG, "onPassData: ");
+        if(!editStartDate.getText().toString().equals("")){
+            startDate = convertStringToDate(editStartDate.getText().toString());
+            if(parentStartDate.compareTo(startDate) > 0) {
+                editStartDate.setText(convertDateToString(parentStartDate));
+            }
+            if(!isAssessment) {
+                endDate = convertStringToDate(editEndDate.getText().toString());
+                if(parentEndDate.compareTo(endDate) < 0) {
+                    editEndDate.setText("");
+                }
+            }
+        }
         setMinDate();
+
         if (isAssessment) {
             endDateButton.setVisibility(View.GONE);
             endDateLabel.setVisibility(View.GONE);
@@ -230,6 +239,7 @@ public class TempDateFragment extends Fragment implements ModifyCourseActivity.O
             parent = "Course";
             child = "Assessment";
         }
+
     }
 }
 

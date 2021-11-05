@@ -80,7 +80,7 @@
 
         <fragment
             android:id="@+id/dateFragment"
-            android:name="storper.matt.c196_progress_pal.Fragments.TempDateFragment"
+            android:name="storper.matt.c196_progress_pal.Fragments.DateFragment"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="@+id/termSpinner"
@@ -232,7 +232,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/noteListFragment"
                 tools:visibility="visible" />
 
-            <Switch
+            <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/courseReminderSwitch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
