@@ -18,6 +18,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,6 +29,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -52,6 +54,7 @@ public class ModifyTermActivity extends AppCompatActivity implements ListFragmen
     private static String NOTIFICATION_CHANNEL_ID = "Term";
     private String termStart;
     private String termEnd;
+    private String termName;
 
     private int NOTIFICATION_ID_START = 1000;
     private int NOTIFICATION_ID_END = 2000;
@@ -67,6 +70,7 @@ public class ModifyTermActivity extends AppCompatActivity implements ListFragmen
     Button addCourseBtn;
     Switch termReminder;
     ConstraintLayout termDetails;
+    ScrollView scrollView;
 
 
 
@@ -100,6 +104,13 @@ public class ModifyTermActivity extends AppCompatActivity implements ListFragmen
         termReminder = findViewById(R.id.termReminderSwitch);
         termDetails = findViewById(R.id.termDetails);
         termDetails.setVisibility(View.GONE);
+        scrollView = findViewById(R.id.termScrollView);
+
+        int orientation = getResources().getConfiguration().orientation;
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            scrollView.smoothScrollTo(0,0);
+        }
+
 
        initViewModel();
     }
@@ -112,13 +123,15 @@ public class ModifyTermActivity extends AppCompatActivity implements ListFragmen
         termReminder.setChecked(false);
         termReminder.setOnClickListener(setTermNotification);
 
+
         final Observer<Term> termObserver = new Observer<Term>() {
             @Override
             public void onChanged(@Nullable final Term term) {
                 if(term != null) {
                     SharedPreferences sharedPreferences = getSharedPreferences("notificationState", MODE_PRIVATE);
                     termReminder.setChecked(sharedPreferences.getBoolean("termNotification" + termId, true));
-                    editName.setText(term.getName());
+                    termName = term.getName();
+                    editName.setText(termName);
                     termStart = term.getStartDate();
                     termEnd = term.getEndDate();
                     startDate.setText(termStart);
@@ -202,15 +215,15 @@ public class ModifyTermActivity extends AppCompatActivity implements ListFragmen
             AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
             PendingIntent pi = notificationService.setPendingIntent(getApplicationContext(), NOTIFICATION_ID_START, NOTIFICATION_CHANNEL_ID
-                    , "TERM " + termId, "Term has Started!");
+                    , "TERM " + termName, "Term has Started!");
             PendingIntent pi2 = notificationService.setPendingIntent(getApplicationContext(), NOTIFICATION_ID_END, NOTIFICATION_CHANNEL_ID
-                    , "TERM " + termId, "Term has Ended!");
+                    , "TERM " + termName, "Term has Ended!");
             if(on) {
                 Toast.makeText(ModifyTermActivity.this, "Reminder Set", Toast.LENGTH_LONG).show();
 
-                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, dateConverter.convertStringToDate(termStart).getTime(), AlarmManager.INTERVAL_DAY, pi);
-                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, dateConverter.convertStringToDate(termEnd).getTime()
-                        ,AlarmManager.INTERVAL_DAY, pi2);
+                alarmManager.set(AlarmManager.RTC_WAKEUP, dateConverter.convertStringToDate(termStart).getTime(), pi);
+                alarmManager.set(AlarmManager.RTC_WAKEUP, dateConverter.convertStringToDate(termEnd).getTime()
+                        , pi2);
                 setNotificationState(true);
 
             } else {

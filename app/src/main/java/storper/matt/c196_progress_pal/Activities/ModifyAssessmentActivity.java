@@ -273,8 +273,8 @@ public class ModifyAssessmentActivity extends AppCompatActivity {
             if(on) {
                 Toast.makeText(ModifyAssessmentActivity.this, "Reminder Set", Toast.LENGTH_LONG).show();
 
-                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, dateConverter.convertStringToDate(dueDateString).getTime()
-                        ,AlarmManager.INTERVAL_DAY, pi);
+                alarmManager.set(AlarmManager.RTC_WAKEUP, dateConverter.convertStringToDate(dueDateString).getTime()
+                        , pi);
                 setNotificationState(true);
 
             } else {

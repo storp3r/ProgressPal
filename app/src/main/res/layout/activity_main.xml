@@ -26,7 +26,8 @@
             android:adjustViewBounds="false"
             android:cropToPadding="false"
             android:scaleType="fitCenter"
-            app:srcCompat="@drawable/ic_baseline_menu_book_24" />
+            app:srcCompat="@drawable/ic_baseline_menu_book_24"
+            app:tint="@color/primary" />
 
         <TextView
             android:id="@+id/textView2"
@@ -34,6 +35,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="0dp"
             android:text="@string/home_title"
+            android:textColor="@color/primary"
             android:textSize="@dimen/title_text_size" />
 
     </LinearLayout>
@@ -53,31 +55,27 @@
 
         <TextView
             android:id="@+id/instructionTextView"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:text="@string/home_instructions" />
+            android:text="@string/home_instructions"
+            android:textColor="@color/secondaryText" />
 
         <Button
             android:id="@+id/termBtn"
-            android:layout_width="match_parent"
-            android:layout_height="75dp"
-            android:layout_marginBottom="20dp"
+            style="@style/modifyButton"
             android:text="@string/term_button_text"
             tools:text="Terms" />
 
         <Button
             android:id="@+id/courseBtn"
-            android:layout_width="match_parent"
-            android:layout_height="75dp"
-            android:layout_marginBottom="20dp"
+            style="@style/modifyButton"
             android:text="@string/course_button_text"
             tools:text="Courses" />
 
         <Button
             android:id="@+id/assessmentBtn"
-            android:layout_width="match_parent"
-            android:layout_height="75dp"
+            style="@style/modifyButton"
             android:text="@string/assessment_button_text"
             tools:text="Assessments" />
     </LinearLayout>

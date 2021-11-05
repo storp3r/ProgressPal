@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -9,7 +10,7 @@
 
     <TextView
         android:id="@+id/noteTitle"
-        style="@style/label"
+        style="@style/title.primary"
         android:layout_width="wrap_content"
         android:text="TextView"
         app:layout_constraintEnd_toEndOf="parent"
@@ -52,6 +53,7 @@
 
     <EditText
         android:id="@+id/editNoteContents"
+        style="@style/inputObject"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -68,6 +70,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:backgroundTint="@color/secondary"
         android:text="CANCEL"
         app:layout_constraintStart_toStartOf="@+id/editNoteContents"
         app:layout_constraintTop_toBottomOf="@+id/editNoteContents" />
@@ -76,7 +79,9 @@
         android:id="@+id/saveNoteBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:backgroundTint="@color/accent"
         android:text="SAVE"
+        android:textColor="@color/primary"
         app:layout_constraintBaseline_toBaselineOf="@+id/cancelNoteBtn"
         app:layout_constraintEnd_toEndOf="@+id/editNoteContents" />
 

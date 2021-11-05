@@ -2,18 +2,17 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/termScrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:focusableInTouchMode="true"
-    android:focusedByDefault="true"
     tools:context=".Activities.ModifyTermActivity">
 
    <androidx.constraintlayout.widget.ConstraintLayout
        android:id="@+id/linearLayout6"
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
+       android:focusableInTouchMode="true"
        >
-
 
       <TextView
           android:id="@+id/entityNameLabel"

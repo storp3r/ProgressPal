@@ -389,8 +389,8 @@ public class ModifyCourseActivity extends AppCompatActivity implements ListFragm
                 Toast.makeText(ModifyCourseActivity.this, "Reminder Set", Toast.LENGTH_LONG).show();
 
                 alarmManager.set(AlarmManager.RTC_WAKEUP, dateConverter.convertStringToDate(courseStart).getTime(), pi);
-                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, dateConverter.convertStringToDate(courseEnd).getTime()
-                        , AlarmManager.INTERVAL_DAY, pi2);
+                alarmManager.set(AlarmManager.RTC_WAKEUP, dateConverter.convertStringToDate(courseEnd).getTime()
+                        , pi2);
                 setNotificationState(true);
 
             } else {
