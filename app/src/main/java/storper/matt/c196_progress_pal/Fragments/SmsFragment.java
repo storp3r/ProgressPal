@@ -26,6 +26,7 @@ import androidx.fragment.app.DialogFragment;
 import storper.matt.c196_progress_pal.Activities.ModifyCourseActivity;
 import storper.matt.c196_progress_pal.MainActivity;
 import storper.matt.c196_progress_pal.R;
+import storper.matt.c196_progress_pal.Utilities.Alert;
 import storper.matt.c196_progress_pal.Utilities.DataIntegrity;
 
 public class SmsFragment extends DialogFragment {
@@ -39,6 +40,7 @@ public class SmsFragment extends DialogFragment {
     private Button sendBtn;
     private Button cancelBtn;
     public static String messageContents;
+    Alert alert = new Alert();
 
     public SmsFragment() {
 
@@ -97,6 +99,8 @@ public class SmsFragment extends DialogFragment {
                     ActivityCompat.requestPermissions(courseActivity,new String[]{Manifest.permission.SEND_SMS},100);
                     System.out.println("Message Failed");
                 }
+            } else {
+                alert.emptyFields(getContext());
             }
 
         }

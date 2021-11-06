@@ -1,9 +1,11 @@
 package storper.matt.c196_progress_pal.Utilities;
 
+import android.app.Activity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;

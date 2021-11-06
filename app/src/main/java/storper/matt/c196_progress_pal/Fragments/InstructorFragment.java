@@ -19,6 +19,7 @@ import storper.matt.c196_progress_pal.Database.Dao.CourseDao;
 import storper.matt.c196_progress_pal.Database.Entities.Course;
 import storper.matt.c196_progress_pal.Database.Entities.Instructor;
 import storper.matt.c196_progress_pal.R;
+import storper.matt.c196_progress_pal.Utilities.Alert;
 import storper.matt.c196_progress_pal.Utilities.DataIntegrity;
 import storper.matt.c196_progress_pal.ViewModel.CourseViewModel;
 import storper.matt.c196_progress_pal.ViewModel.InstructorViewModel;
@@ -38,6 +39,7 @@ public class InstructorFragment extends DialogFragment {
     DataIntegrity verify = new DataIntegrity();
     InstructorViewModel mInstructorViewModel;
     CourseViewModel mCourseViewModel;
+    Alert alert = new Alert();
 
 
     public InstructorFragment() {
@@ -115,6 +117,8 @@ public class InstructorFragment extends DialogFragment {
                 Log.d(TAG, "onClick: running save");
                 mInstructorViewModel.saveCurrentInstructor(name, phone, email, courseId);
                 dismiss();
+            } else {
+                alert.emptyFields(getContext());
             }
         }
     };

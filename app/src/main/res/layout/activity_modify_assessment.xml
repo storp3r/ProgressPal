@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activities.ModifyAssessmentActivity">
+    tools:context=".Activities.ModifyAssessmentActivity"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
 
     <TextView
         android:id="@+id/assessmentNameLabel"
@@ -80,7 +82,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/typeSpinner" />
 
-    <androidx.appcompat.widget.SwitchCompat
+    <Switch
         android:id="@+id/assessmentReminderSwitch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

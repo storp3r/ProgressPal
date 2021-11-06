@@ -12,6 +12,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -44,6 +45,7 @@ import storper.matt.c196_progress_pal.Fragments.InstructorFragment;
 import storper.matt.c196_progress_pal.Fragments.ListFragment;
 import storper.matt.c196_progress_pal.Fragments.NoteFragment;
 import storper.matt.c196_progress_pal.R;
+import storper.matt.c196_progress_pal.Utilities.Alert;
 import storper.matt.c196_progress_pal.Utilities.DataIntegrity;
 import storper.matt.c196_progress_pal.Utilities.DateConverter;
 import storper.matt.c196_progress_pal.Utilities.MenuHandler;
@@ -52,13 +54,13 @@ import storper.matt.c196_progress_pal.Utilities.StringWithTag;
 import storper.matt.c196_progress_pal.ViewModel.CourseViewModel;
 import storper.matt.c196_progress_pal.ViewModel.TermViewModel;
 
+@SuppressLint("UseSwitchCompatOrMaterialCode")
 public class ModifyCourseActivity extends AppCompatActivity {
     private static final String TAG = "ModifyCourse";
     private static final String modifyTermActivity = "ModifyTermActivity";
     private final ArrayList<StringWithTag> termList = new ArrayList<>();
-    private final List<String> progressItems = Arrays.asList("Not Started", "In-Progress", "Completed");
+    private final List<String> progressItems = Arrays.asList( "In-Progress", "Completed", "Dropped", "Plan-to-Take");
     private final ArrayList<String> progressList = new ArrayList<>();
-
     private CourseViewModel mCourseViewModel;
     private final DataIntegrity verify = new DataIntegrity();
     private final MenuHandler mMenuHandler = new MenuHandler();
@@ -67,7 +69,6 @@ public class ModifyCourseActivity extends AppCompatActivity {
     private static final String NOTIFICATION_CHANNEL_ID = "Course";
     private int NOTIFICATION_ID_START = 3000;
     private int NOTIFICATION_ID_END = 4000;
-
     private int id = -1;
     private int courseId;
     private int termId;
@@ -78,7 +79,6 @@ public class ModifyCourseActivity extends AppCompatActivity {
     private Object tag;
     private String tempId;
     public String status;
-
     Button addInstructorBtn;
     Button saveBtn;
     Button addAssessmentBtn;
@@ -86,11 +86,12 @@ public class ModifyCourseActivity extends AppCompatActivity {
     EditText editName;
     EditText startDate;
     EditText endDate;
-    SwitchCompat courseReminder;
+    Switch courseReminder;
     Spinner progressSelection;
     Spinner termSelection;
     TextView nameLabel;
     ConstraintLayout courseDetails;
+    Alert alert = new Alert();
 
     public interface OnPassDataToFragment {
         void onPassData(boolean isAssessment, String data, String data2);
@@ -213,6 +214,7 @@ public class ModifyCourseActivity extends AppCompatActivity {
                 } else {
                     tag = tempId;
                     addInstructorBtn.setOnClickListener(addInstructor);
+                    courseReminder.setChecked(false);
                 }
             }
         };
@@ -303,6 +305,8 @@ public class ModifyCourseActivity extends AppCompatActivity {
                     setNotificationState(false);
                 }
                 courseDetails.setVisibility(View.VISIBLE);
+            } else {
+                alert.emptyFields(ModifyCourseActivity.this);
             }
         }
     };

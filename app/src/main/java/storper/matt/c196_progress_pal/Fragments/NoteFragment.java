@@ -16,6 +16,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import storper.matt.c196_progress_pal.Database.Entities.Note;
 import storper.matt.c196_progress_pal.R;
+import storper.matt.c196_progress_pal.Utilities.Alert;
 import storper.matt.c196_progress_pal.Utilities.DataIntegrity;
 import storper.matt.c196_progress_pal.ViewModel.InstructorViewModel;
 import storper.matt.c196_progress_pal.ViewModel.NoteViewModel;
@@ -34,6 +35,7 @@ public class NoteFragment extends DialogFragment {
     public static int courseId;
     public static int noteId;
     DataIntegrity verify = new DataIntegrity();
+    Alert alert = new Alert();
 
 
     public NoteFragment() {
@@ -110,6 +112,8 @@ public class NoteFragment extends DialogFragment {
                 mNoteViewModel.saveCurrentNote(name, contents, courseId);
                 Toast.makeText(getContext(), "Note Saved Successfully!", Toast.LENGTH_LONG).show();
                 dismiss();
+            } else {
+                alert.emptyFields(getContext());
             }
         }
     };

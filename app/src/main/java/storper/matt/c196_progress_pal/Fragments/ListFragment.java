@@ -1,6 +1,8 @@
 package storper.matt.c196_progress_pal.Fragments;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -17,6 +19,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.concurrent.ExecutionException;
@@ -43,7 +46,7 @@ import storper.matt.c196_progress_pal.ViewModel.NoteViewModel;
 import storper.matt.c196_progress_pal.ViewModel.TermViewModel;
 
 
-public class ListFragment extends Fragment {
+public class ListFragment extends Fragment  {
 
     private static final String TAG = "ListFragment: ";
     private static String parentId;
@@ -56,10 +59,11 @@ public class ListFragment extends Fragment {
     final Observer<Term> termObserver = new Observer<Term>() {
         @Override
         public void onChanged(Term term) {
-           Future<Transaction.Status> status = mTermViewModel.deleteCurrentTerm(term);
+            Future<Transaction.Status> status = mTermViewModel.deleteCurrentTerm(term);
             try {
                 if (status.get() == Transaction.Status.FAILED) {
-                    alert.deleteError(getContext());
+                    alert.deleteError(getContext(), "This Term can not be deleted while Courses are attached to it." +
+                            " Please delete or change all Courses that are associated with this Term in order to delete");
                 } else {
                     Toast.makeText(getContext(), "Term successfully deleted", Toast.LENGTH_LONG).show();
                 }
@@ -74,7 +78,8 @@ public class ListFragment extends Fragment {
             Future<Transaction.Status> status = mCourseViewModel.deleteCurrentCourse(course);
             try {
                 if (status.get() == Transaction.Status.FAILED) {
-                    alert.deleteError(getContext());
+                    alert.deleteError(getContext(), "This Course can not be deleted while Assessments are attached to it." +
+                            " Please delete or change all Assessments that are associated with this Course in order to delete");
                 } else {
                     Toast.makeText(getContext(), "Term successfully deleted", Toast.LENGTH_LONG).show();
                 }
@@ -99,20 +104,35 @@ public class ListFragment extends Fragment {
             RecyclerView.ViewHolder swipedViewHolder = recyclerView.findViewHolderForLayoutPosition(position);
             assert swipedViewHolder != null;
             View swipedItem = swipedViewHolder.itemView;
-
+            TextView entityName = swipedItem.findViewById(R.id.entityName);
+            String name  = entityName.getText().toString();
             if (direction > 0) {
-                if (entityType == ENTITY.TERM) {
-                    handleTermSwipe(swipedItem.getId());
-                } else if (entityType == ENTITY.COURSE) {
-                    handleCourseSwipe(swipedItem.getId());
-                } else if (entityType == ENTITY.ASSESSMENT) {
-                    handleAssessmentSwipe(swipedItem.getId());
-                } else if (entityType == ENTITY.INSTRUCTOR) {
-                    handleInstructorSwipe(swipedItem.getId());
-                } else if(entityType == ENTITY.NOTE) {
-                    handleNoteSwipe(swipedItem.getId());
+            new AlertDialog.Builder(swipedItem.getContext())
+                    .setTitle("Confrim Delete")
+                    .setMessage("Are you sure you want to delete " + name + "?")
+                    .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            if (entityType == ENTITY.TERM) {
+                                handleTermSwipe(swipedItem.getId());
+                            } else if (entityType == ENTITY.COURSE) {
+                                handleCourseSwipe(swipedItem.getId());
+                            } else if (entityType == ENTITY.ASSESSMENT) {
+                                handleAssessmentSwipe(swipedItem.getId());
+                            } else if (entityType == ENTITY.INSTRUCTOR) {
+                                handleInstructorSwipe(swipedItem.getId());
+                            } else if (entityType == ENTITY.NOTE) {
+                                handleNoteSwipe(swipedItem.getId());
+                            }
+                            adapter.notifyItemChanged(position);
+                        }
+                    }).setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    adapter.notifyItemChanged(position);
                 }
-                adapter.notifyItemChanged(position);
+            }).create().show();
+
             }
         }
     };
@@ -190,7 +210,7 @@ public class ListFragment extends Fragment {
                 }
                 break;
             case NOTE:
-                if(currentParentId != -1) {
+                if (currentParentId != -1) {
                     mNoteViewModel = new ViewModelProvider(this).get(NoteViewModel.class);
                     adapter = new NoteListAdapter((new NoteListAdapter.NoteDiff()));
                     mNoteViewModel.getNotesByCourse(currentParentId).observe(getViewLifecycleOwner(), adapter::submitList);

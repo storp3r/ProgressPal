@@ -19,12 +19,14 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import storper.matt.c196_progress_pal.Fragments.ListFragment;
 import storper.matt.c196_progress_pal.R;
+import storper.matt.c196_progress_pal.Utilities.Alert;
 import storper.matt.c196_progress_pal.Utilities.MenuHandler;
 import storper.matt.c196_progress_pal.ViewModel.TermViewModel;
 
 public class CourseListActivity extends AppCompatActivity {
     private static final String TAG = "CouseList";
     private MenuHandler mMenuHandler;
+    Alert alert = new Alert();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +74,7 @@ public class CourseListActivity extends AppCompatActivity {
     private View.OnClickListener addCourse = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            Intent intent = new Intent(CourseListActivity.this, ModifyAssessmentActivity.class);
+            Intent intent = new Intent(CourseListActivity.this, ModifyCourseActivity.class);
             startActivity(intent);
         }
     };
@@ -80,8 +82,7 @@ public class CourseListActivity extends AppCompatActivity {
     private View.OnClickListener noTermAlert = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            Log.d(TAG, "onClick: Sorry no term");
-            //TODO add alert
+            alert.noParentFound(CourseListActivity.this, "Term", "Course");
         }
     };
 

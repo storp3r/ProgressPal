@@ -38,6 +38,7 @@ import android.widget.Toast;
 import storper.matt.c196_progress_pal.Database.Entities.Term;
 import storper.matt.c196_progress_pal.Fragments.ListFragment;
 import storper.matt.c196_progress_pal.R;
+import storper.matt.c196_progress_pal.Utilities.Alert;
 import storper.matt.c196_progress_pal.Utilities.DateConverter;
 import storper.matt.c196_progress_pal.Utilities.MenuHandler;
 import storper.matt.c196_progress_pal.Utilities.NotificationService;
@@ -66,9 +67,10 @@ public class ModifyTermActivity extends AppCompatActivity  {
     EditText endDate;
     Button saveBtn;
     Button addCourseBtn;
-    SwitchCompat termReminder;
+    Switch termReminder;
     ConstraintLayout termDetails;
     ScrollView scrollView;
+    Alert alert = new Alert();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,7 +150,7 @@ public class ModifyTermActivity extends AppCompatActivity  {
                     Log.d(TAG, "onChanged: not null");
                 } else {
                     termDetails.setVisibility(View.GONE);
-                    Log.d(TAG, "onChanged: null");
+                    termReminder.setChecked(false);
                 }
 
             }
@@ -171,7 +173,6 @@ public class ModifyTermActivity extends AppCompatActivity  {
         getMenuInflater().inflate(R.menu.appbar_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
-
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -198,6 +199,8 @@ public class ModifyTermActivity extends AppCompatActivity  {
                    termReminder.setChecked(true);
                }
                termDetails.setVisibility(View.VISIBLE);
+           } else {
+               alert.emptyFields(ModifyTermActivity.this);
            }
 
         }

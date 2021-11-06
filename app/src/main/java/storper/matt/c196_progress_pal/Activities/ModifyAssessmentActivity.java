@@ -6,7 +6,9 @@ import androidx.appcompat.widget.SwitchCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.app.Activity;
 import android.app.AlarmManager;
+import android.app.Application;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -58,7 +60,7 @@ public class ModifyAssessmentActivity extends AppCompatActivity {
     private final List<String> typeItems = Arrays.asList("Objective", "Performance");
     private final ArrayList<String> typeList = new ArrayList<>();
     private final Date now = new Date(System.currentTimeMillis());
-
+    Alert alert = new Alert();
     private int courseId = -1;
     private int assessmentId = -1;
     private String assessmentName;
@@ -69,7 +71,7 @@ public class ModifyAssessmentActivity extends AppCompatActivity {
     private String type;
 
     Button saveAssessmentBtn;
-    SwitchCompat assessmentReminder;
+    Switch assessmentReminder;
     EditText editName;
     EditText dueDate;
     TextView dueDateLabel;
@@ -142,8 +144,7 @@ public class ModifyAssessmentActivity extends AppCompatActivity {
     }
 
     public void initViewModel(Bundle savedInstanceState) {
-        SharedPreferences sharedPreferences = getSharedPreferences("notificationState", MODE_PRIVATE);
-        assessmentReminder.setChecked(sharedPreferences.getBoolean("assessmentNotification " + assessmentIdString, true));
+
         dueDateLabel.setText("Due Date: ");
         typeList.addAll(typeItems);
         courseSpinner.setOnItemSelectedListener(courseListener);
@@ -167,9 +168,12 @@ public class ModifyAssessmentActivity extends AppCompatActivity {
                     dueDate.setText(dueDateString);
                     tag = assessment.getCourseId();
                     type = assessment.getType();
+                    SharedPreferences sharedPreferences = getSharedPreferences("notificationState", MODE_PRIVATE);
+                    assessmentReminder.setChecked(sharedPreferences.getBoolean("assessmentNotification " + assessmentIdString, true));
                 } else {
                     tag = courseId;
                     assessmentReminder.setVisibility(View.INVISIBLE);
+                    assessmentReminder.setChecked(false);
                 }
             }
         };
@@ -251,6 +255,7 @@ public class ModifyAssessmentActivity extends AppCompatActivity {
         public void onClick(View view) {
             String name = editName.getText().toString().trim();
             String dueDateString = dueDate.getText().toString().trim();
+
             courseId = (int) tag;
             if(verify.noNullStrings(name, dueDateString, type) && courseId > -1) {
                 mAssessmentViewModel.saveCurrentAssessment(name, type, dueDateString, courseId);
@@ -263,7 +268,7 @@ public class ModifyAssessmentActivity extends AppCompatActivity {
                 }
                 Toast.makeText(ModifyAssessmentActivity.this, "Assessment Successfully Saved", Toast.LENGTH_LONG).show();
             } else {
-                Alert.emptyFields(ModifyAssessmentActivity.this);
+                alert.emptyFields(ModifyAssessmentActivity.this);
             }
 
         }

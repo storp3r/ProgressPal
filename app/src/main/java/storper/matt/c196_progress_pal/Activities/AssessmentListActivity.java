@@ -24,12 +24,14 @@ import java.util.List;
 import storper.matt.c196_progress_pal.Database.Entities.Course;
 import storper.matt.c196_progress_pal.Fragments.ListFragment;
 import storper.matt.c196_progress_pal.R;
+import storper.matt.c196_progress_pal.Utilities.Alert;
 import storper.matt.c196_progress_pal.Utilities.MenuHandler;
 import storper.matt.c196_progress_pal.ViewModel.CourseViewModel;
 
 public class AssessmentListActivity extends AppCompatActivity {
     private static final String TAG = "Assessment List";
     private MenuHandler mMenuHandler;
+    Alert alert = new Alert();
 
 
     @Override
@@ -86,9 +88,9 @@ public class AssessmentListActivity extends AppCompatActivity {
     private View.OnClickListener noCourseAlert = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            Log.d(TAG, "onClick: Sorry no course");
+            alert.noParentFound(AssessmentListActivity.this, "Course", "Assessment");
         }
-        //TODO add alert
+
     };
 
 

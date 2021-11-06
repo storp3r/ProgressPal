@@ -25,7 +25,7 @@ public class CourseListAdapter extends ListAdapter<Course, EntityViewHolder> {
     @Override
     public void onBindViewHolder(EntityViewHolder holder, int position){
         Course current = getItem(position);
-        holder.bind(EntityViewHolder.Type.COURSE,  current.getId(),"Course: " + current.getName(), "Starts: " +current.getStartDate()
+        holder.bind(EntityViewHolder.Type.COURSE,  current.getId(),current.getName(), "Starts: " +current.getStartDate()
                 , "Ends: " + current.getEndDate());
         Log.d(TAG, "onBindViewHolder: ");
     }
