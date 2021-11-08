@@ -58,12 +58,15 @@ public class CourseViewModel extends AndroidViewModel {
         return mRepository.deleteCourse(course);
     }
 
-    public void saveCurrentCourse(String name, String startDate, String endDate, String status, int termId) {
+    public boolean saveCurrentCourse(String name, String startDate, String endDate, String status, int termId) {
         Course currentCourse = mCourse.getValue();
+        boolean isNew;
 
         if(currentCourse == null) {
             currentCourse = new Course(name, startDate, endDate, status, termId);
             mRepository.insertCourse(currentCourse);
+            mCourse.postValue(currentCourse);
+            isNew = true;
         } else {
             currentCourse.setName(name);
             currentCourse.setStartDate(startDate);
@@ -71,7 +74,9 @@ public class CourseViewModel extends AndroidViewModel {
             currentCourse.setStatus(status);
             currentCourse.setTermId(termId);
             mRepository.updateCourse(currentCourse);
+            isNew = false;
         }
+        return isNew;
     }
 
 //    public void insert(Course course) {

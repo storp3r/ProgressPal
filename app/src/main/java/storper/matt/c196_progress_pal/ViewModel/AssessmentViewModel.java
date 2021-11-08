@@ -48,19 +48,23 @@ public class AssessmentViewModel extends AndroidViewModel {
         });
     }
 
-    public void saveCurrentAssessment(String name, String type, String dueDate, int courseId) {
+    public boolean saveCurrentAssessment(String name, String type, String dueDate, int courseId) {
         Assessment currentAssessment = mAssessment.getValue();
-
+        boolean isNew;
         if(currentAssessment == null) {
             currentAssessment = new Assessment(name, type, dueDate, courseId);
             mRepository.insertAssessment(currentAssessment);
+            mAssessment.postValue(currentAssessment);
+            isNew = true;
         } else {
             currentAssessment.setName(name);
             currentAssessment.setType(type);
             currentAssessment.setDueDate(dueDate);
             currentAssessment.setCourseId(courseId);
             mRepository.updateAssessment(currentAssessment);
+            isNew = false;
         }
+        return isNew;
     }
 
     public void deleteCurrentAssessment(Assessment assessment) {

@@ -1,6 +1,8 @@
 package storper.matt.c196_progress_pal.ViewModel;
 
 import android.app.Application;
+import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 
 import androidx.lifecycle.AndroidViewModel;
@@ -12,6 +14,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import storper.matt.c196_progress_pal.Activities.ModifyTermActivity;
 import storper.matt.c196_progress_pal.Activities.TermListActivity;
 import storper.matt.c196_progress_pal.Database.Entities.Term;
 import storper.matt.c196_progress_pal.Database.Repositories.TermRepository;
@@ -61,18 +64,24 @@ public class TermViewModel extends AndroidViewModel {
 //    }
 
 
-    public void saveCurrentTerm(String name, String startDate, String endDate) {
+    public boolean saveCurrentTerm(String name, String startDate, String endDate) {
         Term currentTerm = mTerm.getValue();
 
+        boolean isNew;
         if(currentTerm == null) {
             currentTerm = new Term(name, startDate, endDate);
             mRepository.insertTerm(currentTerm);
+            mTerm.postValue(currentTerm);
+
+            isNew = true;
         } else {
             currentTerm.setName(name);
             currentTerm.setStartDate(startDate);
             currentTerm.setEndDate(endDate);
             mRepository.updateTerm(currentTerm);
+            isNew = false;
         }
+        return isNew;
     }
 
 //    public void insert(Term term) {

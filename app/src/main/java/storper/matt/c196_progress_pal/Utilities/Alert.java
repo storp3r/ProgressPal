@@ -84,6 +84,24 @@ public class Alert extends DialogFragment {
         alert.show();
     }
 
+    public void dateRange(Context context) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("Date Range Error");
+        builder.setMessage("Dates that were found outside of range have been reset and must be updated in order to save");
+        builder.setCancelable(true);
+        builder.setNeutralButton("OK",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.cancel();
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+
+
 
 
 }

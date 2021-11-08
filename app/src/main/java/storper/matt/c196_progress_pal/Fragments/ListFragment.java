@@ -108,7 +108,7 @@ public class ListFragment extends Fragment  {
             String name  = entityName.getText().toString();
             if (direction > 0) {
             new AlertDialog.Builder(swipedItem.getContext())
-                    .setTitle("Confrim Delete")
+                    .setTitle("Confirm Delete")
                     .setMessage("Are you sure you want to delete " + name + "?")
                     .setPositiveButton("YES", new DialogInterface.OnClickListener() {
                         @Override

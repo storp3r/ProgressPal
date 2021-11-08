@@ -168,8 +168,11 @@ public class ModifyAssessmentActivity extends AppCompatActivity {
                     dueDate.setText(dueDateString);
                     tag = assessment.getCourseId();
                     type = assessment.getType();
-                    SharedPreferences sharedPreferences = getSharedPreferences("notificationState", MODE_PRIVATE);
-                    assessmentReminder.setChecked(sharedPreferences.getBoolean("assessmentNotification " + assessmentIdString, true));
+                    boolean isSet = getSharedPreferences("notificationState", MODE_PRIVATE)
+                            .getBoolean("assessment_" + assessmentId, false);
+
+                    assessmentReminder.setChecked(isSet);
+
                 } else {
                     tag = courseId;
                     assessmentReminder.setVisibility(View.INVISIBLE);
@@ -258,13 +261,11 @@ public class ModifyAssessmentActivity extends AppCompatActivity {
 
             courseId = (int) tag;
             if(verify.noNullStrings(name, dueDateString, type) && courseId > -1) {
-                mAssessmentViewModel.saveCurrentAssessment(name, type, dueDateString, courseId);
-                if(assessmentReminder.isChecked()) {
-                    assessmentReminder.setChecked(false);
-                    assessmentReminder.setChecked(true);
-                    assessmentReminder.setVisibility(View.VISIBLE);
-                } else {
-                    setNotificationState(false);
+                boolean isNew = mAssessmentViewModel.saveCurrentAssessment(name, type, dueDateString, courseId);
+
+                if(isNew) {
+                    Intent intent = new Intent(ModifyAssessmentActivity.this, AssessmentListActivity.class);
+                    startActivity(intent);
                 }
                 Toast.makeText(ModifyAssessmentActivity.this, "Assessment Successfully Saved", Toast.LENGTH_LONG).show();
             } else {
@@ -302,7 +303,7 @@ public class ModifyAssessmentActivity extends AppCompatActivity {
 
     private void setNotificationState(boolean isSet) {
         SharedPreferences.Editor editor = getSharedPreferences("notificationState", MODE_PRIVATE).edit();
-        editor.putBoolean("assessmentNotification " + assessmentIdString, isSet);
+        editor.putBoolean("assessment_" + assessmentId, isSet);
         editor.apply();
     }
 

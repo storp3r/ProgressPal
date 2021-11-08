@@ -89,13 +89,15 @@ public class InstructorFragment extends DialogFragment {
             mInstructorViewModel.mInstructor.observe(getViewLifecycleOwner(), new Observer<Instructor>() {
                 @Override
                 public void onChanged(Instructor instructor) {
-                    title.setText("EDIT INSTRUCTOR");
+                    title.setText("Edit Instructor");
                     editName.setText(instructor.getName());
                     editPhone.setText(instructor.getPhone());
                     editEmail.setText(instructor.getEmail());
                     courseId = instructor.getCourseId();
                 }
             });
+        } else {
+            title.setText("Add Instructor");
         }
     }
 

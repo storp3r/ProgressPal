@@ -55,6 +55,7 @@ public class NoteViewModel extends AndroidViewModel {
         if(currentNote ==  null) {
             currentNote = new Note(name, details, courseId);
             mRepository.insertNote(currentNote);
+            mNote.postValue(currentNote);
         } else {
             currentNote.setName(name);
             currentNote.setDetails(details);

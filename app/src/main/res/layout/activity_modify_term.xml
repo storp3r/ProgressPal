@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/linearLayout6"
+    android:id="@+id/termScrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_alignParentStart="false"
-    android:layout_centerHorizontal="false"
-    android:layout_gravity="center_horizontal"
-    android:focusableInTouchMode="true"
-    android:focusedByDefault="true"
     tools:context=".Activities.ModifyTermActivity">
+
+   <androidx.constraintlayout.widget.ConstraintLayout
+       android:id="@+id/linearLayout6"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:focusableInTouchMode="true"
+       >
 
 
    <TextView
@@ -126,3 +128,4 @@
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

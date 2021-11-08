@@ -131,8 +131,9 @@ public class ModifyTermActivity extends AppCompatActivity  {
             @Override
             public void onChanged(@Nullable final Term term) {
                 if(term != null) {
-                    SharedPreferences sharedPreferences = getSharedPreferences("notificationState", MODE_PRIVATE);
-                    termReminder.setChecked(sharedPreferences.getBoolean("termNotification" + termId, true));
+                    boolean isSet = getSharedPreferences("notificationState", MODE_PRIVATE)
+                            .getBoolean("term_" + termId, false);
+                    termReminder.setChecked(isSet);
 
                     if(savedInstanceState == null) {
                         termName = term.getName();
@@ -193,12 +194,12 @@ public class ModifyTermActivity extends AppCompatActivity  {
             termStart = sDate;
             termEnd = eDate;
            if(mIntegrity.noNullStrings(name, sDate, eDate)) {
-               mTermViewModel.saveCurrentTerm(name, sDate, eDate);
-               if(termReminder.isChecked()) {
-                   termReminder.setChecked(false);
-                   termReminder.setChecked(true);
+               boolean isNew = mTermViewModel.saveCurrentTerm(name, sDate, eDate);
+               if(isNew) {
+                   Intent intent = new Intent(ModifyTermActivity.this, TermListActivity.class);
+                   startActivity(intent);
                }
-               termDetails.setVisibility(View.VISIBLE);
+               Toast.makeText(ModifyTermActivity.this, "Term Successfully Saved", Toast.LENGTH_LONG).show();
            } else {
                alert.emptyFields(ModifyTermActivity.this);
            }
@@ -230,12 +231,10 @@ public class ModifyTermActivity extends AppCompatActivity  {
                     , "TERM " + termName, "Term has Ended!");
             if(on) {
                 Toast.makeText(ModifyTermActivity.this, "Reminder Set", Toast.LENGTH_LONG).show();
-
                 alarmManager.set(AlarmManager.RTC_WAKEUP, dateConverter.convertStringToDate(termStart).getTime(), pi);
                 alarmManager.set(AlarmManager.RTC_WAKEUP, dateConverter.convertStringToDate(termEnd).getTime()
                         , pi2);
                 setNotificationState(true);
-
             } else {
                 alarmManager.cancel(pi);
                 alarmManager.cancel(pi2);
@@ -246,7 +245,7 @@ public class ModifyTermActivity extends AppCompatActivity  {
 
     private void setNotificationState(boolean isSet) {
         SharedPreferences.Editor editor = getSharedPreferences("notificationState", MODE_PRIVATE).edit();
-        editor.putBoolean("termNotification" + termId, isSet);
+        editor.putBoolean("term_" + termId, isSet);
         editor.apply();
     }
 

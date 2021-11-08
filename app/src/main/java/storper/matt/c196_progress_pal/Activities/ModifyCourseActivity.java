@@ -21,6 +21,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -108,6 +109,7 @@ public class ModifyCourseActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Modify Course"); // for set actionbar title
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+
         createNotificationChannel("ModifyCourse", NOTIFICATION_CHANNEL_ID);
         Bundle extras = getIntent().getExtras();
         mCourseViewModel = new ViewModelProvider(this).get(CourseViewModel.class);
@@ -154,13 +156,13 @@ public class ModifyCourseActivity extends AppCompatActivity {
         termSelection.setOnItemSelectedListener(termListener);
         courseReminder.setOnClickListener(setCourseNotification);
         courseDetails.setVisibility(View.GONE);
+        courseReminder.setChecked(false);
 
         final Observer<Course> courseObserver = new Observer<Course>() {
             @Override
             public void onChanged(@Nullable final Course course) {
 
                 if (course != null) {
-
                     if(savedInstanceState == null) {
                         courseName = course.getName();
                         courseStart = course.getStartDate();
@@ -182,9 +184,8 @@ public class ModifyCourseActivity extends AppCompatActivity {
                     addInstructorBtn.setOnClickListener(editInstructor);
                     addNoteBtn.setOnClickListener(editNote);
                     courseDetails.setVisibility(View.VISIBLE);
-
-                    SharedPreferences sharedPreferences = getSharedPreferences("notificationState", MODE_PRIVATE);
-                    courseReminder.setChecked(sharedPreferences.getBoolean("courseNotification " + courseIdString, true));
+                    boolean isSet = getSharedPreferences("notificationState", MODE_PRIVATE).getBoolean("course_" + courseId, false);
+                    courseReminder.setChecked(isSet);
 
                     FragmentManager fragmentManager = getSupportFragmentManager();
                     Fragment instructorFragment = fragmentManager.findFragmentById(R.id.list_term_fragment_container);
@@ -295,16 +296,14 @@ public class ModifyCourseActivity extends AppCompatActivity {
             courseEnd = eDate;
             termId = (int) tag;
 
+
             if (verify.noNullStrings(name, sDate, eDate, status) && termId > -1) {
-                mCourseViewModel.saveCurrentCourse(name, sDate, eDate, status, termId);
-                if (courseReminder.isChecked()) {
-                    Log.d(TAG, "onClick: ran");
-                    courseReminder.setChecked(false);
-                    courseReminder.setChecked(true);
-                } else {
-                    setNotificationState(false);
+              boolean isNew = mCourseViewModel.saveCurrentCourse(name, sDate, eDate, status, termId);
+                if(isNew) {
+                    Intent intent = new Intent(ModifyCourseActivity.this, CourseListActivity.class);
+                    startActivity(intent);
                 }
-                courseDetails.setVisibility(View.VISIBLE);
+                Toast.makeText(ModifyCourseActivity.this, "Course Successfully Saved", Toast.LENGTH_LONG).show();
             } else {
                 alert.emptyFields(ModifyCourseActivity.this);
             }
@@ -415,10 +414,11 @@ public class ModifyCourseActivity extends AppCompatActivity {
     }
 
     public void setNotificationState(boolean isSet) {
-        SharedPreferences.Editor editor = getSharedPreferences("notificationState", MODE_PRIVATE).edit();
-        editor.putBoolean("courseNotification " + courseIdString, isSet);
-        editor.apply();
-        Log.d(TAG, "setNotificationState: " + courseIdString + isSet);
+        SharedPreferences.Editor editor = getApplicationContext().getSharedPreferences("notificationState", MODE_PRIVATE).edit();
+        editor.clear();
+        editor.putBoolean("course_" + courseId, isSet);
+        editor.commit();
+        Log.d(TAG, "setNotificationState: " + courseId + isSet);
     }
 
     private void createNotificationChannel(CharSequence name, String channelId) {

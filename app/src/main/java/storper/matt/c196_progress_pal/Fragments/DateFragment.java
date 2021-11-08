@@ -48,6 +48,7 @@ public class DateFragment extends Fragment implements ModifyCourseActivity.OnPas
     private Date now = new Date(System.currentTimeMillis());
     private String parent = "Term";
     private String child = "Course";
+    Alert alert = new Alert();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
@@ -177,14 +178,16 @@ public class DateFragment extends Fragment implements ModifyCourseActivity.OnPas
                 }
             }
         }
+
         if (parentStartDate != null && parentEndDate != null && startDate != null) {
             if (parentStartDate.compareTo(startDate) > 0 || parentEndDate.compareTo(startDate) < 0) {
-                editStartDate.setText(convertDateToString(parentStartDate));
+                editStartDate.setText(convertDateToString(minDate));
             }
         } else if (startDate == null && parentStartDate != null) {
-            editStartDate.setText(convertDateToString(parentStartDate));
+            assert minDate != null;
+            editStartDate.setText(convertDateToString(minDate));
         }
-        Log.d(TAG, "setMinDate: minDate " + minDate);
+
     }
 
     //Set calendars maxDate range
@@ -218,6 +221,7 @@ public class DateFragment extends Fragment implements ModifyCourseActivity.OnPas
         parentStartDate = convertStringToDate(data);
         parentEndDate = convertStringToDate(data2);
         Log.d(TAG, "onPassData: ");
+
         if(!editStartDate.getText().toString().equals("")){
             startDate = convertStringToDate(editStartDate.getText().toString());
             if(parentStartDate.compareTo(startDate) > 0) {
@@ -225,12 +229,15 @@ public class DateFragment extends Fragment implements ModifyCourseActivity.OnPas
             }
             if(!isAssessment) {
                 endDate = convertStringToDate(editEndDate.getText().toString());
-                if(parentEndDate.compareTo(endDate) < 0) {
-                    editEndDate.setText("");
+                if(!editEndDate.getText().toString().equals("")) {
+                    if(startDate.compareTo(endDate) > 0) {
+                        editEndDate.setText("");
+                        alert.dateRange(getContext());
+                    }
                 }
             }
         }
-        setMinDate();
+//        setMinDate();
 
         if (isAssessment) {
             endDateButton.setVisibility(View.GONE);

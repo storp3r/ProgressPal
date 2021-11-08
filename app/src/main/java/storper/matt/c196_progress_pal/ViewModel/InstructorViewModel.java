@@ -60,6 +60,7 @@ public class InstructorViewModel extends AndroidViewModel
         if(currentInstructor == null) {
             currentInstructor = new Instructor(name, phone, email, courseId);
             mRepository.insertInstructor(currentInstructor);
+            mInstructor.postValue(currentInstructor);
         } else {
             currentInstructor.setName(name);
             currentInstructor.setPhone(phone);

@@ -37,6 +37,8 @@
         <entry key="..\:/Users/Matt/Desktop/C196_Progress_Pal_4/app/src/main/res/layout-land/activity_assessment_list.xml" value="0.37337942955920483" />
         <entry key="..\:/Users/Matt/Desktop/C196_Progress_Pal_4/app/src/main/res/layout-land/activity_course_list.xml" value="0.37337942955920483" />
         <entry key="..\:/Users/Matt/Desktop/C196_Progress_Pal_4/app/src/main/res/layout-land/activity_main.xml" value="0.33" />
+        <entry key="..\:/Users/Matt/Desktop/C196_Progress_Pal_4/app/src/main/res/layout-land/activity_modify_assessment.xml" value="0.22212618841832324" />
+        <entry key="..\:/Users/Matt/Desktop/C196_Progress_Pal_4/app/src/main/res/layout-land/activity_modify_course.xml" value="0.22212618841832324" />
         <entry key="..\:/Users/Matt/Desktop/C196_Progress_Pal_4/app/src/main/res/layout-land/activity_modify_term.xml" value="0.5" />
         <entry key="..\:/Users/Matt/Desktop/C196_Progress_Pal_4/app/src/main/res/layout-land/activity_term_list.xml" value="0.1274848746758859" />
         <entry key="..\:/Users/Matt/Desktop/C196_Progress_Pal_4/app/src/main/res/layout/activity_assessment_list.xml" value="0.4375" />
@@ -55,6 +57,7 @@
         <entry key="..\:/Users/Matt/Desktop/C196_Progress_Pal_4/app/src/main/res/layout/sms_fragment.xml" value="0.3555253623188406" />
         <entry key="..\:/Users/Matt/Desktop/C196_Progress_Pal_4/app/src/main/res/menu/appbar_menu.xml" value="0.5" />
         <entry key="..\:/Users/Matt/Desktop/C196_Progress_Pal_4/app/src/main/res/menu/modified_menu.xml" value="0.20625" />
+        <entry key="..\:/Users/Matt/Desktop/C196_Progress_Pal_4/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.48072916666666665" />
       </map>
     </option>
   </component>

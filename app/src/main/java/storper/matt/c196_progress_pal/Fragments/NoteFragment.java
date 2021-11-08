@@ -91,6 +91,8 @@ public class NoteFragment extends DialogFragment {
                     courseId = note.getCourseId();
                 }
             });
+        } else {
+            title.setText("Add Note");
         }
 
     }
