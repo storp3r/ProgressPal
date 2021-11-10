@@ -151,6 +151,7 @@ public class ModifyAssessmentActivity extends AppCompatActivity {
         typeSpinner.setOnItemSelectedListener(typeListener);
         saveAssessmentBtn.setOnClickListener(saveAssessment);
         assessmentReminder.setOnClickListener(setAssessmentNotification);
+        assessmentReminder.setVisibility(View.GONE);
 
         final Observer<Assessment> assessmentObserver = new Observer<Assessment>() {
             @Override
@@ -170,13 +171,14 @@ public class ModifyAssessmentActivity extends AppCompatActivity {
                     type = assessment.getType();
                     boolean isSet = getSharedPreferences("notificationState", MODE_PRIVATE)
                             .getBoolean("assessment_" + assessmentId, false);
-
+                    assessmentReminder.setVisibility(View.VISIBLE);
                     assessmentReminder.setChecked(isSet);
+
 
                 } else {
                     tag = courseId;
-                    assessmentReminder.setVisibility(View.INVISIBLE);
-                    assessmentReminder.setChecked(false);
+//                    assessmentReminder.setVisibility(View.INVISIBLE);
+//                    assessmentReminder.setChecked(false);
                 }
             }
         };

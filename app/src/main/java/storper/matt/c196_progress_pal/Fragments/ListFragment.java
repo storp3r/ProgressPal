@@ -81,7 +81,7 @@ public class ListFragment extends Fragment  {
                     alert.deleteError(getContext(), "This Course can not be deleted while Assessments are attached to it." +
                             " Please delete or change all Assessments that are associated with this Course in order to delete");
                 } else {
-                    Toast.makeText(getContext(), "Term successfully deleted", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), "Course successfully deleted", Toast.LENGTH_LONG).show();
                 }
             } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
@@ -244,6 +244,7 @@ public class ListFragment extends Fragment  {
             @Override
             public void onChanged(Assessment assessment) {
                 mAssessmentViewModel.deleteCurrentAssessment(assessment);
+                Toast.makeText(getContext(), "Assessment Successfully Deleted!", Toast.LENGTH_LONG).show();
             }
         });
     }
